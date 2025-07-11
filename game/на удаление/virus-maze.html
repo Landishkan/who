@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вирусный Лабиринт</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/virus-maze.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container virus-maze-container">
+        <div class="game-header">
+            <a href="../games.html" class="back-button cyber-button small">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+            <h1>Вирусный Лабиринт</h1>
+          <div class="game-stats">
+    <div class="stat" id="score">Очки: 0</div>
+    <div class="stat" id="lives">Жизни: 3</div>
+    <div class="stat" id="bits">Биты: 0</div>
+</div>
+        </div>
+
+        <div class="game-area">
+            <canvas id="mazeCanvas" width="600" height="600"></canvas>
+        </div>
+
+        <div class="powerups-info">
+            <h3>Апгрейды:</h3>
+            <div class="powerups-container">
+                <div class="powerup" id="shield-powerup" title="Щит (неуязвимость на 10 сек)">
+                    <i class="fas fa-shield-alt"></i> <span class="count">0</span>
+                </div>
+                <div class="powerup" id="speed-powerup" title="Ускорение (на 5 сек)">
+                    <i class="fas fa-bolt"></i> <span class="count">0</span>
+                </div>
+                <div class="powerup" id="scanner-powerup" title="Сканер (показывает ловушки)">
+                    <i class="fas fa-search"></i> <span class="count">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-info">
+            <p>Управление: WASD или стрелки</p>
+            <p>Цель: Соберите все вирусы, избегая ловушек!</p>
+        </div>
+    </div>
+
+    <!-- Модальное окно с вопросами -->
+    <div id="questionModal" class="game-modal">
+        <div class="modal-content">
+            <h2 id="questionText">Вопрос</h2>
+            <div class="answer-options" id="answerOptions">
+                <!-- Варианты ответов будут добавлены динамически -->
+            </div>
+            <div id="questionFeedback"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно с фактами -->
+    <div id="factModal" class="game-modal">
+        <div class="modal-content">
+            <h2>Факт о кибербезопасности!</h2>
+            <p id="factText">Факт</p>
+            <button id="closeFactBtn" class="cyber-button">Продолжить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно окончания игры -->
+    <div id="gameOverModal" class="game-modal">
+        <div class="modal-content">
+            <h2 id="gameOverTitle">Игра окончена!</h2>
+            <p id="gameOverText">Ваш счет: 0</p>
+            <button id="restartBtn" class="cyber-button">Играть снова</button>
+            <a href="../games.html" class="cyber-button">Вернуться к играм</a>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+   <script src="js/virus-maze.js"></script>
+</body>
+</html>
