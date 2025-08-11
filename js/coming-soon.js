@@ -1,6 +1,6 @@
 ﻿document.addEventListener('DOMContentLoaded', function() {
     // Дата запуска - 1 августа 2025
-    const launchDate = new Date('August 10, 2025 00:00:00').getTime();
+    const launchDate = new Date('August 20, 2025 00:00:00').getTime();
     
     // Обновляем таймер каждую секунду
     const timer = setInterval(function() {
@@ -59,3 +59,4 @@
         cyberCircle.style.boxShadow = '0 0 30px rgba(91, 156, 240, 0.3)';
     });
 });
+
