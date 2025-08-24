@@ -205,32 +205,6 @@
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .cyber-header {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-    
-    .cyber-choices {
-        flex-direction: column;
-    }
-    
-    .cyber-title {
-        font-size: 1.5rem;
-    }
-    
-    .message-popup {
-        font-size: 1rem;
-        padding: 15px 20px;
-    }
-    
-    .game-end h2 {
-        font-size: 2rem;
-    }
-    
-    .game-end p {
-        font-size: 1.2rem;
-    }
     .cyber-container {
         padding: 10px;
     }
@@ -250,12 +224,15 @@
     .cyber-stats {
         justify-content: center;
         gap: 20px;
+        flex-wrap: wrap;
     }
     
     .cyber-card {
         margin: 15px 0;
         padding: 20px 15px;
         min-height: auto;
+        overflow-y: visible; /* Исправляем проблему со скроллом */
+        -webkit-overflow-scrolling: touch;
     }
     
     .content-title {
@@ -269,94 +246,187 @@
         max-height: 300px;
         overflow-y: auto;
         margin-bottom: 20px;
-        padding: 10px;
+        padding: 15px;
         background: rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
+        border-radius: 8px;
+        border: 1px solid var(--secondary-color);
     }
     
     .cyber-choices {
         flex-direction: column;
         gap: 12px;
-        position: sticky;
-        bottom: 0;
+        position: relative; /* Меняем sticky на relative */
         background: var(--background-dark);
-        padding: 15px;
-        margin: 0 -15px -20px;
-        border-top: 1px solid var(--accent-color);
+        padding: 20px 15px;
+        margin: 20px -15px -20px;
+        border-top: 2px solid var(--accent-color);
+        z-index: 10;
     }
     
-    .cyber-button.fake, 
-    .cyber-button.true {
+    .cyber-button {
         width: 100%;
-        padding: 15px;
+        padding: 16px;
         font-size: 1.1rem;
+        min-height: 50px;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+    }
+    
+    /* Визуальная обратная связь для кнопок */
+    .cyber-button:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+        transition: transform 0.1s ease;
     }
     
     .message-popup {
-        bottom: 100px;
+        bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
         width: 90%;
-        max-width: 300px;
+        max-width: 320px;
+        z-index: 1000;
     }
     
     .game-end {
         padding: 30px 20px;
         width: 90%;
+        max-width: 400px;
     }
     
     .restart-btn {
-        padding: 15px 25px;
+        padding: 16px 30px;
         font-size: 1.1rem;
+        min-height: 50px;
     }
-}
-@media (max-width: 480px) {
+    
     .cyber-title {
         font-size: 1.5rem;
+        margin: 10px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .cyber-container {
+        padding: 8px;
+    }
+    
+    .cyber-header {
+        padding: 12px 8px;
+        gap: 12px;
+    }
+    
+    .cyber-title {
+        font-size: 1.4rem;
     }
     
     .content-title {
         font-size: 1.2rem;
+        margin-bottom: 12px;
     }
     
     .content-text {
         font-size: 0.95rem;
         max-height: 250px;
+        padding: 12px;
+        margin-bottom: 15px;
     }
     
     .cyber-stats {
         flex-direction: column;
         gap: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .cyber-choices {
+        padding: 15px 12px;
+        margin: 15px -12px -15px;
+        gap: 10px;
+    }
+    
+    .cyber-button {
+        padding: 14px;
+        font-size: 1rem;
+        min-height: 46px;
+    }
+    
+    .message-popup {
+        font-size: 0.9rem;
+        padding: 12px 16px;
+        bottom: 15px;
+    }
+    
+    .game-end {
+        padding: 25px 15px;
+    }
+    
+    .game-end h2 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .game-end p {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+    
+    .restart-btn {
+        padding: 14px 25px;
+        font-size: 1rem;
     }
 }
+
+/* Дополнительные улучшения для мобильных */
 @media (max-width: 768px) {
-    /* Стили для активного состояния кнопок */
-    .cyber-button.active {
-        transform: scale(0.95);
-        opacity: 0.8;
-        transition: all 0.1s ease;
+    /* Улучшаем скролл */
+    body {
+        overflow-x: hidden;
     }
     
-    /* Улучшение для touch-устройств */
-    .touch-device .cyber-button {
-        min-height: 50px;
-        min-width: 120px;
-        padding: 15px 20px;
-        font-size: 16px;
-        -webkit-tap-highlight-color: transparent;
-        cursor: pointer;
-    }
-    
-    /* Предотвращение выделения текста при тапах */
-    .touch-device {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
+    /* Оптимизация для touch-устройств */
+    .cyber-button {
+        touch-action: manipulation;
         user-select: none;
     }
     
-    /* Улучшение скролла на мобильных */
-    .cyber-card {
-        -webkit-overflow-scrolling: touch;
+    /* Убираем стандартное выделение */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Улучшаем читаемость текста */
+    .content-text {
+        line-height: 1.6;
+        text-align: justify;
+    }
+    
+    /* Адаптивные отступы */
+    .cyber-card > * {
+        margin-bottom: 15px;
+    }
+    
+    .cyber-card > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Особые стили для очень маленьких устройств */
+@media (max-width: 360px) {
+    .cyber-title {
+        font-size: 1.3rem;
+    }
+    
+    .content-title {
+        font-size: 1.1rem;
+    }
+    
+    .content-text {
+        font-size: 0.9rem;
+        max-height: 200px;
+    }
+    
+    .cyber-button {
+        font-size: 0.95rem;
+        padding: 12px;
     }
 }
