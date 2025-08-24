@@ -202,6 +202,8 @@
 }
 
 /* Адаптивность */
+
+/* Адаптивность */
 @media (max-width: 768px) {
     .cyber-header {
         flex-direction: column;
@@ -228,5 +230,102 @@
     
     .game-end p {
         font-size: 1.2rem;
+    }
+    .cyber-container {
+        padding: 10px;
+    }
+    
+    .cyber-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 15px 10px;
+    }
+    
+    .back-button {
+        align-self: flex-start;
+        margin-bottom: 10px;
+    }
+    
+    .cyber-stats {
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .cyber-card {
+        margin: 15px 0;
+        padding: 20px 15px;
+        min-height: auto;
+    }
+    
+    .content-title {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+    
+    .content-text {
+        font-size: 1rem;
+        line-height: 1.5;
+        max-height: 300px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+    
+    .cyber-choices {
+        flex-direction: column;
+        gap: 12px;
+        position: sticky;
+        bottom: 0;
+        background: var(--background-dark);
+        padding: 15px;
+        margin: 0 -15px -20px;
+        border-top: 1px solid var(--accent-color);
+    }
+    
+    .cyber-button.fake, 
+    .cyber-button.true {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.1rem;
+    }
+    
+    .message-popup {
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 300px;
+    }
+    
+    .game-end {
+        padding: 30px 20px;
+        width: 90%;
+    }
+    
+    .restart-btn {
+        padding: 15px 25px;
+        font-size: 1.1rem;
+    }
+}
+@media (max-width: 480px) {
+    .cyber-title {
+        font-size: 1.5rem;
+    }
+    
+    .content-title {
+        font-size: 1.2rem;
+    }
+    
+    .content-text {
+        font-size: 0.95rem;
+        max-height: 250px;
+    }
+    
+    .cyber-stats {
+        flex-direction: column;
+        gap: 8px;
     }
 }
