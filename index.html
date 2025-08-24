@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -7,12 +7,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Добавить в head всех страниц -->
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-
-<!-- Для иконок -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -26,9 +23,14 @@
         <a href="coming-soon.html" class="nav-button">
             <i class="fas fa-newspaper"></i> Новости
         </a>
-        <a href="coming-soon.html" class="nav-button auth-button">
-            <i class="fas fa-user"></i> Вход/Регистрация
-        </a>
+        
+        <!-- Кнопка входа/профиля (будет меняться) -->
+        <div id="auth-section">
+            <a href="user/login.html" class="nav-button auth-button" id="auth-button">
+                <i class="fas fa-user"></i> Вход/Регистрация
+            </a>
+        </div>
+        
         <a href="coming-soon.html" class="nav-button">
             <i class="fas fa-info-circle"></i> О нас
         </a>
@@ -62,27 +64,72 @@
                 </a>
             </div>
         </main>
+        
         <section id="news" class="news-section">
-    <h2 class="section-title">Последние новости</h2>
-    
-    <div class="news-grid">
-        <article class="news-card coming-soon">
-            <div class="news-date">Скоро</div>
-            <h3>Система регистрации</h3>
-        </article>
-    </div>
-    <div class="news-grid">
-                <article class="news-card">
-                    <div class="news-date">Изменено</div>
-                    <h3>Изменен способ ввода пароля</h3>
+            <h2 class="section-title">Последние новости</h2>
+            
+            <div class="news-grid">
+                <article class="news-card coming-soon">
+                    <div class="news-date">Скоро</div>
+                    <h3>Система регистрации</h3>
                 </article>
             </div>
-    <a href="coming-soon.html" class="view-all-news">Все новости →</a>
-</section>
-        
+
+            <a href="coming-soon.html" class="view-all-news">Все новости →</a>
+        </section>
     </div>
+
+    <!-- Добавляем Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <!-- для гитхаба-->
+     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script>
+        // Ваша конфигурация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
+            authDomain: "cyber-questor.firebaseapp.com",
+            projectId: "cyber-questor",
+            storageBucket: "cyber-questor.firebasestorage.app",
+            messagingSenderId: "347078202285",
+            appId: "1:347078202285:web:7ac8581765d5fdc76a4724"
+        };
+        
+        // Инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Проверка состояния авторизации
+        firebase.auth().onAuthStateChanged(user => {
+            const authSection = document.getElementById('auth-section');
+            
+            if (user) {
+                // Пользователь авторизован - показываем профиль
+                authSection.innerHTML = `
+                    <a href="user/profile.html" class="nav-button auth-button">
+                        <i class="fas fa-user-circle"></i> Профиль
+                    </a>
+                    <a href="#" id="logout-btn" class="nav-button">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </a>
+                `;
+                
+                // Обработчик выхода
+                document.getElementById('logout-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    firebase.auth().signOut();
+                });
+            } else {
+                // Пользователь не авторизован - показываем кнопку входа
+                authSection.innerHTML = `
+                    <a href="user/login.html" class="nav-button auth-button">
+                        <i class="fas fa-user"></i> Вход/Регистрация
+                    </a>
+                `;
+            }
+        });
+    </script>
     
     <script src="js/script.js"></script>
 </body>
-
 </html>
