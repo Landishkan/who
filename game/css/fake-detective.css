@@ -329,3 +329,34 @@
         gap: 8px;
     }
 }
+@media (max-width: 768px) {
+    /* Стили для активного состояния кнопок */
+    .cyber-button.active {
+        transform: scale(0.95);
+        opacity: 0.8;
+        transition: all 0.1s ease;
+    }
+    
+    /* Улучшение для touch-устройств */
+    .touch-device .cyber-button {
+        min-height: 50px;
+        min-width: 120px;
+        padding: 15px 20px;
+        font-size: 16px;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+    }
+    
+    /* Предотвращение выделения текста при тапах */
+    .touch-device {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* Улучшение скролла на мобильных */
+    .cyber-card {
+        -webkit-overflow-scrolling: touch;
+    }
+}
