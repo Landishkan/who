@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Обновление прогресс-бара при прокрутке
     window.addEventListener('scroll', updateProgressBar);
     
@@ -47,7 +47,9 @@ function animateElements() {
 
 // Функции для теста
 let correctAnswers = 0;
-const totalQuestions = 5;
+let  totalQuestions = 5;
+let currentQuestion = 0;
+let selectedOptions = [];
 
 function checkAnswer(element, isCorrect) {
     // Сброс всех выделений в этом вопросе
@@ -76,8 +78,26 @@ function checkAnswer(element, isCorrect) {
         opt.style.pointerEvents = 'none';
     });
 }
-
-function showResults() {
+ function showQuestion(questionIndex) {
+    const questions = document.querySelectorAll('.quiz-question');
+    
+    // Скрываем все вопросы
+    questions.forEach(q => q.style.display = 'none');
+    
+    // Показываем текущий вопрос
+    if (questions[questionIndex]) {
+        questions[questionIndex].style.display = 'block';
+    }
+}
+const checkResultsBtn = document.getElementById('check-results-btn');
+    if (checkResultsBtn) {
+        checkResultsBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            console.log('Кнопка нажата!');
+            await showResults();
+        });
+    }
+ async function showResults() {
     const resultsElement = document.getElementById('quiz-results');
     let message = '';
     
@@ -88,13 +108,42 @@ function showResults() {
     } else {
         message = `💻 ${correctAnswers} из ${totalQuestions}. Рекомендуем перечитать лекцию - эта тема очень важна!`;
     }
+   const user = firebase.auth().currentUser;
+    if (user) {
+        try {
+            console.log('Saving progress for user:', user.uid);
+            const success = await updateUserProgress(user.uid, 'lecture_4', correctAnswers);
+            if (success) {
+                message += `<br><br>💾 <strong>Прогресс сохранен: ${Math.round((correctAnswers / totalQuestions) * 100)}%</strong>`;
+            } else {
+                message += `<br><br>⚠️ <em>Не удалось сохранить прогресс</em>`;
+            }
+        } catch (error) {
+            console.error('Error saving progress:', error);
+            message += `<br><br>❌ <em>Ошибка сохранения прогресса: ${error.message}</em>`;
+        }
+    } else {
+        message += `<br><br>🔒 <em>Войдите в систему чтобы сохранить прогресс</em>`;
+    }
     
-    resultsElement.innerHTML = `<h4 style="color: var(--accent-color);">Твой результат:</h4><p>${message}</p>`;
+    resultsElement.innerHTML = `<h4>Твой результат:</h4><p>${message}</p>`;
     resultsElement.style.display = 'block';
-    
-    // Прокрутка к результатам
     resultsElement.scrollIntoView({ behavior: 'smooth' });
     
-    // Сброс счетчика для возможного повторного прохождения
+  
+}
+
+// Добавьте эту функцию для сброса теста
+function resetQuiz() {
+    currentQuestion = 0;
     correctAnswers = 0;
+    selectedOptions = [];
+    
+    // Сбрасываем все выбранные ответы
+    document.querySelectorAll('.quiz-option').forEach(option => {
+        option.classList.remove('selected', 'correct', 'incorrect');
+    });
+    
+    // Показываем первый вопрос
+   // showQuestion(0);
 }
