@@ -62,6 +62,7 @@ const gameData = [
 }
 ];
 // Инициализация игры
+// Инициализация игры
 document.addEventListener('DOMContentLoaded', () => {
     // Элементы DOM
     const contentTitle = document.getElementById('content-title');
@@ -80,32 +81,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let gameActive = true;
 
-    // Функция для добавления универсальных обработчиков (клик + тап)
-    function addUniversalListener(element, callback) {
-        // Для touch-устройств
-        element.addEventListener('touchstart', function(e) {
-            if (!gameActive) return;
-            e.preventDefault();
-            this.classList.add('active');
-        }, { passive: false });
-        
-        element.addEventListener('touchend', function(e) {
-            if (!gameActive) return;
-            e.preventDefault();
-            this.classList.remove('active');
-            callback();
-        }, { passive: false });
-        
-        element.addEventListener('touchcancel', function() {
-            this.classList.remove('active');
-        });
-        
-        // Для desktop
-        element.addEventListener('click', function(e) {
-            if (!gameActive) return;
-            e.preventDefault();
-            callback();
-        });
+    // Функция для добавления обработчиков
+    function initEventListeners() {
+        // Простые клики для десктопа
+        fakeBtn.addEventListener('click', () => checkAnswer(true));
+        trueBtn.addEventListener('click', () => checkAnswer(false));
+        restartBtn.addEventListener('click', restartGame);
+
+        // Для мобильных - только touchend без preventDefault
+        if ('ontouchstart' in window) {
+            fakeBtn.addEventListener('touchend', (e) => {
+                if (!gameActive) return;
+                checkAnswer(true);
+            });
+            
+            trueBtn.addEventListener('touchend', (e) => {
+                if (!gameActive) return;
+                checkAnswer(false);
+            });
+            
+            restartBtn.addEventListener('touchend', restartGame);
+        }
     }
 
     // Функции игры...
@@ -118,25 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
         fakeBtn.disabled = false;
         trueBtn.disabled = false;
         
-        // Убираем классы активности
-        fakeBtn.classList.remove('active');
-        trueBtn.classList.remove('active');
-        
         setTimeout(() => {
             contentTitle.textContent = level.title;
             contentText.textContent = level.text;
             levelElement.textContent = `${levelIndex + 1}/${gameData.length}`;
             gameCard.style.opacity = 1;
-            
-            // Автопрокрутка к началу контента на мобильных
-            if (window.innerWidth <= 768) {
-                setTimeout(() => {
-                    contentTitle.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }, 100);
-            }
         }, 500);
     }
 
@@ -198,16 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         gameEnd.classList.add('show');
-        
-        // Прокрутка к результатам на мобильных
-        if (window.innerWidth <= 768) {
-            setTimeout(() => {
-                gameEnd.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }, 500);
-        }
     }
 
     function restartGame() {
@@ -219,37 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadLevel(currentLevel);
     }
 
-    // Инициализация обработчиков событий
-    function initEventListeners() {
-        // Универсальные обработчики для кнопок ответа
-        addUniversalListener(fakeBtn, () => checkAnswer(true));
-        addUniversalListener(trueBtn, () => checkAnswer(false));
-        
-        // Обработчик для кнопки перезапуска
-        addUniversalListener(restartBtn, restartGame);
-        
-        // Предотвращение zoom при двойном тапе
-        document.addEventListener('dblclick', function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-    }
-
     // Инициализация игры
     initEventListeners();
     loadLevel(currentLevel);
-
-    // Дополнительная обработка для мобильных устройств
-    if ('ontouchstart' in window) {
-        // Добавляем CSS класс для touch-устройств
-        document.body.classList.add('touch-device');
-        
-        // Оптимизация для мобильных
-        document.addEventListener('touchmove', function(e) {
-            if (e.scale !== 1) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-    }
 });
+
