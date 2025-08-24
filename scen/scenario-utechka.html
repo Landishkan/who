@@ -54,12 +54,23 @@
             border-color: var(--secondary-color) transparent transparent transparent;
         }
 
-        @media (max-width: 768px) {
-            .tooltiptext {
-                width: 180px;
-                font-size: 0.8rem;
-            }
-        }
+      @media (max-width: 768px) {
+    .scenario-progress {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .progress-step {
+        width: 100%;
+        text-align: left;
+        padding: 12px 15px;
+        border-radius: 8px;
+    }
+    
+    .progress-step::after {
+        display: none; /* Убираем соединительные линии */
+    }
+}
         
         /* Стили для кнопки "Назад" */
       
@@ -308,3 +319,4 @@
     </script>
 </body>
 </html>
+
