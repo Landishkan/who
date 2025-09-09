@@ -1,6 +1,6 @@
-﻿// Данные для игры
+// Данные игры
 const gameData = [
-   {
+    {
         title: "Вакцины Pfizer содержат наночипы для слежения?",
         text: "По данным «анонимных исследователей», вакцины Pfizer содержат графеновые наночипы, позволяющие отслеживать передвижения людей. В статье приводятся «результаты спектрального анализа»",
         isFake: true,
@@ -24,24 +24,24 @@ const gameData = [
         isFake: true,
         explanation: "<i class='fas fa-moon'></i><strong>Фальшивка!</strong><br>• «Сотрудник» не числится в базе NASA<br>• Кратер Тихо постоянно мониторится"
     },
-{
-    title: "WhatsApp вводит плату за ЛЮБОЕ сообщение в бизнес-чатах",
-    text: "С апреля 2025 года WhatsApp начнёт взимать плату за каждое сообщение в бизнес-переписке — даже ответы клиентов. Тариф: $0.10 за текст, $0.30 за медиафайл. Личные чаты также попадут под платную модель, если в них есть контакт бизнес-аккаунта. Решение уже вызвало бурю негодования у предпринимателей.",
-    isFake: true,
-    explanation: "<i class='fas fa-comment-dots'></i><strong>Фейк</strong><br>• WhatsApp НЕ будет брать плату с клиентов за их сообщения<br>• Личные чаты остаются бесплатными даже при контакте с бизнесом<br>• Нет подтверждения от Meta или авторитетных СМИ<br>• Реальные изменения касаются только шаблонных рассылок от бизнеса"
-},
-   {
-    title: "5G превращает вакцинированных в разносчиков COVID-19, утверждают «учёные»",
-    text: "Анонимный «исследовательский коллектив» опубликовал доклад, в котором заявляет, что излучение 5G «перепрограммирует» вакцины от коронавируса, превращая привитых людей в активных распространителей мутировавшего штамма. В качестве доказательства приводятся «анализы крови» неизвестного происхождения.",
-    isFake: true,
-    explanation: "<i class='fas fa-virus-slash'></i><strong>Фейк</strong><br>• Нет подтверждённых научных данных о влиянии 5G на вирусы или вакцины<br>• Вакцины не могут «перепрограммироваться» из-за радиоволн<br>• «Исследование» анонимное, без рецензирования и публикации в научных журналах<br>• ВОЗ и CDC неоднократно опровергали подобные мифы"
-},
-   {
-    title: "ЕС вводит обязательную маркировку ИИ-контента",
-    text: "С 2023 года согласно новому регламенту ЕС все материалы, созданные искусственным интеллектом, должны маркироваться специальным знаком. Это касается текстов, изображений и видео, сгенерированных такими системами как ChatGPT и Midjourney. Правило уже одобрено Европарламентом.",
-    isFake: false,
-    explanation: "<i class='fas fa-flag-eu'></i><strong>Подтверждённый факт</strong><br>• Регламент EU AI Act от декабря 2023<br>• Опубликовано в Official Journal EU"
-},
+    {
+        title: "WhatsApp вводит плату за ЛЮБОЕ сообщение в бизнес-чатах",
+        text: "С апреля 2025 года WhatsApp начнёт взимать плату за каждое сообщение в бизнес-переписке — даже ответы клиентов. Тариф: $0.10 за текст, $0.30 за медиафайл. Личные чаты также попадут под платную модель, если в них есть контакт бизнес-аккаунта. Решение уже вызвало бурю негодования у предпринимателей.",
+        isFake: true,
+        explanation: "<i class='fas fa-comment-dots'></i><strong>Фейк</strong><br>• WhatsApp НЕ будет брать плату с клиентов за их сообщения<br>• Личные чаты остаются бесплатными даже при контакте с бизнесом<br>• Нет подтверждения от Meta или авторитетных СМИ<br>• Реальные изменения касаются только шаблонных рассылок от бизнеса"
+    },
+    {
+        title: "5G превращает вакцинированных в разносчиков COVID-19, утверждают «учёные»",
+        text: "Анонимный «исследовательский коллектив» опубликовал доклад, в котором заявляет, что излучение 5G «перепрограммирует» вакцины от коронавируса, превращая привитых людей в активных распространителей мутировавшего штамма. В качестве доказательства приводятся «анализы крови» неизвестного происхождения.",
+        isFake: true,
+        explanation: "<i class='fas fa-virus-slash'></i><strong>Фейк</strong><br>• Нет подтверждённых научных данных о влиянии 5G на вирусы или вакцины<br>• Вакцины не могут «перепрограммироваться» из-за радиоволн<br>• «Исследование» анонимное, без рецензирования и публикации в научных журналах<br>• ВОЗ и CDC неоднократно опровергали подобные мифы"
+    },
+    {
+        title: "ЕС вводит обязательную маркировку ИИ-контента",
+        text: "С 2023 года согласно новому регламенту ЕС все материалы, созданные искусственным интеллектом, должны маркироваться специальным знаком. Это касается текстов, изображений и видео, сгенерированных такими системами как ChatGPT и Midjourney. Правило уже одобрено Европарламентом.",
+        isFake: false,
+        explanation: "<i class='fas fa-flag-eu'></i><strong>Подтверждённый факт</strong><br>• Регламент EU AI Act от декабря 2023<br>• Опубликовано в Official Journal EU"
+    },
     {
         title: "Windows 12 будет подпиской за $7/мес",
         text: "На внутренней встрече Microsoft объявила о переходе на модель подписки. «Windows 12 Subscription» заменит лицензии с ежемесячной платой. В сети появились «скриншоты» панели управления с новой опцией оплаты.",
@@ -54,145 +54,157 @@ const gameData = [
         isFake: true,
         explanation: "<i class='fas fa-brain'></i><strong>Глубокий фейк</strong><br>• Tesla не производит смартфоны<br>• Технология не запатентована<br>• Нет презентации на канале Маска<br>• Домен teslamodelpi.com зарегистрирован мошенниками"
     },
-{
-    title: "С 2025 года вход на «Госуслуги» только по биометрии",
-    text: "Минцифры России объявило, что с января 2025 года вход на портал «Госуслуги» будет возможен исключительно через Единую биометрическую систему (ЕБС). Пароли и SMS-подтверждения отключат. Те, кто не сдал биометрию, потеряют доступ к сервису.",
-    isFake: true,
-    explanation: "<i class='fas fa-fingerprint'></i><strong>Фейк</strong><br>• Нет официального заявления о полном отказе от паролей и SMS<br>• Биометрия — лишь дополнительный, а не обязательный способ входа<br>• Доступ к базовым функциям останется без ЕБС<br>• Ведомство лишь рекомендует биометрию для усиления защиты"
-}
+    {
+        title: "С 2025 года вход на «Госуслуги» только по биометрии",
+        text: "Минцифры России объявило, что с января 2025 года вход на портал «Госуслуги» будет возможен исключительно через Единую биометрическую систему (ЕБС). Пароли и SMS-подтверждения отключат. Те, кто не сдал биометрию, потеряют доступ к сервису.",
+        isFake: true,
+        explanation: "<i class='fas fa-fingerprint'></i><strong>Фейк</strong><br>• Нет официального заявления о полном отказе от паролей и SMS<br>• Биометрия — лишь дополнительный, а не обязательный способ входа<br>• Доступ к базовым функциям останется без ЕБС<br>• Ведомство лишь рекомендует биометрию для усиления защиты"
+    }
 ];
+
+// Переменные игры
+let currentQuestionIndex = 0;
+let score = 0;
+let questionsAnswered = 0;
+let gameActive = true;
+
+// DOM элементы
+const contentTitle = document.getElementById('content-title');
+const contentText = document.getElementById('content-text');
+const fakeBtn = document.getElementById('fake-btn');
+const trueBtn = document.getElementById('true-btn');
+const scoreElement = document.getElementById('score');
+const levelElement = document.getElementById('level');
+const messagePopup = document.getElementById('messagePopup');
+const gameEnd = document.getElementById('gameEnd');
+const finalScore = document.getElementById('finalScore');
+const restartBtn = document.getElementById('restartBtn');
+const gameCard = document.getElementById('gameCard');
+
 // Инициализация игры
-// Инициализация игры
-document.addEventListener('DOMContentLoaded', () => {
-    // Элементы DOM
-    const contentTitle = document.getElementById('content-title');
-    const contentText = document.getElementById('content-text');
-    const fakeBtn = document.getElementById('fake-btn');
-    const trueBtn = document.getElementById('true-btn');
-    const scoreElement = document.getElementById('score');
-    const levelElement = document.getElementById('level');
-    const messagePopup = document.getElementById('messagePopup');
-    const gameEnd = document.getElementById('gameEnd');
-    const finalScore = document.getElementById('finalScore');
-    const restartBtn = document.getElementById('restartBtn');
-    const gameCard = document.getElementById('gameCard');
+function initGame() {
+    // Перемешиваем вопросы
+    shuffleArray(gameData);
+    
+    // Сбрасываем переменные
+    currentQuestionIndex = 0;
+    score = 0;
+    questionsAnswered = 0;
+    gameActive = true;
+    
+    // Обновляем интерфейс
+    scoreElement.textContent = score;
+    levelElement.textContent = `1/${gameData.length}`;
+    gameEnd.classList.remove('show');
+    gameCard.style.opacity = '1';
+    
+    // Показываем первый вопрос
+    showQuestion();
+}
 
-    let currentLevel = 0;
-    let score = 0;
-    let gameActive = true;
-
-    // Функция для добавления обработчиков
-    function initEventListeners() {
-        // Простые клики для десктопа
-        fakeBtn.addEventListener('click', () => checkAnswer(true));
-        trueBtn.addEventListener('click', () => checkAnswer(false));
-        restartBtn.addEventListener('click', restartGame);
-
-        // Для мобильных - только touchend без preventDefault
-        if ('ontouchstart' in window) {
-            fakeBtn.addEventListener('touchend', (e) => {
-                if (!gameActive) return;
-                checkAnswer(true);
-            });
-            
-            trueBtn.addEventListener('touchend', (e) => {
-                if (!gameActive) return;
-                checkAnswer(false);
-            });
-            
-            restartBtn.addEventListener('touchend', restartGame);
-        }
+// Перемешивание массива (алгоритм Фишера-Йетса)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
+    return array;
+}
 
-    // Функции игры...
-    function loadLevel(levelIndex) {
-        if (!gameActive) return;
-        
-        const level = gameData[levelIndex];
-        gameCard.style.opacity = 0;
-        
-        fakeBtn.disabled = false;
-        trueBtn.disabled = false;
-        
-        setTimeout(() => {
-            contentTitle.textContent = level.title;
-            contentText.textContent = level.text;
-            levelElement.textContent = `${levelIndex + 1}/${gameData.length}`;
-            gameCard.style.opacity = 1;
-        }, 500);
+// Показать текущий вопрос
+function showQuestion() {
+    if (currentQuestionIndex >= gameData.length) {
+        endGame();
+        return;
     }
+    
+    const question = gameData[currentQuestionIndex];
+    contentTitle.textContent = question.title;
+    contentText.textContent = question.text;
+    levelElement.textContent = `${currentQuestionIndex + 1}/${gameData.length}`;
+    
+    // Включаем кнопки
+    fakeBtn.disabled = false;
+    trueBtn.disabled = false;
+}
 
-    function showMessage(html, isCorrect) {
-        messagePopup.innerHTML = html;
-        messagePopup.className = `message-popup ${isCorrect ? 'correct' : 'incorrect'}`;
-        messagePopup.classList.add('show');
-        
-        setTimeout(() => {
-            messagePopup.classList.remove('show');
-        }, 4000);
-    }
-
-    function checkAnswer(isFake) {
-        if (!gameActive) return;
-        
-        gameActive = false;
-        fakeBtn.disabled = true;
-        trueBtn.disabled = true;
-        
-        const correct = gameData[currentLevel].isFake === isFake;
-        
-        if (correct) {
-            score++;
-            scoreElement.textContent = score;
-            showMessage(gameData[currentLevel].explanation, true);
-        } else {
-            showMessage(
-                `<i class='fas fa-exclamation-triangle message-icon'></i>
-                <strong>Неверно!</strong><br>
-                ${gameData[currentLevel].explanation.split('<br>').slice(1).join('<br>') || 
-                'Это был ' + (gameData[currentLevel].isFake ? 'фейк' : 'правдивый материал')}`,
-                false
-            );
-        }
-        
-        currentLevel++;
-        if (currentLevel < gameData.length) {
-            setTimeout(() => {
-                gameActive = true;
-                loadLevel(currentLevel);
-            }, 4000);
-        } else {
-            setTimeout(endGame, 4000);
-        }
-    }
-
-    function endGame() {
-        finalScore.innerHTML = `Вы обнаружили ${score} из ${gameData.length} фейков`;
-        
-        if (score === gameData.length) {
-            finalScore.innerHTML += "<br><span style='color:#00ff88'>ИДЕАЛЬНЫЙ РЕЗУЛЬТАТ!</span>";
-        } else if (score >= gameData.length * 0.7) {
-            finalScore.innerHTML += "<br><span style='color:#00f2ff'>ОТЛИЧНО!</span>";
-        } else if (score >= gameData.length * 0.4) {
-            finalScore.innerHTML += "<br><span style='color:#ffcc00'>НЕПЛОХО!</span>";
-        } else {
-            finalScore.innerHTML += "<br><span style='color:#ff2d55'>ПОПРОБУЙТЕ ЕЩЁ!</span>";
-        }
-        
-        gameEnd.classList.add('show');
-    }
-
-    function restartGame() {
-        currentLevel = 0;
-        score = 0;
+// Проверка ответа
+function checkAnswer(userAnswer) {
+    if (!gameActive) return;
+    
+    const question = gameData[currentQuestionIndex];
+    const isCorrect = (userAnswer === 'fake' && question.isFake) || 
+                      (userAnswer === 'true' && !question.isFake);
+    
+    // Отключаем кнопки во время показа результата
+    fakeBtn.disabled = true;
+    trueBtn.disabled = true;
+    
+    if (isCorrect) {
+        score++;
         scoreElement.textContent = score;
-        gameActive = true;
-        gameEnd.classList.remove('show');
-        loadLevel(currentLevel);
+        showMessage(question.explanation, 'correct');
+    } else {
+        showMessage(question.explanation, 'incorrect');
     }
+    
+    questionsAnswered++;
+    currentQuestionIndex++;
+    
+    // Переходим к следующему вопросу через 3 секунды или по клику
+    setTimeout(() => {
+        if (currentQuestionIndex < gameData.length) {
+            showQuestion();
+        } else {
+            endGame();
+        }
+    }, 3000);
+}
 
-    // Инициализация игры
-    initEventListeners();
-    loadLevel(currentLevel);
-});
+// Показать сообщение с результатом
+function showMessage(message, type) {
+    messagePopup.innerHTML = message;
+    messagePopup.className = `message-popup ${type}`;
+    messagePopup.classList.add('show');
+    
+    // Скрываем сообщение через 2.5 секунды
+    setTimeout(() => {
+        messagePopup.classList.remove('show');
+    }, 2500);
+}
 
+// Завершение игры
+function endGame() {
+    gameActive = false;
+    finalScore.textContent = `Вы обнаружили ${score} из ${gameData.length} фейков`;
+    
+    // Показываем экран завершения с задержкой
+    setTimeout(() => {
+        gameCard.style.opacity = '0.3';
+        gameEnd.classList.add('show');
+    }, 1000);
+}
+
+// Обработчики событий
+fakeBtn.addEventListener('click', () => checkAnswer('fake'));
+trueBtn.addEventListener('click', () => checkAnswer('true'));
+restartBtn.addEventListener('click', initGame);
+
+// Запуск игры при загрузке страницы
+document.addEventListener('DOMContentLoaded', initGame);
+
+// Адаптация для мобильных устройств
+function handleMobileView() {
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // Дополнительные настройки для мобильных устройств
+        document.body.style.overflowX = 'hidden';
+    }
+}
+
+// Обработчик изменения размера окна
+window.addEventListener('resize', handleMobileView);
+
+// Инициализация мобильного вида
+handleMobileView();
