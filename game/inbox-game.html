@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инбокс: Сортировка Вежливости | Кибербезопасность</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/inbox-game.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="header-nav">
+        <a href="../index.html" class="nav-button">
+            <i class="fas fa-home"></i>Главная
+        </a>
+        <a href="../games.html" class="nav-button">
+            <i class="fas fa-gamepad"></i>Игры
+        </a>
+    </nav>
+
+    <div class="game-container inbox-game-container">
+        <!-- Шапка игры -->
+        <header class="game-header">
+            <a href="../games.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>К играм
+            </a>
+            <h1 class="neon-text">Инбокс: Сортировка Вежливости</h1>
+            <div class="game-stats">
+                <div class="stat">
+                    <i class="fas fa-star"></i>
+                    <span id="score">0</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-heart"></i>
+                    <span id="lives">3</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-clock"></i>
+                    <span id="timer">60</span>с
+                </div>
+            </div>
+        </header>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-bar">
+            <div class="progress" id="game-progress"></div>
+        </div>
+
+        <!-- Область игры -->
+        <div class="game-area">
+            <div class="inbox-container" id="inbox">
+                <div class="game-instruction">
+                    <h3><i class="fas fa-inbox"></i> Сортируйте входящие сообщения</h3>
+                    <p>Перетащите сообщение в нужную категорию или нажмите на категорию</p>
+                </div>
+                <!-- Сообщения будут добавляться сюда -->
+            </div>
+
+            <!-- Категории сортировки -->
+            <div class="categories-grid">
+                <div class="category-card" data-category="answer-now">
+                    <div class="category-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Ответить срочно</h3>
+                    <p>Важные рабочие сообщения</p>
+                </div>
+                
+                <div class="category-card" data-category="answer-later">
+                    <div class="category-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Ответить позже</h3>
+                    <p>Несрочные вопросы</p>
+                </div>
+                
+                <div class="category-card" data-category="forward">
+                    <div class="category-icon">
+                        <i class="fas fa-share"></i>
+                    </div>
+                    <h3>Переслать</h3>
+                    <p>Сообщения коллегам</p>
+                </div>
+                
+                <div class="category-card" data-category="trash">
+                    <div class="category-icon">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <h3>В корзину</h3>
+                    <p>Спам и грубости</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Управление игрой -->
+        <div class="game-controls">
+            <button id="start-button" class="cyber-button">
+                <div class="button-content">
+                    <i class="fas fa-play"></i>Начать игру
+                </div>
+                <div class="button-glitch"></div>
+            </button>
+            
+            <button id="hint-button" class="cyber-button" disabled>
+                <div class="button-content">
+                    <i class="fas fa-lightbulb"></i>Подсказка
+                </div>
+                <div class="button-glitch"></div>
+            </button>
+        </div>
+
+        <!-- Статистика уровня -->
+        <div class="level-info">
+            <div class="level">Уровень: <span id="level">1</span></div>
+            <div class="messages-processed">Обработано: <span id="processed">0</span>/<span id="total">10</span></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно результатов -->
+    <div id="results-modal" class="game-modal">
+        <div class="modal-content">
+            <h2 id="result-title">Результаты игры</h2>
+            <div class="result-stats">
+                <div class="stat-result">
+                    <i class="fas fa-star"></i>
+                    <span>Очки: </span>
+                    <strong id="final-score">0</strong>
+                </div>
+                <div class="stat-result">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Правильно: </span>
+                    <strong id="correct-answers">0</strong>
+                </div>
+                <div class="stat-result">
+                    <i class="fas fa-times-circle"></i>
+                    <span>Ошибки: </span>
+                    <strong id="wrong-answers">0</strong>
+                </div>
+            </div>
+            <div class="result-feedback" id="result-feedback"></div>
+            <div class="modal-actions">
+                <button id="play-again-button" class="cyber-button">
+                    <div class="button-content">
+                        <i class="fas fa-redo"></i>Играть снова
+                    </div>
+                </button>
+                <button id="menu-button" class="cyber-button">
+                    <div class="button-content">
+                        <i class="fas fa-home"></i>В меню
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/inbox-game.js"></script>
+</body>
+</html>
