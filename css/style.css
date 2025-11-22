@@ -2225,3 +2225,33 @@ button:active, .cyber-button:active, .scenario-button:active {
         -webkit-tap-highlight-color: rgba(0, 242, 255, 0.2);
     }
 }
+.desktop-only-game {
+    display: block; /* Видна на десктопе по умолчанию */
+}
+
+/* Стили для мобильной игры (Инбокс: Сортировка) */
+.mobile-only-game {
+    display: none; /* Скрыта на десктопе по умолчанию */
+}
+
+/* Мобильные устройства */
+@media (max-width: 768px) {
+    .desktop-only-game {
+        display: none !important; /* Скрываем Фейковый детектив на телефонах */
+    }
+    
+    .mobile-only-game {
+        display: block; /* Показываем Инбокс на телефонах */
+    }
+}
+
+/* Планшеты (можно настроить по желанию) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .desktop-only-game {
+        display: block; /* Оставляем видимой на планшетах */
+    }
+    
+    .mobile-only-game {
+        display: none; /* Скрываем мобильную игру на планшетах */
+    }
+}
