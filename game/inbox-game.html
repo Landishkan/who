@@ -3,158 +3,1004 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инбокс: Сортировка Вежливости | Кибербезопасность</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="css/inbox-game.css">
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Инбокс: Сортировка писем</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0f4cff;
+            --primary-light: #3a6bff;
+            --primary-dark: #0028a8;
+            --secondary-color: #8FB8ED;
+            --accent-color: #5B9CF0;
+            --accent-color-green: #16a541;
+            --error-color: #ff2d75;
+            
+            --text-color: #ffffff;
+            --text-secondary: #c3d1ff;
+            
+            --background-dark: #0a0a20;
+            --background-light: #121235;
+            --background-card: #1a1a3a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            background: var(--background-dark);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .inbox-game-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 15px;
+            animation: fadeInUp 0.8s ease-out;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка игры */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 8px 15px;
+            background: rgba(143, 184, 237, 0.1);
+            border: 1px solid var(--secondary-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(143, 184, 237, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .back-button i {
+            margin-right: 6px;
+        }
+
+        .game-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin: 0;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        /* Игровая статистика */
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(18, 18, 53, 0.7);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(143, 184, 237, 0.2);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        .lives-container {
+            display: flex;
+            gap: 5px;
+        }
+
+        .life {
+            width: 24px;
+            height: 24px;
+            background-color: var(--error-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .life.active {
+            background-color: var(--accent-color-green);
+        }
+
+        .life i {
+            font-size: 0.8rem;
+        }
+
+        /* Контейнер письма */
+        .email-container {
+            background: var(--background-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(143, 184, 237, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(143, 184, 237, 0.2);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .email-sender {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .email-subject {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .email-body {
+            flex-grow: 1;
+            padding: 15px;
+            background: rgba(10, 10, 32, 0.5);
+            border-radius: 8px;
+            line-height: 1.6;
+            overflow-y: auto;
+            max-height: 300px;
+            margin-bottom: 15px;
+        }
+
+        /* Кнопки категорий */
+        .category-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .category-btn {
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 56px;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .category-btn:active {
+            transform: translateY(1px);
+        }
+
+        .category-btn.regular {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        }
+
+        .category-btn.phishing {
+            background: linear-gradient(135deg, #d32f2f, #ff2d75);
+        }
+
+        .category-btn.urgent {
+            background: linear-gradient(135deg, var(--accent-color-green), #2ecc71);
+        }
+
+        .category-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Таймер */
+        .timer {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            text-align: center;
+            padding: 10px;
+            background: rgba(10, 10, 32, 0.7);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(91, 156, 240, 0.3);
+        }
+
+        /* Результаты игры */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 32, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            animation: fadeInUp 0.5s ease-out;
+            padding: 20px;
+        }
+
+        .result-card {
+            background: var(--background-light);
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border-top: 5px solid var(--accent-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin: 20px 0;
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 140px;
+        }
+
+        .result-btn.restart {
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-light));
+            color: white;
+        }
+
+        .result-btn.menu {
+            background: rgba(143, 184, 237, 0.1);
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+
+        /* Адаптация для мобильных */
+        @media (max-width: 768px) {
+            .inbox-game-container {
+                padding: 10px;
+            }
+            
+            .game-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stat-value {
+                font-size: 1.3rem;
+            }
+            
+            .email-body {
+                max-height: 250px;
+                font-size: 0.95rem;
+                padding: 10px;
+            }
+            
+            .category-btn {
+                padding: 14px;
+                font-size: 1rem;
+                min-height: 50px;
+            }
+            
+            .timer {
+                font-size: 1.5rem;
+            }
+            
+            .result-card {
+                padding: 20px;
+            }
+            
+            .result-score {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-stats {
+                justify-content: center;
+            }
+            
+            .stat-item {
+                min-width: 60px;
+            }
+            
+            .email-subject {
+                font-size: 1.1rem;
+            }
+            
+            .result-title {
+                font-size: 1.5rem;
+            }
+            
+            .result-actions {
+                flex-direction: column;
+            }
+            
+            .result-btn {
+                width: 100%;
+            }
+        }
+
+        /* Анимации */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .correct {
+            background-color: rgba(22, 165, 65, 0.2) !important;
+            border: 2px solid var(--accent-color-green) !important;
+        }
+
+        .incorrect {
+            background-color: rgba(255, 45, 117, 0.2) !important;
+            border: 2px solid var(--error-color) !important;
+        }
+    </style>
 </head>
 <body>
-    <!-- Навигация -->
-    <nav class="header-nav">
-        <a href="../index.html" class="nav-button">
-            <i class="fas fa-home"></i>Главная
-        </a>
-        <a href="../games.html" class="nav-button">
-            <i class="fas fa-gamepad"></i>Игры
-        </a>
-    </nav>
-
-    <div class="game-container inbox-game-container">
-        <!-- Шапка игры -->
-        <header class="game-header">
+    <div class="inbox-game-container">
+        <div class="game-header">
             <a href="../games.html" class="back-button">
-                <i class="fas fa-arrow-left"></i>К играм
+                <i class="fas fa-arrow-left"></i> Назад
             </a>
-            <h1 class="neon-text">Инбокс: Сортировка Вежливости</h1>
-            <div class="game-stats">
-                <div class="stat">
-                    <i class="fas fa-star"></i>
-                    <span id="score">0</span>
-                </div>
-                <div class="stat">
-                    <i class="fas fa-heart"></i>
-                    <span id="lives">3</span>
-                </div>
-                <div class="stat">
-                    <i class="fas fa-clock"></i>
-                    <span id="timer">60</span>с
-                </div>
-            </div>
-        </header>
-
-        <!-- Прогресс-бар -->
-        <div class="progress-bar">
-            <div class="progress" id="game-progress"></div>
+            <h1>Инбокс: Сортировка писем</h1>
         </div>
-
-        <!-- Область игры -->
-        <div class="game-area">
-            <div class="inbox-container" id="inbox">
-                <div class="game-instruction">
-                    <h3><i class="fas fa-inbox"></i> Сортируйте входящие сообщения</h3>
-                    <p>Перетащите сообщение в нужную категорию или нажмите на категорию</p>
-                </div>
-                <!-- Сообщения будут добавляться сюда -->
+        
+        <div class="timer" id="timer">01:00</div>
+        
+        <div class="game-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">Очки</div>
             </div>
-
-            <!-- Категории сортировки -->
-            <div class="categories-grid">
-                <div class="category-card" data-category="answer-now">
-                    <div class="category-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Ответить срочно</h3>
-                    <p>Важные рабочие сообщения</p>
-                </div>
-                
-                <div class="category-card" data-category="answer-later">
-                    <div class="category-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h3>Ответить позже</h3>
-                    <p>Несрочные вопросы</p>
-                </div>
-                
-                <div class="category-card" data-category="forward">
-                    <div class="category-icon">
-                        <i class="fas fa-share"></i>
-                    </div>
-                    <h3>Переслать</h3>
-                    <p>Сообщения коллегам</p>
-                </div>
-                
-                <div class="category-card" data-category="trash">
-                    <div class="category-icon">
-                        <i class="fas fa-trash"></i>
-                    </div>
-                    <h3>В корзину</h3>
-                    <p>Спам и грубости</p>
+            <div class="stat-item">
+                <div class="stat-value" id="progress">0/10</div>
+                <div class="stat-label">Письма</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Жизни</div>
+                <div class="lives-container" id="lives">
+                    <div class="life active"><i class="fas fa-heart"></i></div>
+                    <div class="life active"><i class="fas fa-heart"></i></div>
+                    <div class="life active"><i class="fas fa-heart"></i></div>
                 </div>
             </div>
         </div>
-
-        <!-- Управление игрой -->
-        <div class="game-controls">
-            <button id="start-button" class="cyber-button">
-                <div class="button-content">
-                    <i class="fas fa-play"></i>Начать игру
-                </div>
-                <div class="button-glitch"></div>
-            </button>
+        
+        <div class="email-container">
+            <div class="email-header">
+                <div class="email-sender" id="email-sender">От: </div>
+                <div id="email-time">Сегодня, 10:30</div>
+            </div>
+            <div class="email-subject" id="email-subject">Заголовок письма</div>
+            <div class="email-body" id="email-body">
+                Содержимое письма будет отображено здесь. Вам нужно решить, к какой категории относится это письмо: обычное, фишинговое или требует срочного ответа.
+            </div>
             
-            <button id="hint-button" class="cyber-button" disabled>
-                <div class="button-content">
-                    <i class="fas fa-lightbulb"></i>Подсказка
-                </div>
-                <div class="button-glitch"></div>
-            </button>
-        </div>
-
-        <!-- Статистика уровня -->
-        <div class="level-info">
-            <div class="level">Уровень: <span id="level">1</span></div>
-            <div class="messages-processed">Обработано: <span id="processed">0</span>/<span id="total">10</span></div>
-        </div>
-    </div>
-
-    <!-- Модальное окно результатов -->
-    <div id="results-modal" class="game-modal">
-        <div class="modal-content">
-            <h2 id="result-title">Результаты игры</h2>
-            <div class="result-stats">
-                <div class="stat-result">
-                    <i class="fas fa-star"></i>
-                    <span>Очки: </span>
-                    <strong id="final-score">0</strong>
-                </div>
-                <div class="stat-result">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Правильно: </span>
-                    <strong id="correct-answers">0</strong>
-                </div>
-                <div class="stat-result">
-                    <i class="fas fa-times-circle"></i>
-                    <span>Ошибки: </span>
-                    <strong id="wrong-answers">0</strong>
-                </div>
-            </div>
-            <div class="result-feedback" id="result-feedback"></div>
-            <div class="modal-actions">
-                <button id="play-again-button" class="cyber-button">
-                    <div class="button-content">
-                        <i class="fas fa-redo"></i>Играть снова
-                    </div>
+            <div class="category-buttons">
+                <button class="category-btn regular" data-category="regular">
+                    <i class="fas fa-envelope"></i> Обычное письмо
                 </button>
-                <button id="menu-button" class="cyber-button">
-                    <div class="button-content">
-                        <i class="fas fa-home"></i>В меню
-                    </div>
+                <button class="category-btn phishing" data-category="phishing">
+                    <i class="fas fa-fish"></i> Фишинговое
+                </button>
+                <button class="category-btn urgent" data-category="urgent">
+                    <i class="fas fa-exclamation-circle"></i> Ответить срочно
                 </button>
             </div>
         </div>
     </div>
+    
+    <div class="result-overlay" id="result-overlay" style="display: none;">
+        <div class="result-card">
+            <h2 class="result-title">Игра завершена!</h2>
+            <div class="result-score" id="final-score">0</div>
+            <div class="result-message" id="result-message">
+                Результат будет показан здесь
+            </div>
+            <div class="result-actions">
+                <button class="result-btn restart" id="restart-btn">
+                    <i class="fas fa-redo"></i> Играть снова
+                </button>
+                <a href="../games.html" class="result-btn menu">
+    <i class="fas fa-home"></i> В меню
+</a>
+            </div>
+        </div>
+    </div>
 
-    <script src="js/inbox-game.js"></script>
+    <script>
+        // База данных писем
+        const emails = [
+            {
+                id: 1,
+                sender: "Служба поддержки BankSecure",
+                subject: "Подтвердите вход в ваш аккаунт",
+                body: "Уважаемый клиент, мы зафиксировали попытку входа в ваш аккаунт с нового устройства. Если это были вы, пожалуйста, подтвердите вход по ссылке ниже. В противном случае, немедленно измените пароль.",
+                category: "phishing",
+                clues: ["Требует перейти по ссылке", "Создает ощущение срочности", "Общий приветствие 'Уважаемый клиент'"]
+            },
+            {
+                id: 2,
+                sender: "Александр Петров (Отдел разработки)",
+                subject: "Срочно: ошибка в производственной среде",
+                body: "Коллеги, в production-среде обнаружена критическая ошибка, влияющая на обработку платежей. Нужно срочно собраться на экстренный созвон в 15:00 для решения проблемы.",
+                category: "urgent",
+                clues: ["Рабочая тема", "Конкретное время встречи", "Ясное описание проблемы"]
+            },
+            {
+                id: 3,
+                sender: "Amazon",
+                subject: "Ваш заказ №478291 отправлен",
+                body: "Ваш заказ был отправлен. Ожидаемая дата доставки: 15 октября. Вы можете отслеживать ваш заказ в личном кабинете.",
+                category: "regular",
+                clues: ["Конкретный номер заказа", "Нет требования немедленных действий", "Обычная деловая переписка"]
+            },
+            {
+                id: 4,
+                sender: "Маргарита Сидорова",
+                subject: "Приглашение на день рождения",
+                body: "Привет! Приглашаю тебя на мой день рождения в эту субботу в 18:00 в кафе 'У моря'. Буду рада тебя видеть!",
+                category: "regular",
+                clues: ["Личное обращение", "Неформальный тон", "Социальное событие"]
+            },
+            {
+                id: 5,
+                sender: "Security Department Microsoft",
+                subject: "ТРЕБУЕТСЯ НЕМЕДЛЕННОЕ ВНИМАНИЕ: ваш аккаунт будет заблокирован",
+                body: "Ваш аккаунт Microsoft будет заблокирован в течение 24 часов из-за подозрительной активности. Для разблокировки перейдите по ссылке и подтвердите ваши данные.",
+                category: "phishing",
+                clues: ["Угроза блокировки", "Требует немедленных действий", "Подозрительный отправитель"]
+            },
+            {
+                id: 6,
+                sender: "Иван Сергеев (Клиент)",
+                subject: "СРОЧНО: проблема с запуском системы",
+                body: "Добрый день, наша система перестала работать после обновления. Клиенты не могут совершать платежи. Прошу срочно связаться для решения проблемы.",
+                category: "urgent",
+                clues: ["Конкретная проблема", "Влияние на бизнес", "Требует быстрого ответа"]
+            },
+            {
+                id: 7,
+                sender: "Google",
+                subject: "Обновление условий обслуживания",
+                body: "Уважаемый пользователь, мы обновили наши Условия обслуживания. Пожалуйста, ознакомьтесь с изменениями. Продолжение использования наших сервисов означает принятие новых условий.",
+                category: "regular",
+                clues: ["Информационное письмо", "Нет требований к действиям", "Официальный тон"]
+            },
+            {
+                id: 8,
+                sender: "Федеральная налоговая служба",
+                subject: "СРОЧНО: У вас есть неоплаченный налог",
+                body: "У вас имеется задолженность по налогам. Для избежания штрафов и блокировки счетов, перейдите по ссылке и оплатите в течение 24 часов.",
+                category: "phishing",
+                clues: ["Создает панику", "Требует оплаты по ссылке", "Поддельный отправитель"]
+            },
+            {
+                id: 9,
+                sender: "Анна Ковалева (Руководитель проекта)",
+                subject: "Завтрашняя презентация для инвестора",
+                body: "Коллеги, напоминаю, что завтра в 11:00 у нас важная презентация для инвестора. Пожалуйста, будьте готовы представить свои части проекта. Убедитесь, что все материалы готовы.",
+                category: "urgent",
+                clues: ["Рабочее напоминание", "Конкретное время", "Важное событие"]
+            },
+            {
+                id: 10,
+                sender: "Олег Васильев",
+                subject: "Встреча по проекту 'Орион'",
+                body: "Привет, предлагаю перенести нашу встречу по проекту 'Орион' с четверга на пятницу в 14:00, если тебе удобно. Давай согласуем время.",
+                category: "regular",
+                clues: ["Деловое предложение", "Вежливый тон", "Нет срочности"]
+            },
+            {
+                id: 11,
+                sender: "Netflix",
+                subject: "Подтвердите платежную информацию",
+                body: "Не удалось обработать ваш последний платеж. Чтобы не прерывать обслуживание, обновите данные вашей карты по ссылке ниже.",
+                category: "phishing",
+                clues: ["Требует обновления платежных данных", "Ссылка для действий", "Создает ощущение срочности"]
+            },
+            {
+                id: 12,
+                sender: "Дмитрий Семенов (Техническая поддержка)",
+                subject: "Критический инцидент: падение сервера БД",
+                body: "Сервер базы данных упал. Восстановление займет 2-3 часа. Все системы временно недоступны. Работаем над решением.",
+                category: "urgent",
+                clues: ["Технический инцидент", "Влияние на работу", "Требует внимания команды"]
+            },
+            {
+                id: 13,
+                sender: "LinkedIn",
+                subject: "У вас есть новые предложения о работе",
+                body: "За последнюю неделю 5 компаний просмотрели ваш профиль. Войдите в свой аккаунт, чтобы увидеть детали.",
+                category: "regular",
+                clues: ["Информационное уведомление", "Нет требований к действиям", "Деловой характер"]
+            },
+            {
+                id: 14,
+                sender: "PayPal Security",
+                subject: "Подозрительная активность в вашем аккаунте",
+                body: "Была обнаружена подозрительная активность в вашем аккаунте PayPal. Для защиты ваших средств перейдите по ссылке и подтвердите вашу личность.",
+                category: "phishing",
+                clues: ["Требует подтверждения личности по ссылке", "Использует тему безопасности", "Создает тревогу"]
+            },
+            {
+                id: 15,
+                sender: "Елена Морозова (Бухгалтерия)",
+                subject: "СРОЧНО: ошибка в зарплатной ведомости",
+                body: "Обнаружена ошибка в расчете зарплаты за текущий месяц. Нужно срочно проверить данные до 16:00 сегодня, иначе выплаты задержатся.",
+                category: "urgent",
+                clues: ["Финансовая тема", "Конкретный дедлайн", "Влияет на сотрудников"]
+            },
+            {
+                id: 16,
+                sender: "Авиакомпания 'Полёт'",
+                subject: "Информация о вашем рейсе №SU-1452",
+                body: "Ваш рейс задерживается на 2 часа из-за погодных условий. Новое время вылета: 20:45. Регистрация начнется за 2 часа до вылета.",
+                category: "regular",
+                clues: ["Конкретный номер рейса", "Информационное сообщение", "Официальный тон"]
+            },
+            {
+                id: 17,
+                sender: "Apple Support",
+                subject: "Ваш Apple ID был использован для входа на новом устройстве",
+                body: "Ваш Apple ID был использован для входа на устройстве iPhone в Москве. Если это были не вы, немедленно перейдите по ссылке для защиты аккаунта.",
+                category: "phishing",
+                clues: ["Упоминание конкретного местоположения", "Требует немедленных действий", "Ссылка для 'защиты'"]
+            },
+            {
+                id: 18,
+                sender: "Виктор Николаев (Юридический отдел)",
+                subject: "СРОЧНО: просрочка подписания договора",
+                body: "Договор с компанией 'ТехноПро' должен быть подписан сегодня до 18:00. Иначе сделка сорвется. Нужна ваша подпись в течение часа.",
+                category: "urgent",
+                clues: ["Юридическая тема", "Конкретный дедлайн", "Риск потери сделки"]
+            },
+            {
+                id: 19,
+                sender: "Сергей Иванов",
+                subject: "Идеи для нового проекта",
+                body: "Привет! У меня появились несколько идей для нашего нового проекта. Можешь посмотреть вложения и дать обратную связь, когда будет время?",
+                category: "regular",
+                clues: ["Коллега по работе", "Неформальный тон", "Нет срочности"]
+            },
+            {
+                id: 20,
+                sender: "DHL Express",
+                subject: "Ваша посылка не может быть доставлена",
+                body: "Ваша посылка не может быть доставлена из-за неправильного адреса. Перейдите по ссылке, чтобы обновить адрес доставки и оплатить дополнительный сбор за повторную доставку.",
+                category: "phishing",
+                clues: ["Требует оплаты", "Ссылка для действий", "Проблема с доставкой"]
+            },
+            {
+                id: 21,
+                sender: "Мария Кузнецова (HR-отдел)",
+                subject: "СРОЧНО: кандидат на собеседовании",
+                body: "Кандидат на позицию senior-разработчика пришел на собеседование. Нужно провести техническое интервью в течение часа, иначе он уйдет к конкурентам.",
+                category: "urgent",
+                clues: ["Кадровая тема", "Срочность из-за кандидата", "Конкретный временной промежуток"]
+            },
+            {
+                id: 22,
+                sender: "Яндекс.Такси",
+                subject: "Ваша поездка 15 октября",
+                body: "Спасибо, что пользуетесь Яндекс.Такси! Ваша поездка 15 октября обошлась в 450 рублей. Подробности в приложении.",
+                category: "regular",
+                clues: ["Информация о транзакции", "Нет требований", "Стандартное уведомление"]
+            },
+            {
+                id: 23,
+                sender: "Администрация Facebook",
+                subject: "Ваша страница будет удалена",
+                body: "Ваша страница Facebook нарушает наши правила сообщества. Она будет удалена в течение 48 часов. Чтобы обжаловать это решение, перейдите по ссылке.",
+                category: "phishing",
+                clues: ["Угроза удаления", "Требует действий по ссылке", "Подозрительный отправитель"]
+            },
+            {
+                id: 24,
+                sender: "Андрей Смирнов (Директор по продукту)",
+                subject: "СРОЧНО: отзыв клиента о критическом баге",
+                body: "Ключевой клиент обнаружил критический баг в новой версии продукта. Нужно срочно собрать команду разработки и подготовить патч до завтрашнего утра.",
+                category: "urgent",
+                clues: ["Проблема с продуктом", "Влияет на клиента", "Конкретный дедлайн"]
+            },
+            {
+                id: 25,
+                sender: "Ольга Петрова",
+                subject: "Вопрос по отчету за сентябрь",
+                body: "Добрый день, у меня возник вопрос по отчету за сентябрь. Можем обсудить завтра после планерки?",
+                category: "regular",
+                clues: ["Деловой вопрос", "Предложение обсудить", "Нет срочности"]
+            },
+            {
+                id: 26,
+                sender: "eBay",
+                subject: "Кто-то пытался войти в ваш аккаунт",
+                body: "Зафиксирована попытка входа в ваш аккаунт eBay с IP-адреса в Китае. Если это были не вы, перейдите по ссылке для сброса пароля.",
+                category: "phishing",
+                clues: ["Упоминание конкретной страны", "Требует действий по ссылке", "Создает тревогу"]
+            },
+            {
+                id: 27,
+                sender: "Константин Волков (Отдел безопасности)",
+                subject: "СРОЧНО: утечка данных",
+                body: "Обнаружена потенциальная утечка данных клиентов. Нужно немедленно собрать экстренное совещание для оценки рисков и принятия мер.",
+                category: "urgent",
+                clues: ["Проблема безопасности", "Требует немедленных действий", "Влияет на компанию"]
+            },
+            {
+                id: 28,
+                sender: "Spotify",
+                subject: "Ваш плейлист 'Любимые треки' обновлен",
+                body: "Ваш плейлист 'Любимые треки' был обновлен на основе вашего прослушивания. Загляните и откройте для себя новые треки!",
+                category: "regular",
+                clues: ["Персонализированное предложение", "Нет требований", "Развлекательный характер"]
+            },
+            {
+                id: 29,
+                sender: "Администрация WhatsApp",
+                subject: "Ваш аккаунт будет заблокирован",
+                body: "Ваш аккаунт WhatsApp будет заблокирован из-за нарушения условий использования. Чтобы разблокировать, перейдите по ссылке и подтвердите ваш номер телефона.",
+                category: "phishing",
+                clues: ["Угроза блокировки", "Требует подтверждения номера", "Подозрительный отправитель"]
+            },
+            {
+                id: 30,
+                sender: "Татьяна Белова (Финансовый директор)",
+                subject: "СРОЧНО: ошибка в квартальном отчете",
+                body: "В квартальном отчете обнаружена ошибка в расчете прибыли. Нужно исправить до отправки акционерам завтра к 10:00. Срочно собираемся в переговорной 3.",
+                category: "urgent",
+                clues: ["Финансовая ошибка", "Конкретный дедлайн", "Влияет на отчетность"]
+            }
+        ];
+
+        // Игровые переменные
+        let currentEmailIndex = 0;
+        let score = 0;
+        let lives = 3;
+        let answeredCount = 0;
+        let totalToAnswer = 10;
+        let gameActive = true;
+        let timer;
+        let timeLeft = 60; // 1 минута
+        let usedEmailIds = new Set();
+
+        // Элементы DOM
+        const timerElement = document.getElementById('timer');
+        const scoreElement = document.getElementById('score');
+        const progressElement = document.getElementById('progress');
+        const livesElement = document.getElementById('lives');
+        const senderElement = document.getElementById('email-sender');
+        const subjectElement = document.getElementById('email-subject');
+        const bodyElement = document.getElementById('email-body');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const resultOverlay = document.getElementById('result-overlay');
+        const finalScoreElement = document.getElementById('final-score');
+        const resultMessageElement = document.getElementById('result-message');
+        const restartButton = document.getElementById('restart-btn');
+        const menuButton = document.getElementById('menu-btn');
+
+        // Инициализация игры
+        function initGame() {
+            resetGame();
+            loadRandomEmail();
+            startTimer();
+            
+            // Назначение обработчиков кнопок
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!gameActive) return;
+                    
+                    const selectedCategory = this.getAttribute('data-category');
+                    checkAnswer(selectedCategory);
+                });
+            });
+            
+            // Обработчики кнопок результатов
+            restartButton.addEventListener('click', restartGame);
+            menuButton.addEventListener('click', goToMenu);
+        }
+
+        // Сброс игры
+        function resetGame() {
+            currentEmailIndex = 0;
+            score = 0;
+            lives = 3;
+            answeredCount = 0;
+            gameActive = true;
+            timeLeft = 60;
+            usedEmailIds.clear();
+            
+            // Обновление UI
+            updateScore();
+            updateProgress();
+            updateLives();
+            timerElement.textContent = formatTime(timeLeft);
+            
+            // Скрытие результата
+            resultOverlay.style.display = 'none';
+        }
+
+        // Загрузка случайного письма
+        function loadRandomEmail() {
+            // Выбираем случайное письмо, которое еще не использовалось
+            let availableEmails = emails.filter(email => !usedEmailIds.has(email.id));
+            
+            if (availableEmails.length === 0) {
+                // Если все письма использованы, очищаем использованные
+                usedEmailIds.clear();
+                availableEmails = emails;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * availableEmails.length);
+            const email = availableEmails[randomIndex];
+            
+            // Добавляем ID в использованные
+            usedEmailIds.add(email.id);
+            
+            // Обновляем UI с письмом
+            senderElement.textContent = `От: ${email.sender}`;
+            subjectElement.textContent = email.subject;
+            bodyElement.textContent = email.body;
+            
+            // Сохраняем категорию текущего письма
+            currentEmailCategory = email.category;
+        }
+
+        // Проверка ответа
+        function checkAnswer(selectedCategory) {
+            if (!gameActive) return;
+            
+            // Находим кнопку с выбранной категорией
+            const selectedButton = document.querySelector(`[data-category="${selectedCategory}"]`);
+            
+            // Проверяем правильность ответа
+            if (selectedCategory === currentEmailCategory) {
+                // Правильный ответ
+                score += 10;
+                selectedButton.classList.add('correct', 'pulse');
+                
+                // Увеличиваем счетчик правильных ответов
+                answeredCount++;
+            } else {
+                // Неправильный ответ
+                lives--;
+                selectedButton.classList.add('incorrect', 'shake');
+                
+                // Подсвечиваем правильную кнопку
+                const correctButton = document.querySelector(`[data-category="${currentEmailCategory}"]`);
+                correctButton.classList.add('correct', 'pulse');
+            }
+            
+            // Обновляем UI
+            updateScore();
+            updateProgress();
+            updateLives();
+            
+            // Убираем подсветку через 1 секунду
+            setTimeout(() => {
+                selectedButton.classList.remove('correct', 'incorrect', 'pulse', 'shake');
+                const correctButton = document.querySelector(`[data-category="${currentEmailCategory}"]`);
+                correctButton.classList.remove('correct', 'pulse');
+                
+                // Проверяем состояние игры
+                if (answeredCount >= totalToAnswer || lives <= 0) {
+                    endGame();
+                } else {
+                    // Загружаем следующее письмо
+                    loadRandomEmail();
+                }
+            }, 1000);
+        }
+
+        // Обновление счета
+        function updateScore() {
+            scoreElement.textContent = score;
+        }
+
+        // Обновление прогресса
+        function updateProgress() {
+            progressElement.textContent = `${answeredCount}/${totalToAnswer}`;
+        }
+
+        // Обновление жизней
+        function updateLives() {
+            const lifeElements = livesElement.querySelectorAll('.life');
+            lifeElements.forEach((life, index) => {
+                if (index < lives) {
+                    life.classList.add('active');
+                } else {
+                    life.classList.remove('active');
+                }
+            });
+        }
+
+        // Таймер
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = formatTime(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+                
+                // Меняем цвет таймера при малом времени
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--error-color)';
+                    timerElement.classList.add('pulse');
+                } else {
+                    timerElement.style.color = 'var(--accent-color)';
+                    timerElement.classList.remove('pulse');
+                }
+            }, 1000);
+        }
+
+        // Форматирование времени
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Завершение игры
+        function endGame() {
+            gameActive = false;
+            clearInterval(timer);
+            
+            // Определяем результат
+            let resultTitle, resultMessage;
+            
+            if (answeredCount < 4) {
+                resultTitle = "Нужно потренироваться!";
+                resultMessage = "Вы правильно отсортировали менее 4 писем. Фишинг становится все изощреннее - стоит изучить наши материалы по кибербезопасности.";
+            } else if (answeredCount >= 4 && answeredCount <= 7) {
+                resultTitle = "Хороший результат!";
+                resultMessage = "Вы разбираетесь в фишинге и деловой переписке. Продолжайте совершенствовать свои навыки кибербезопасности.";
+            } else {
+                resultTitle = "Отличный результат!";
+                resultMessage = "Вы - эксперт по кибербезопасности! Отличное умение отличать фишинговые письма от легитимных.";
+            }
+            
+            // Обновляем UI результата
+            finalScoreElement.textContent = score;
+            resultMessageElement.textContent = `${resultTitle}\n\n${resultMessage}\n\nВы правильно отсортировали ${answeredCount} из ${totalToAnswer} писем.`;
+            
+            // Показываем результат
+            setTimeout(() => {
+                resultOverlay.style.display = 'flex';
+            }, 1000);
+        }
+
+        // Перезапуск игры
+        function restartGame() {
+            resetGame();
+            loadRandomEmail();
+            startTimer();
+        }
+
+        // Возврат в меню
+        function goToMenu() {
+            // В реальном приложении здесь была бы навигация
+            alert("Возврат в главное меню (в реальном приложении здесь была бы навигация)");
+        }
+
+        // Запуск игры при загрузке страницы
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
 </body>
 </html>
