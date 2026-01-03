@@ -4,31 +4,801 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Фишинг</title>
-    <link rel="stylesheet" href="css/phishing.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script>
-    // Инициализация Firebase ДОЛЖНА быть здесь!
-    const firebaseConfig = {
-        apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
-        authDomain: "cyber-questor.firebaseapp.com",
-        projectId: "cyber-questor",
-        storageBucket: "cyber-questor.firebasestorage.app",
-        messagingSenderId: "347078202285",
-        appId: "1:347078202285:web:7ac8581765d5fdc76a4724",
-        measurementId: "G-GWS13K2FW1"
-    };
-    
-    // Инициализируем Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-</script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
+            authDomain: "cyber-questor.firebaseapp.com",
+            projectId: "cyber-questor",
+            storageBucket: "cyber-questor.firebasestorage.app",
+            messagingSenderId: "347078202285",
+            appId: "1:347078202285:web:7ac8581765d5fdc76a4724",
+            measurementId: "G-GWS13K2FW1"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+    <style>
+        :root {
+            --primary-color: #00b894;
+            --primary-light: #00d9a6;
+            --primary-dark: #009975;
+            --secondary-color: #81ecec;
+            --accent-color: #00cec9;
+            --accent-green: #00b894;
+            --error-color: #fd79a8;
+            --warning-color: #fdcb6e;
+            --danger-color: #e17055;
+            
+            --text-color: #ffffff;
+            --text-secondary: #d1f7f7;
+            
+            --background-dark: #0a0a20;
+            --background-light: #121235;
+            
+            --card-bg: rgba(18, 18, 53, 0.7);
+            --border-color: rgba(0, 184, 148, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            background: var(--background-dark);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 184, 148, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(129, 236, 236, 0.05) 0%, transparent 20%);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes hookAnimation {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-10px) rotate(-5deg); }
+        }
+        
+        @keyframes fishSwim {
+            0% { transform: translateX(-100px) rotateY(0); }
+            50% { transform: translateX(calc(100vw + 100px)) rotateY(0); }
+            51% { transform: translateX(calc(100vw + 100px)) rotateY(180deg); }
+            100% { transform: translateX(-100px) rotateY(180deg); }
+        }
+        
+        .lecture-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(58, 107, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 0 30px 0;
+            overflow: hidden;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.5s ease;
+        }
+        
+        .lecture-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 15px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            background: rgba(129, 236, 236, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            color: var(--accent-color);
+            background: rgba(129, 236, 236, 0.2);
+            transform: translateX(-3px);
+        }
+        
+        .lecture-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 206, 201, 0.3);
+            position: relative;
+        }
+        
+        .lecture-title::after {
+            content: '🎣';
+            position: absolute;
+            right: -50px;
+            top: 0;
+            font-size: 2rem;
+            animation: hookAnimation 2s infinite ease-in-out;
+        }
+        
+        .lecture-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty {
+            padding: 5px 15px;
+            background: rgba(0, 184, 148, 0.2);
+            border: 1px solid var(--primary-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .duration {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            padding: 5px 15px;
+            background: rgba(0, 206, 201, 0.1);
+            border-radius: 20px;
+        }
+        
+        .lecture-section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(10, 10, 32, 0.5);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+        
+        .lecture-section:hover {
+            transform: translateY(-2px);
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .title-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 0 10px rgba(0, 184, 148, 0.5);
+        }
+        
+        .section-content {
+            font-size: 1.1rem;
+        }
+        
+        .types-grid, .warning-signs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .type-card, .sign-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .type-card:hover, .sign-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+            box-shadow: 0 10px 20px rgba(0, 184, 148, 0.2);
+        }
+        
+        .type-card::before, .sign-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .type-card:hover::before, .sign-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .type-icon, .sign-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .type-card h4, .sign-card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .phishing-example {
+            background: rgba(0, 184, 148, 0.1);
+            border-left-color: var(--primary-color);
+        }
+        
+        .phishing-example .example-header {
+            color: var(--primary-color);
+        }
+        
+        .example-block {
+            background: rgba(18, 18, 53, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .example-block::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05));
+            border-radius: 0 0 0 50px;
+        }
+        
+        .example-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .protection-tips {
+            background: rgba(129, 236, 236, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border: 1px solid rgba(129, 236, 236, 0.1);
+        }
+        
+        .protection-tips h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .protection-tips ol {
+            list-style: none;
+            padding-left: 0;
+            counter-reset: tips-counter;
+        }
+        
+        .protection-tips li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 40px;
+            counter-increment: tips-counter;
+        }
+        
+        .protection-tips li::before {
+            content: counter(tips-counter);
+            position: absolute;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .action-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .action-card {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 20px;
+            background: rgba(18, 18, 53, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-card:hover {
+            background: rgba(18, 18, 53, 0.8);
+            transform: translateX(5px);
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary-color);
+        }
+        
+        .action-number {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 0 15px rgba(0, 184, 148, 0.5);
+        }
+        
+        .action-content h4 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .quiz-block {
+            background: rgba(10, 10, 32, 0.7);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+            border-top: 3px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 184, 148, 0.05), transparent);
+            transform: translateX(-100%);
+        }
+        
+        .quiz-block:hover::before {
+            animation: slide 2s infinite;
+        }
+        
+        .quiz-block h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .quiz-question {
+            margin: 25px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .quiz-question:last-of-type {
+            border-bottom: none;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quiz-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-color);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+        
+        .quiz-option:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.correct {
+            background: rgba(0, 184, 148, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        .quiz-option.correct::before {
+            background: var(--primary-color);
+            transform: scaleY(1);
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(253, 121, 168, 0.2);
+            border-color: var(--error-color);
+        }
+        
+        .quiz-option.incorrect::before {
+            background: var(--error-color);
+            transform: scaleY(1);
+        }
+        
+        .quiz-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+        }
+        
+        .quiz-submit:active {
+            transform: translateY(1px);
+        }
+        
+        .quiz-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 184, 148, 0.1);
+            border-radius: 5px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .conclusion-block {
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.1), rgba(129, 236, 236, 0.1));
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .conclusion-block::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(129, 236, 236, 0.1) 0%, transparent 70%);
+        }
+        
+        .conclusion-block h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .key-points {
+            list-style: none;
+            padding-left: 0;
+            margin: 20px 0;
+        }
+        
+        .key-points li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .key-points li:before {
+            content: '🎣';
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+        
+        .lecture-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .next-lecture {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border: 1px solid var(--accent-color);
+            border-radius: 5px;
+            transition: all 0.3s;
+            background: rgba(0, 206, 201, 0.1);
+        }
+        
+        .next-lecture:hover {
+            background: rgba(0, 206, 201, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .lecture-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(129, 236, 236, 0.1);
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-button:hover {
+            background: rgba(129, 236, 236, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(129, 236, 236, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        .fish {
+            position: fixed;
+            font-size: 2rem;
+            z-index: -1;
+            animation: fishSwim 20s infinite linear;
+            opacity: 0.3;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .lecture-container {
+                padding: 15px;
+            }
+            
+            .lecture-title {
+                font-size: 2.2rem;
+            }
+            
+            .lecture-title::after {
+                font-size: 1.5rem;
+                right: -40px;
+            }
+            
+            .lecture-section {
+                padding: 20px;
+            }
+            
+            .types-grid, .warning-signs {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .action-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .lecture-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .next-lecture, .lecture-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        .phishing-alert {
+            border: 2px solid var(--error-color);
+            background: rgba(253, 121, 168, 0.05);
+        }
+        
+        .phishing-alert .example-header {
+            color: var(--error-color);
+        }
+        
+        .law-block {
+            background: rgba(0, 184, 148, 0.1);
+            border-left-color: var(--primary-color);
+        }
+        
+        .law-block .example-header {
+            color: var(--primary-color);
+        }
+        
+        .email-example {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 3px solid var(--error-color);
+        }
+    </style>
 </head>
 <body>
+    <div class="particles" id="particles"></div>
+    <div class="fish" id="fish1">🐟</div>
+    <div class="fish" id="fish2" style="animation-delay: 5s; top: 30%;">🐠</div>
+    <div class="fish" id="fish3" style="animation-delay: 10s; top: 70%;">🦈</div>
+    
     <div class="lecture-container">
         <div class="progress-bar">
             <div class="progress" id="progress"></div>
@@ -48,7 +818,7 @@
         <div class="lecture-section">
             <h2 class="section-title"><span class="title-number">1</span>Что такое фишинг?</h2>
             <div class="section-content">
-                <p>Фишинг - это когда мошенники притворяются банками, магазинами или друзьями, чтобы украсть ваши пароли и деньги.</p>
+                <p><strong>Фишинг</strong> - это когда мошенники притворяются банками, магазинами или друзьями, чтобы украсть ваши пароли и деньги. Название происходит от английского "fishing" - рыбалка.</p>
                 
                 <div class="types-grid">
                     <div class="type-card">
@@ -58,22 +828,27 @@
                     </div>
                     <div class="type-card">
                         <div class="type-icon"><i class="fas fa-sms"></i></div>
-                        <h4>СМС-фишинг</h4>
+                        <h4>СМС-фишинг (смишинг)</h4>
                         <p>"Ваша посылка задержана, оплатите 300 руб по ссылке"</p>
                     </div>
                     <div class="type-card">
                         <div class="type-icon"><i class="fas fa-phone"></i></div>
-                        <h4>Звонки мошенников</h4>
+                        <h4>Вайшинг (голосовой фишинг)</h4>
                         <p>"Я из техподдержки, назовите код из SMS"</p>
                     </div>
                 </div>
                 
-                <div class="example-block">
+                <div class="example-block phishing-example">
                     <div class="example-header">
                         <i class="fas fa-exclamation-triangle"></i>
                         <h4>Реальный пример</h4>
                     </div>
                     <p>В 2024 году мошенники рассылали письма "от ВКонтакте" с угрозой удаления аккаунта. Перейдя по ссылке, люди попадали на поддельный сайт и вводили свои пароли.</p>
+                    <div class="email-example">
+                        От: support@vkontakte-security.ru<br>
+                        Тема: СРОЧНО! Ваш аккаунт будет удалён<br>
+                        "Для подтверждения аккаунта перейдите по ссылке: vk-secure-login.com"
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,24 +864,24 @@
                     </div>
                     <div class="sign-card">
                         <div class="sign-icon"><i class="fas fa-exclamation"></i></div>
-                        <h4>Срочность</h4>
+                        <h4>Срочность и давление</h4>
                         <p>"Срочно обновите данные!", "Акция только сегодня!"</p>
                     </div>
                     <div class="sign-card">
                         <div class="sign-icon"><i class="fas fa-key"></i></div>
-                        <h4>Просьба паролей</h4>
+                        <h4>Просьба паролей и кодов</h4>
                         <p>Настоящие сервисы никогда не просят пароли по почте</p>
                     </div>
                 </div>
                 
                 <div class="protection-tips">
-                    <h3><i class="fas fa-shield-alt"></i> 5 правил защиты</h3>
+                    <h3><i class="fas fa-shield-alt"></i> 5 правил защиты от фишинга</h3>
                     <ol>
-                        <li>Проверяйте адрес отправителя (support@yandex.ru ≠ support@yandexx.ru)</li>
-                        <li>Не переходите по ссылкам из неожиданных сообщений</li>
-                        <li>Включайте двухфакторную аутентификацию везде</li>
-                        <li>Установите антивирус с защитой от фишинга</li>
-                        <li>Если сомневаетесь - позвоните в официальную поддержку</li>
+                        <li><strong>Проверяйте адрес отправителя</strong> (support@yandex.ru ≠ support@yandexx.ru)</li>
+                        <li><strong>Не переходите по ссылкам</strong> из неожиданных сообщений</li>
+                        <li><strong>Включайте двухфакторную аутентификацию</strong> везде, где это возможно</li>
+                        <li><strong>Установите антивирус</strong> с защитой от фишинга</li>
+                        <li><strong>Если сомневаетесь - позвоните</strong> в официальную поддержку</li>
                     </ol>
                 </div>
             </div>
@@ -139,12 +914,12 @@
                     </div>
                 </div>
                 
-                <div class="example-block">
+                <div class="example-block law-block">
                     <div class="example-header">
                         <i class="fas fa-gavel"></i>
                         <h4>Закон в России</h4>
                     </div>
-                    <p>За фишинг предусмотрено наказание по статье 159 УК РФ (мошенничество) - до 6 лет лишения свободы.</p>
+                    <p>За фишинг предусмотрено наказание по <strong>статье 159 УК РФ</strong> (мошенничество) - до 6 лет лишения свободы.</p>
                 </div>
             </div>
         </div>
@@ -198,8 +973,8 @@
                 </div>
             </div>
             
-            <button class="quiz-submit" id="check-results-btn">Проверить ответы</button>
-            <div id="quiz-results" style="display: none; margin-top: 20px; padding: 15px; background: rgba(0,255,136,0.1); border-radius: 5px;"></div>
+            <button class="quiz-submit" id="check-results-btn" onclick="showResults()">Проверить ответы</button>
+            <div class="quiz-results" id="quiz-results"></div>
         </div>
         
         <div class="conclusion-block">
@@ -209,22 +984,194 @@
                 <li>Настоящие компании не просят пароли по почте/SMS</li>
                 <li>Всегда проверяйте адреса сайтов и отправителей</li>
                 <li>При малейших сомнениях - звоните в официальную поддержку</li>
+                <li>Двухфакторная аутентификация - лучшая защита</li>
             </ul>
         </div>
         
         <div class="lecture-footer">
-          <a href="../index.html" class="next-lecture">
-               Главная 
+            <a href="../index.html" class="next-lecture">
+                На главную <i class="fas fa-home"></i>
             </a>
             <div class="lecture-actions">
-                <button class="action-button"><i class="far fa-bookmark"></i> Сохранить</button>
-                <button class="action-button"><i class="fas fa-share-alt"></i> Поделиться</button>
+                <button class="action-button" onclick="saveLecture()"><i class="far fa-bookmark"></i> Сохранить</button>
+                <button class="action-button" onclick="shareLecture()"><i class="fas fa-share-alt"></i> Поделиться</button>
             </div>
         </div>
     </div>
 
-    <script src="js/phishing.js"></script>
-     <script src="js/lectureConstants.js"></script> 
-<script src="../js/progressUtils.js"></script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+        
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 25;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                
+                const size = Math.random() * 3 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        let score = 0;
+        const totalQuestions = 5;
+        
+        function checkAnswer(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                score++;
+            } else {
+                element.classList.add('incorrect');
+                
+                options.forEach(opt => {
+                    if (opt.getAttribute('onclick') && opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+        }
+        
+        function showResults() {
+            const resultsDiv = document.getElementById('quiz-results');
+            let message = '';
+            
+            if (score === totalQuestions) {
+                message = `<h4><i class="fas fa-fish"></i> Отлично! ${score}/${totalQuestions}</h4>
+                          <p>Ты отлично разбираешься в фишинге! Тебя не поймают на удочку мошенников!</p>`;
+            } else if (score >= totalQuestions / 2) {
+                message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
+                          <p>Ты уже многое знаешь, но будь внимателен - мошенники постоянно придумывают новые схемы!</p>`;
+            } else {
+                message = `<h4><i class="fas fa-exclamation-triangle"></i> Внимание! ${score}/${totalQuestions}</h4>
+                          <p>Фишинг очень распространён. Перечитай лекцию и запомни главные правила безопасности!</p>`;
+            }
+            
+            resultsDiv.innerHTML = message;
+            resultsDiv.style.display = 'block';
+            
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            setTimeout(() => {
+                document.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                score = 0;
+                resultsDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function saveLecture() {
+            const user = auth.currentUser;
+            if (user) {
+                db.collection('saved_lectures').add({
+                    userId: user.uid,
+                    lectureTitle: 'Фишинг',
+                    lectureUrl: window.location.href,
+                    savedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    category: 'phishing'
+                })
+                .then(() => {
+                    alert('Лекция о фишинге сохранена в вашем профиле!');
+                })
+                .catch((error) => {
+                    console.error('Ошибка сохранения:', error);
+                    alert('Войдите в систему для сохранения лекций');
+                });
+            } else {
+                alert('Войдите в систему для сохранения лекций');
+            }
+        }
+        
+        function shareLecture() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Фишинг - как не попасться на удочку мошенников',
+                    text: 'Узнай о самых хитрых схемах фишинга и научись защищать свои данные',
+                    url: window.location.href
+                })
+                .then(() => console.log('Успешный шаринг'))
+                .catch((error) => console.log('Ошибка шаринга', error));
+            } else {
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => alert('Ссылка на лекцию о фишинге скопирована!'))
+                    .catch(() => alert('Не удалось скопировать ссылку'));
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log('Пользователь авторизован:', user.email);
+                }
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.lecture-section, .quiz-block, .conclusion-block').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            });
+            
+            const typeCards = document.querySelectorAll('.type-card');
+            typeCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    const icon = card.querySelector('.type-icon');
+                    icon.style.animation = 'pulse 0.5s ease';
+                });
+                card.addEventListener('mouseleave', () => {
+                    const icon = card.querySelector('.type-icon');
+                    icon.style.animation = '';
+                });
+            });
+        });
+    </script>
 </body>
 </html>
