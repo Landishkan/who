@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты теста</title>
+    <link rel="stylesheet" href="tests.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="tests-container">
+        <div class="results-container animate-fade">
+            <button class="back-button" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i> На главную
+            </button>
+            
+            <div class="results-header">
+                <div class="results-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h1 class="results-title">Результаты теста</h1>
+                <p class="results-subtitle" id="testInfo">
+                    <!-- Заполнится через JavaScript -->
+                </p>
+            </div>
+            
+            <div class="score-display">
+                <div class="score-circle" id="scoreCircle">
+                    <div class="score-number" id="scoreNumber">0%</div>
+                </div>
+                <div class="score-text">
+                    <h3 id="scoreMessage">Вы можете лучше!</h3>
+                    <p id="scoreDescription">
+                        <!-- Заполнится через JavaScript -->
+                    </p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Правильных ответов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalQuestions">0</div>
+                    <div class="stat-label">Всего вопросов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="percentage">0%</div>
+                    <div class="stat-label">Процент правильных</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="timeSpent">0:00</div>
+                    <div class="stat-label">Время прохождения</div>
+                </div>
+            </div>
+            
+            <div class="results-feedback">
+                <h3><i class="fas fa-lightbulb"></i> Рекомендации</h3>
+                <div class="feedback-content" id="feedbackContent">
+                    <!-- Заполнится через JavaScript -->
+                </div>
+            </div>
+            
+            <div class="results-actions">
+                <h3>Что дальше?</h3>
+                <div class="action-buttons">
+                    <button class="nav-button" onclick="window.location.href='../tests.html'">
+                        <i class="fas fa-book-open"></i> Выбрать другой тест
+                    </button>
+                    
+                    <button class="nav-button secondary" onclick="retryTest()">
+                        <i class="fas fa-redo"></i> Пройти тест еще раз
+                    </button>
+                    
+                    <button class="nav-button success" onclick="shareResults()">
+                        <i class="fas fa-share-alt"></i> Поделиться результатом
+                    </button>
+                </div>
+                
+                <div class="progress-note">
+                    <i class="fas fa-save"></i>
+                    <p>Ваш результат автоматически сохранен в статистику</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="progress.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Получаем результаты из localStorage
+            const results = JSON.parse(localStorage.getItem('lastTestResults'));
+            
+            if (!results) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Обновляем информацию о тесте
+            document.getElementById('testInfo').textContent = 
+                `${results.topic} • ${results.level === 'basic' ? 'Базовый уровень' : 'Углубленный уровень'}`;
+            
+            // Обновляем статистику
+            document.getElementById('correctAnswers').textContent = results.correct;
+            document.getElementById('totalQuestions').textContent = results.total;
+            document.getElementById('percentage').textContent = results.percentage + '%';
+            document.getElementById('timeSpent').textContent = results.time;
+            document.getElementById('scoreNumber').textContent = results.percentage + '%';
+            
+            // Настраиваем круг прогресса
+            const scoreCircle = document.getElementById('scoreCircle');
+            const percentage = results.percentage;
+            scoreCircle.style.background = `conic-gradient(
+                var(--cyber-success) 0% ${percentage}%, 
+                rgba(255,255,255,0.1) ${percentage}% 100%
+            )`;
+            
+            // Устанавливаем сообщение в зависимости от результата
+            let message = '';
+            let description = '';
+            let feedback = '';
+            
+            if (percentage >= 90) {
+                message = 'Отличный результат!';
+                description = 'Вы отлично разбираетесь в теме!';
+                feedback = 'Продолжайте в том же духе! Вы можете попробовать углубленные тесты по другим темам.';
+            } else if (percentage >= 70) {
+                message = 'Хороший результат!';
+                description = 'Вы хорошо ориентируетесь в теме, но есть куда расти.';
+                feedback = 'Рекомендуем повторить материалы по теме и пройти тест еще раз через несколько дней.';
+            } else if (percentage >= 50) {
+                message = 'Неплохой результат';
+                description = 'Вы понимаете основы, но нужно углубить знания.';
+                feedback = 'Внимательно изучите материалы курса и обратите внимание на темы, которые вызвали затруднения.';
+            } else {
+                message = 'Есть над чем поработать';
+                description = 'Рекомендуем изучить материалы еще раз.';
+                feedback = 'Не расстраивайтесь! Кибербезопасность — сложная тема. Пройдите обучающие материалы и попробуйте снова.';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('scoreDescription').textContent = description;
+            document.getElementById('feedbackContent').innerHTML = `<p>${feedback}</p>`;
+            
+            // Сохраняем прогресс
+            saveTestResult(results.topicId, results.level, percentage);
+        });
+        
+        function retryTest() {
+            const results = JSON.parse(localStorage.getItem('lastTestResults'));
+            if (results) {
+                window.location.href = `test.html?topic=${results.topicId}&level=${results.level}`;
+            }
+        }
+        
+        function shareResults() {
+            const results = JSON.parse(localStorage.getItem('lastTestResults'));
+            if (results && navigator.share) {
+                navigator.share({
+                    title: 'Мой результат теста по кибербезопасности',
+                    text: `Я набрал ${results.percentage}% в тесте "${results.topic}"!`,
+                    url: window.location.href
+                });
+            } else {
+                alert('Скопируйте ссылку, чтобы поделиться результатом: ' + window.location.href);
+            }
+        }
+    </script>
+</body>
+</html>

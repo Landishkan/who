@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кибер-Квестор | Тесты</title>
+    <link rel="stylesheet" href="test/tests.css">
+      <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="tests-container">
+           <header class="main-header cyber-header">
+            <div class="logo-pulse">
+                <h1><span class="cyber-text">Кибер-Квестор</span> | <span class="neon-text">Тесты</span></h1>
+            </div>
+              
+            <nav class="nav-minimal">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <a href="games.html" class="nav-item">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Игры</span>
+                </a>
+                <a href="scenarios.html" class="nav-item">
+                    <i class="fas fa-scroll"></i>
+                    <span>Сценарии</span>
+                </a>
+                 <a href="tests.html" class="nav-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Тесты</span>
+                </a>
+            </nav>
+        </header>
+
+        <main class="tests-main">
+            <section class="topics-section animate-fade" style="animation-delay: 0.2s;">
+                <h2 class="section-title">
+                    <i class="fas fa-list-ol"></i> Выберите тему теста
+                </h2>
+                <div class="topics-grid" id="topicsGrid">
+                    <!-- Темы будут добавлены через JavaScript -->
+                </div>
+            </section>
+
+            <section class="progress-section animate-fade" style="animation-delay: 0.4s;">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i> Ваш прогресс
+                </h2>
+                <div class="progress-stats" id="progressStats">
+                    <!-- Статистика будет загружена из localStorage -->
+                </div>
+            </section>
+
+            <section class="instructions-section animate-fade" style="animation-delay: 0.6s;">
+                <div class="instructions-card">
+                    <h3><i class="fas fa-info-circle"></i> Как это работает?</h3>
+                    <div class="instructions-list">
+                        <div class="instruction-item">
+                            <div class="instruction-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div class="instruction-content">
+                                <h4>Два уровня сложности</h4>
+                                <p><strong>Базовый</strong> (10 вопросов) и <strong>Углубленный</strong> (15 вопросов)</p>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <div class="instruction-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="instruction-content">
+                                <h4>Таймер и прогресс</h4>
+                                <p>Следите за временем и своим прогрессом в реальном времени</p>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <div class="instruction-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="instruction-content">
+                                <h4>Только результаты</h4>
+                                <p>После теста вы увидите только количество правильных ответов, но не сами ответы</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="tests-footer">
+            <p>Кибербезопасность — это навык, который нужно постоянно развивать</p>
+            <a href="index.html" class="home-link">
+                <i class="fas fa-home"></i> Вернуться на главную
+            </a>
+        </footer>
+    </div>
+
+    <script src="test/data.js"></script>
+    <script src="test/progress.js"></script>
+    <script>
+        // Генерация карточек тем
+        document.addEventListener('DOMContentLoaded', function() {
+            const topicsGrid = document.getElementById('topicsGrid');
+            const topics = Object.keys(testData);
+            
+            const topicIcons = {
+                'cyberbullying': 'fa-user-shield',
+                'social-engineering': 'fa-mask',
+                'netiquette': 'fa-comments',
+                'cyberterrorism': 'fa-globe',
+                'online-fraud': 'fa-user-secret',
+                'phishing': 'fa-fish',
+                'destructive-content': 'fa-radiation'
+            };
+            
+            const topicNames = {
+                'cyberbullying': 'Кибербуллинг',
+                'social-engineering': 'Социальная инженерия',
+                'netiquette': 'Сетевой этикет',
+                'cyberterrorism': 'Кибертерроризм',
+                'online-fraud': 'Онлайн-мошенничество',
+                'phishing': 'Фишинг',
+                'destructive-content': 'Деструктивный контент'
+            };
+            
+            const topicDescriptions = {
+                'cyberbullying': 'Травля в цифровом пространстве',
+                'social-engineering': 'Манипулирование людьми',
+                'netiquette': 'Правила общения в сети',
+                'cyberterrorism': 'Кибер-угрозы национальной безопасности',
+                'online-fraud': 'Мошенничество в интернете',
+                'phishing': 'Кража личных данных',
+                'destructive-content': 'Вредоносная информация'
+            };
+            
+            topics.forEach(topicId => {
+                const topic = testData[topicId];
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                card.innerHTML = `
+                    <div class="topic-icon">
+                        <i class="fas ${topicIcons[topicId] || 'fa-shield-alt'}"></i>
+                    </div>
+                    <h3>${topicNames[topicId] || topicId}</h3>
+                    <p class="topic-description">${topicDescriptions[topicId] || ''}</p>
+                    <div class="topic-levels">
+                        <span class="level-tag basic">Базовый: 10 вопросов</span>
+                        <span class="level-tag advanced">Углубленный: 15 вопросов</span>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    window.location.href = `test/test.html?topic=${topicId}&action=select-level`;
+                });
+                
+                topicsGrid.appendChild(card);
+            });
+            
+            // Загрузка статистики прогресса
+            loadProgressStats();
+        });
+        
+        function loadProgressStats() {
+            const stats = getProgressStats();
+            const statsContainer = document.getElementById('progressStats');
+            
+            if (stats.totalTests > 0) {
+                statsContainer.innerHTML = `
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.totalTests}</div>
+                            <div class="stat-label">Пройдено тестов</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.averageScore}%</div>
+                            <div class="stat-label">Средний результат</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.bestScore}%</div>
+                            <div class="stat-label">Лучший результат</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                statsContainer.innerHTML = `
+                    <div class="no-progress">
+                        <i class="fas fa-rocket"></i>
+                        <p>Вы еще не проходили тесты. Начните прямо сейчас!</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

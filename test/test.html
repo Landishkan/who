@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест по кибербезопасности</title>
+    <link rel="stylesheet" href="tests.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="tests-container">
+        <!-- Экран выбора уровня сложности -->
+        <div id="levelSelection" class="level-selection-screen">
+            <button class="back-button" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Назад к темам
+            </button>
+            
+            <div class="selection-header animate-fade">
+                <h1 class="tests-title" id="topicTitle">
+                    <i class="fas fa-shield-alt"></i> Выбор уровня
+                </h1>
+                <p class="tests-subtitle">Выберите уровень сложности для теста</p>
+            </div>
+            
+            <div class="levels-container animate-fade" style="animation-delay: 0.2s;">
+                <div class="level-card basic" onclick="startTest('basic')">
+                    <div class="level-badge">Базовый</div>
+                    <div class="level-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Базовый уровень</h3>
+                    <p>10 вопросов для проверки основных знаний</p>
+                    <div class="level-info">
+                        <span class="info-item">
+                            <i class="fas fa-clock"></i> 10-15 минут
+                        </span>
+                        <span class="info-item">
+                            <i class="fas fa-question-circle"></i> 10 вопросов
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="level-card advanced" onclick="startTest('advanced')">
+                    <div class="level-badge">Углубленный</div>
+                    <div class="level-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Углубленный уровень</h3>
+                    <p>15 сложных вопросов для продвинутых пользователей</p>
+                    <div class="level-info">
+                        <span class="info-item">
+                            <i class="fas fa-clock"></i> 20-25 минут
+                        </span>
+                        <span class="info-item">
+                            <i class="fas fa-question-circle"></i> 15 вопросов
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="level-instructions animate-fade" style="animation-delay: 0.4s;">
+                <div class="instruction-card">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Важно!</h4>
+                    <ul>
+                        <li>Вы не сможете изменить ответ после выбора</li>
+                        <li>После завершения теста вы увидите только количество правильных ответов</li>
+                        <li>Время прохождения фиксируется для статистики</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Экран прохождения теста -->
+        <div id="testScreen" class="test-screen" style="display: none;">
+            <div class="test-header">
+                <div class="test-info">
+                    <h2 id="testTopic" class="test-topic"></h2>
+                    <div class="test-meta">
+                        <span class="meta-item" id="currentQuestion">Вопрос 1 из 10</span>
+                        <span class="meta-item" id="testLevel"></span>
+                    </div>
+                </div>
+                
+                <div class="timer-container">
+                    <div class="timer" id="timer">
+                        <i class="fas fa-clock"></i> 00:00
+                    </div>
+                    <button class="timer-toggle" id="timerToggle" onclick="toggleTimer()">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Прогресс</span>
+                    <span id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="question-container" id="questionContainer">
+                <!-- Вопросы будут загружены динамически -->
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" id="prevButton" onclick="previousQuestion()" disabled>
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
+                
+                <button class="nav-button" id="nextButton" onclick="nextQuestion()" disabled>
+                    Далее <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="test-footer">
+                <p>Выберите ответ для продолжения</p>
+            </div>
+        </div>
+        
+        <!-- Экран завершения теста -->
+        <div id="completionScreen" class="completion-screen" style="display: none;">
+            <div class="completion-content animate-fade">
+                <div class="completion-icon">
+                    <i class="fas fa-flag-checkered"></i>
+                </div>
+                <h2>Тест завершен!</h2>
+                <p>Вы ответили на все вопросы. Готовы увидеть результаты?</p>
+                
+                <div class="completion-buttons">
+                    <button class="nav-button success" onclick="showResults()">
+                        <i class="fas fa-chart-bar"></i> Узнать результат
+                    </button>
+                    
+                    <button class="nav-button secondary" onclick="restartTest()">
+                        <i class="fas fa-redo"></i> Пройти заново
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="progress.js"></script>
+    <script src="tests.js"></script>
+</body>
+</html>
