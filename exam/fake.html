@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фейки — как их распознавать</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <style>
+        :root {
+            --primary-color: #9c27b0;
+            --primary-light: #ba68c8;
+            --primary-dark: #7b1fa2;
+            --secondary-color: #ce93d8;
+            --accent-color: #ab47bc;
+            --warning-color: #ff9800;
+            --danger-color: #e91e63;
+            
+            --text-color: #ffffff;
+            --text-secondary: #f3e5f5;
+            
+            --background-dark: #0a0a20;
+            --background-light: #121235;
+            
+            --card-bg: rgba(18, 18, 53, 0.7);
+            --border-color: rgba(156, 39, 176, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            background: var(--background-dark);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        .lecture-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(58, 107, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 0 30px 0;
+            overflow: hidden;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transition: width 0.5s ease;
+        }
+        
+        .lecture-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 15px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            background: rgba(156, 39, 176, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .lecture-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .lecture-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty {
+            padding: 5px 15px;
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid var(--warning-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .duration {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            padding: 5px 15px;
+            background: rgba(171, 71, 188, 0.1);
+            border-radius: 20px;
+        }
+        
+        .lecture-section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(10, 10, 32, 0.5);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            backdrop-filter: blur(5px);
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .title-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .section-content {
+            font-size: 1.1rem;
+        }
+        
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .type-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .type-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+            box-shadow: 0 10px 20px rgba(156, 39, 176, 0.2);
+        }
+        
+        .type-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .type-card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .example-block {
+            background: rgba(18, 18, 53, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .example-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .warning-block {
+            background: rgba(255, 152, 0, 0.1);
+            border-left-color: var(--warning-color);
+        }
+        
+        .warning-block .example-header {
+            color: var(--warning-color);
+        }
+        
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .step {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 20px;
+            background: rgba(18, 18, 53, 0.5);
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .step-content h4 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .quiz-block {
+            background: rgba(10, 10, 32, 0.7);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        .quiz-block h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .quiz-question {
+            margin: 25px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quiz-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .quiz-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .conclusion-block {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(171, 71, 188, 0.1));
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+        }
+        
+        .key-points {
+            list-style: none;
+            padding-left: 0;
+            margin: 20px 0;
+        }
+        
+        .key-points li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .key-points li:before {
+            content: '⚠';
+            position: absolute;
+            left: 0;
+            color: var(--warning-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .lecture-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .next-lecture {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border: 1px solid var(--accent-color);
+            border-radius: 5px;
+            transition: all 0.3s;
+            background: rgba(171, 71, 188, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .lecture-title {
+                font-size: 2.2rem;
+            }
+            
+            .lecture-section {
+                padding: 20px;
+            }
+            
+            .types-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .step-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lecture-container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="lecture-header">
+            <a href="../learning.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Назад к списку лекций
+            </a>
+            <h1 class="lecture-title">Фейки в интернете</h1>
+            <div class="lecture-meta">
+                <span class="difficulty">Средний уровень</span>
+                <span class="duration"><i class="far fa-clock"></i> 15 мин</span>
+            </div>
+        </div>
+        
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">1</span>Что такое фейки и зачем их создают?</h2>
+            <div class="section-content">
+                <p><strong>Фейк</strong> — это намеренное искажение или конструирование информации с целью ввести в заблуждение. Слово "фейк" произошло от английского "fake" (подделка, обман).</p>
+                
+                <div class="types-grid">
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-newspaper"></i></div>
+                        <h4>Фейковые новости</h4>
+                        <p>Ложные сообщения, созданные для привлечения внимания или манипуляции мнением</p>
+                    </div>
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-user-secret"></i></div>
+                        <h4>Фейковые аккаунты</h4>
+                        <p>Поддельные профили в соцсетях для мошенничества или влияния</p>
+                    </div>
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-video"></i></div>
+                        <h4>Дипфейки (Deepfakes)</h4>
+                        <p>Видео с подменой лиц, созданные нейросетями</p>
+                    </div>
+                </div>
+                
+                <div class="example-block">
+                    <div class="example-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Цели создания фейков</h4>
+                    </div>
+                    <p>Фейки создают для разных целей: привлечь внимание к сайту или каналу, повлиять на общественное мнение, заработать деньги на рекламе, навредить репутации человека или компании, или даже повлиять на политические процессы.</p>
+                </div>
+                
+                <div class="warning-block">
+                    <div class="example-header">
+                        <i class="fas fa-brain"></i>
+                        <h4>Психологический эффект</h4>
+                    </div>
+                    <p>Чтение новостей вызывает выброс гормонов: позитивные новости — дофамин (эйфория), негативные — кортизол (стресс). Люди склонны воспринимать эмоционально окрашенную негативную информацию как более ценную и достоверную, даже если это не так.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">2</span>Где встречаются фейки и как их распознать?</h2>
+            <div class="section-content">
+                <p>Фейки встречаются везде: в соцсетях, мессенджерах, новостных сайтах, даже в поисковой выдаче.</p>
+                
+                <div class="example-block">
+                    <div class="example-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Ключевые признаки фейка</h4>
+                    </div>
+                    <ul class="key-points">
+                        <li><strong>Кричащие заголовки:</strong> "ШОК!", "СРОЧНО!", "РАЗОБЛАЧЕНИЕ!"</li>
+                        <li><strong>Много эмоций:</strong> Яркие эпитеты вроде "катастрофический", "смертельно опасный"</li>
+                        <li><strong>Нет источников:</strong> Информация без ссылок на проверенные источники</li>
+                        <li><strong>Подозрительные ссылки:</strong> site.com вместо site.ru, лишние буквы в адресе</li>
+                        <li><strong>Слишком идеально:</strong> Неестественно быстрый рост подписчиков, идеальные отзывы</li>
+                    </ul>
+                </div>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Проверьте источник</h4>
+                            <p>Узнайте, кто автор материала, есть ли у него экспертиза в теме</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Ищите первоисточник</h4>
+                            <p>Не доверяйте пересказам. Найдите оригинальное сообщение или исследование</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Сравните с другими источниками</h4>
+                            <p>Проверьте, пишут ли об этом другие авторитетные издания</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Проверьте фото и видео</h4>
+                            <p>Используйте поиск по картинке (Google Images). Старые фото часто выдают за свежие</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example-block">
+                    <div class="example-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h4>Как распознать фейковый аккаунт?</h4>
+                    </div>
+                    <ul class="key-points">
+                        <li>Нет фото профиля или фото стоковое/слишком идеальное</li>
+                        <li>Мало друзей/подписчиков, но много постов</li>
+                        <li>Аккаунт создан недавно, но очень активен</li>
+                        <li>Вся активность — репосты, нет личного контента</li>
+                        <li>Странное имя или email-адрес</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">3</span>Опасность фейков и защита от них</h2>
+            <div class="section-content">
+                <p>Фейки опасны не только для отдельных людей, но и для общества в целом.</p>
+                
+                <div class="types-grid">
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-user"></i></div>
+                        <h4>Для человека</h4>
+                        <p>Финансовые потери, психологический стресс, принятие неверных решений</p>
+                    </div>
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-users"></i></div>
+                        <h4>Для общества</h4>
+                        <p>Паника, конфликты, подрыв доверия к официальным источникам</p>
+                    </div>
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-building"></i></div>
+                        <h4>Для бизнеса</h4>
+                        <p>Урон репутации, финансовые потери, искажение метрик</p>
+                    </div>
+                </div>
+                
+                <div class="example-block warning-block">
+                    <div class="example-header">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h4>Особая опасность в кризисы</h4>
+                    </div>
+                    <p>Во время пандемий, военных действий или выборов фейки могут использоваться для влияния на политические процессы, создания социального напряжения и даже провоцирования массовых беспорядков. Вспомните панику с покупкой туалетной бумаги в начале пандемии COVID-19.</p>
+                </div>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Развивайте критическое мышление</h4>
+                            <p>Задавайте вопросы: "Кто это говорит?", "Зачем?", "Что говорят другие источники?"</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Проверяйте, прежде чем делиться</h4>
+                            <p>Сделайте быструю проверку (2-3 минуты), прежде чем нажать "репост" или "поделиться"</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Используйте проверенные источники</h4>
+                            <p>Составьте свой список доверенных СМИ и экспертов</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Учите других</h4>
+                            <p>Особенно пожилых родственников и детей — они наиболее уязвимы</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quiz-block">
+            <h3><i class="fas fa-question-circle"></i> Проверь себя</h3>
+            <p>Ответь на 5 вопросов о фейках:</p>
+            
+            <div class="quiz-question" id="question1">
+                <p>1. Что такое фейк?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Просто ошибка в информации</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Намеренное искажение информации</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Старая новость</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question2">
+                <p>2. Какой признак НЕ указывает на фейк?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Кричащий заголовок без содержания</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Отсутствие ссылок на источники</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Сбалансированное мнение экспертов</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question3">
+                <p>3. Что нужно сделать в первую очередь, увидев шокирующую новость?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Сразу поделиться с друзьями</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Проверить в других источниках</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Написать гневный комментарий</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question4">
+                <p>4. Почему фейки особенно опасны в кризисных ситуациях?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Их труднее создавать</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Они могут вызывать панику и конфликты</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Их быстрее опровергают</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question5">
+                <p>5. Какой инструмент поможет проверить, старую ли фотографию выдают за новую?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Переводчик Google</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Поиск по картинке (Google Images)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Проверка орфографии</div>
+                </div>
+            </div>
+            
+            <button class="quiz-submit" id="check-results-btn" onclick="showResults()">Проверить ответы</button>
+            <div id="quiz-results" style="display: none; margin-top: 20px; padding: 15px; background: rgba(0,255,136,0.1); border-radius: 5px;"></div>
+        </div>
+        
+        <div class="conclusion-block">
+            <h3><i class="fas fa-star"></i> Главное запомнить</h3>
+            <ul class="key-points">
+                <li>Фейк — это намеренная ложь, а не случайная ошибка</li>
+                <li>Фейки создают для привлечения внимания, влияния на мнение или заработка</li>
+                <li>Проверяйте источник, ищите первоисточник, сравнивайте с другими источниками</li>
+                <li>Не верьте кричащим заголовкам и эмоциональным сообщениям без доказательств</li>
+                <li>Проверяйте информацию прежде, чем делиться ей с другими</li>
+                <li>Развивайте критическое мышление — это главная защита от фейков</li>
+            </ul>
+            <p style="margin-top: 20px; padding: 15px; background: rgba(156, 39, 176, 0.1); border-radius: 8px;">
+                <strong>Важно:</strong> В эпоху интернета каждый из нас становится не только потребителем, но и распространителем информации. От нашей ответственности зависит, станем ли мы частью проблемы или частью решения.
+            </p>
+        </div>
+        
+        <div class="lecture-footer">
+            <a href="../index.html" class="next-lecture">
+                На главную <i class="fas fa-home"></i>
+            </a>
+            <div class="lecture-actions" style="display: flex; gap: 15px;">
+              
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+        
+        let score = 0;
+        const totalQuestions = 5;
+        
+        function checkAnswer(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                element.style.background = 'rgba(0, 184, 148, 0.2)';
+                element.style.borderColor = '#00b894';
+                score++;
+            } else {
+                element.style.background = 'rgba(255, 45, 117, 0.2)';
+                element.style.borderColor = '#ff2d75';
+            }
+        }
+        
+        function showResults() {
+            const resultsDiv = document.getElementById('quiz-results');
+            let message = '';
+            
+            if (score === totalQuestions) {
+                message = `<h4><i class="fas fa-check-circle"></i> Отлично! ${score}/${totalQuestions}</h4>
+                          <p>Ты отлично разбираешься в теме фейков! Продолжай быть бдительным!</p>`;
+            } else if (score >= totalQuestions / 2) {
+                message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
+                          <p>Ты уже многое знаешь, но есть куда расти. Перечитай раздел о признаках фейков!</p>`;
+            } else {
+                message = `<h4><i class="fas fa-book"></i> Есть над чем поработать: ${score}/${totalQuestions}</h4>
+                          <p>Фейки сегодня повсюду. Пройди лекцию еще раз, чтобы лучше защитить себя!</p>`;
+            }
+            
+            resultsDiv.innerHTML = message;
+            resultsDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                document.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.style.background = '';
+                    opt.style.borderColor = '';
+                });
+                score = 0;
+                resultsDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function saveLecture() {
+            alert('Функция сохранения лекции будет доступна после входа в систему');
+        }
+        
+        function shareLecture() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Фейки в интернете - как их распознавать',
+                    text: 'Узнай, как защитить себя от фейков и дезинформации в интернете',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => alert('Ссылка на лекцию скопирована!'))
+                    .catch(() => alert('Не удалось скопировать ссылку'));
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Социальная инженерия</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Основные переменные цветов */
+        :root {
+            --primary-color: #0f4cff;
+            --primary-light: #3a6bff;
+            --primary-dark: #0028a8;
+            --secondary-color: #8FB8ED;
+            --accent-color: #5B9CF0;
+            --accent-green: #16a541;
+            --error-color: #ff2d75;
+            
+            --text-color: #ffffff;
+            --text-secondary: #c3d1ff;
+            
+            --background-dark: #0a0a20;
+            --background-light: #121235;
+            
+            --card-bg: rgba(18, 18, 53, 0.7);
+            --border-color: rgba(58, 107, 255, 0.2);
+        }
+        
+        /* Базовые стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            background: var(--background-dark);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Основной контейнер лекции */
+        .lecture-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        /* Прогресс-бар */
+        .progress-bar {
+            height: 8px;
+            background: rgba(58, 107, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 0 30px 0;
+            overflow: hidden;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transition: width 0.5s ease;
+        }
+        
+        /* Шапка лекции */
+        .lecture-header {
+            margin-bottom: 40px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            color: var(--accent-color);
+            transform: translateX(-3px);
+        }
+        
+        .lecture-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .lecture-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .difficulty {
+            padding: 5px 15px;
+            background: rgba(22, 165, 65, 0.2);
+            border: 1px solid var(--accent-green);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .duration {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+        
+        /* Секции лекции */
+        .lecture-section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(10, 10, 32, 0.5);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .title-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .section-content {
+            font-size: 1.1rem;
+        }
+        
+        /* Сетка с типами методов */
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .type-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .type-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+            box-shadow: 0 10px 20px rgba(0, 114, 255, 0.2);
+        }
+        
+        .type-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .type-card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        /* Блоки с фактами и примерами */
+        .stats-block, .example-block, .warning-block, .legal-block {
+            background: rgba(18, 18, 53, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .stats-header, .example-header, .warning-header, .legal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .warning-block {
+            border-left-color: #ff9d00;
+        }
+        
+        .warning-header {
+            color: #ff9d00;
+        }
+        
+        .legal-block {
+            border-left-color: var(--accent-green);
+        }
+        
+        .legal-header {
+            color: var(--accent-green);
+        }
+        
+        /* Список ключевых моментов */
+        .key-points {
+            list-style: none;
+            padding-left: 20px;
+            margin: 20px 0;
+        }
+        
+        .key-points li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .key-points li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        /* Шаги защиты */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .step {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .step-content h4 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        
+        /* Блок с советами по защите */
+        .protection-tips {
+            background: rgba(0, 242, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .protection-tips h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        /* Квиз */
+        .quiz-block {
+            background: rgba(10, 10, 32, 0.7);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+            border-top: 3px solid var(--accent-color);
+        }
+        
+        .quiz-block h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .quiz-question {
+            margin: 25px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .quiz-question:last-of-type {
+            border-bottom: none;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quiz-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .quiz-option.correct {
+            background: rgba(22, 165, 65, 0.2);
+            border-color: var(--accent-green);
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(255, 45, 117, 0.2);
+            border-color: var(--error-color);
+        }
+        
+        .quiz-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .quiz-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.3);
+        }
+        
+        .quiz-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(22, 165, 65, 0.1);
+            border-radius: 5px;
+            display: none;
+        }
+        
+        /* Блок с заключением */
+        .conclusion-block {
+            background: linear-gradient(135deg, rgba(15, 76, 255, 0.1), rgba(91, 156, 240, 0.1));
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+        }
+        
+        .conclusion-block h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .motivation {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 242, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        /* Секция скачивания */
+        .download-section {
+            margin: 50px 0;
+        }
+        
+        .download-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .download-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 114, 255, 0.2);
+            border-color: var(--secondary-color);
+        }
+        
+        .download-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+        
+        .download-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .download-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .download-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.3);
+        }
+        
+        /* Футер лекции */
+        .lecture-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .next-lecture {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border: 1px solid var(--accent-color);
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .next-lecture:hover {
+            background: rgba(91, 156, 240, 0.1);
+            transform: translateX(5px);
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .lecture-container {
+                padding: 15px;
+            }
+            
+            .lecture-title {
+                font-size: 2.2rem;
+            }
+            
+            .lecture-section {
+                padding: 20px;
+            }
+            
+            .types-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .step-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* Утилиты */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        .mt-30 {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="lecture-container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="lecture-header">
+            <a href="../learning.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Назад к списку лекций
+            </a>
+            <h1 class="lecture-title">Социальная инженерия</h1>
+            <div class="lecture-meta">
+                <span class="difficulty beginner">Для всех уровней</span>
+                <span class="duration"><i class="far fa-clock"></i> 15 мин</span>
+            </div>
+        </div>
+        
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">1</span>Что такое социальная инженерия?</h2>
+            <div class="section-content">
+                <p>Социальная инженерия — это не взлом компьютеров, а <strong>психологический взлом человека</strong>. Это манипуляции, с помощью которых мошенники играют на наших эмоциях, чтобы заставить нас добровольно выдать пароли, перевести деньги или заразить устройство вирусом.</p>
+                
+                <div class="types-grid">
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-envelope"></i></div>
+                        <h4>Фишинг</h4>
+                        <p>Массовая рассылка писем от имени банков, сервисов или знакомых с просьбой перейти по вредоносной ссылке</p>
+                    </div>
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-user-tie"></i></div>
+                        <h4>Претекстинг</h4>
+                        <p>Звонок под легендой сотрудника банка, следователя или начальника для получения конфиденциальной информации</p>
+                    </div>
+                    <div class="type-card">
+                        <div class="type-icon"><i class="fas fa-usb-drive"></i></div>
+                        <h4>Дорожное яблоко</h4>
+                        <p>Подброшенная флешка с интригующей надписью или слишком выгодное предложение в интернете</p>
+                    </div>
+                </div>
+                
+                <div class="stats-block">
+                    <div class="stats-header">
+                        <i class="fas fa-chart-bar"></i><h4>Цифры говорят</h4>
+                    </div>
+                    <p>В начале 2024 года мошенники в России украли почти <strong>5 млрд рублей</strong>, в том числе методами социальной инженерии.</p>
+                </div>
+                
+                <div class="example-block">
+                    <div class="example-header">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h4>Реальные примеры</h4>
+                    </div>
+                    <p><strong>Случай 1:</strong> Подростки взломали Twitter-аккаунты Илона Маска и Барака Обамы. Они позвонили сотрудникам соцсети, выдав себя за коллег из IT, и выманили у них пароли для «служебной проверки».</p>
+                    <p><strong>Случай 2:</strong> Мошенники по телефону убедили сотрудника компании, что его рабочий компьютер заражен. Он загрузил «антивирус», который оказался программой для кражи данных.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">2</span>Как работают мошенники?</h2>
+            <div class="section-content">
+                <p>Методы социальной инженерии строятся на простых человеческих чувствах: доверии, страхе, любопытстве или жадности.</p>
+                
+                <div class="protection-tips">
+                    <h4><i class="fas fa-brain"></i> Психологические триггеры мошенников</h4>
+                    <ul class="key-points">
+                        <li><strong>Срочность</strong>: «У вас есть 10 минут, иначе счет заблокируют!»</li>
+                        <li><strong>Авторитет</strong>: «Я ваш директор» (особенно с использованием дипфейков)</li>
+                        <li><strong>Страх</strong>: «Ваш компьютер заражен, срочно скачайте антивирус!»</li>
+                        <li><strong>Жалость</strong>: «Мама, я в беде, срочно нужны деньги!» — сообщение во взломанном аккаунте близкого</li>
+                        <li><strong>Любопытство</strong>: «Это вы на фото?» — сообщение со странной ссылкой</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-block">
+                    <div class="warning-header">
+                        <i class="fas fa-exclamation-triangle"></i> <h4>Обратная социальная инженерия</h4>
+                    </div>
+                    <p>Самая коварная многоходовочка. Сначала вас <strong>намеренно пугают</strong> (смс о крупном списании). Затем вам «случайно» попадается контакт «службы поддержки». Вы <strong>сами им звоните</strong>, полностью доверяя, и выполняете их инструкции по «защите» счетов.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">3</span>Как защитить себя и близких?</h2>
+            <div class="section-content">
+                <p>Защита строится не на сложных технологиях, а на <strong>внутреннем скепсисе</strong> и простых правилах цифровой гигиены.</p>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Пауза и Дыши</h4>
+                            <p>Любое срочное сообщение, звонок или просьба — повод остановиться и включить голову. <strong>Действуй не сразу.</strong></p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Проверь источник</h4>
+                            <p>Не используй контакты из подозрительного сообщения. <strong>Позвони в банк/компанию/родственнику по известному тебе номеру</strong>, чтобы перепроверить информацию.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Никогда не делись кодами</h4>
+                            <p>Запомни железное правило: <strong>Настоящие сотрудники банка, полиции, IT-служб НИКОГДА и НИ ПРИ КАКИХ УСЛОВИЯХ не попросят у тебя пароль, пин-код карты или код из смс.</strong></p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Не верь, а проверяй</h4>
+                            <p>Странная просьба от друга? Свяжись с ним другим способом. Незнакомая флешка? Не вставляй. Слишком выгодное предложение? Это ловушка.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="protection-tips">
+                    <h4><i class="fas fa-shield-alt"></i> Профилактика: снижаем риски</h4>
+                    <ul>
+                        <li><strong>Включи двухфакторную аутентификацию (2FA)</strong> во всех важных аккаунтах (почта, соцсети, банк)</li>
+                        <li><strong>Настрой приватность</strong> в соцсетях. Чем меньше о тебе знают незнакомцы, тем правдоподобнее для них будет легенда мошенника</li>
+                        <li><strong>Обсуждай</strong> эти темы с семьей, особенно со старшими родственниками, которые чаще верят в авторитет «сотрудника банка»</li>
+                        <li><strong>Установи антивирус</strong> и регулярно обновляй программное обеспечение</li>
+                    </ul>
+                </div>
+                
+                <div class="legal-block">
+                    <div class="legal-header">
+                        <h4><i class="fas fa-gavel"></i> Закон на вашей стороне</h4>
+                    </div>
+                    <p>В России социальная инженерия подпадает под действие:</p>
+                    <ul class="key-points">
+                        <li><strong>Статья 159 УК РФ</strong> (Мошенничество) — лишение свободы до 10 лет</li>
+                        <li><strong>Статья 138 УК РФ</strong> (Нарушение тайны переписки) — штраф до 300 тыс. рублей</li>
+                        <li><strong>Статья 272 УК РФ</strong> (Неправомерный доступ к компьютерной информации) — лишение свободы до 7 лет</li>
+                        <li><strong>Статья 273 УК РФ</strong> (Создание, использование и распространение вредоносных программ) — лишение свободы до 7 лет</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quiz-block">
+            <h3><i class="fas fa-question-circle"></i> Проверь себя</h3>
+            <p>Ответь на 5 вопросов, чтобы закрепить знания:</p>
+            
+            <div class="quiz-question" id="question1">
+                <p>1. Что такое главная цель социальной инженерии?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Взломать компьютер через уязвимость</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Манипулировать человеком для получения информации</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Заразить систему вирусом через сеть</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question2">
+                <p>2. Ты получаешь смс от банка со ссылкой для разблокировки карты. Что делаешь в первую очередь?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Срочно перехожу по ссылке и ввожу данные</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Звоню в банк по официальному номеру с сайта</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Игнорирую, это точно мошенники</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question3">
+                <p>3. Тебе звонит «техподдержка» и просит назвать код из смс для «проверки связи». Это нормально?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Да, если они представились сотрудниками</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Нет, настоящие сотрудники никогда не попросят код</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Только если они назвали мои данные</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question4">
+                <p>4. Какой метод использует мошенник, подбрасывая флешку с интригующей надписью?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Фишинг</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Дорожное яблоко (Baiting)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Претекстинг</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" id="question5">
+                <p>5. Какой самый мощный инструмент защиты от взлома аккаунта?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Сложный пароль из 8 символов</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Двухфакторная аутентификация (2FA)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Регулярная смена пароля</div>
+                </div>
+            </div>
+            
+            <button class="quiz-submit" id="check-results-btn" onclick="showResults()">Проверить ответы</button>
+            <div class="quiz-results" id="quiz-results"></div>
+        </div>
+        
+        <div class="conclusion-block">
+            <h3><i class="fas fa-star"></i> Главное запомнить</h3>
+            <ul class="key-points">
+                <li>Социальная инженерия — это атака на нашу психологию, а не на компьютер</li>
+                <li><strong>Главное правило:</strong> Срочность + Просьба раскрыть секрет = 100% обман</li>
+                <li>Твоя лучшая защита — <strong>пауза</strong> и <strong>независимая проверка</strong> информации</li>
+                <li>Двухфакторная аутентификация — самый эффективный способ защиты аккаунтов</li>
+                <li>Ты не обязан разбираться во всем сам. В сомнительной ситуации <strong>посоветуйся</strong> с тем, кому доверяешь</li>
+            </ul>
+            <div class="motivation">
+                <p><strong>Важно:</strong> Если ты стал свидетелем того, как кто-то из твоих близких (особенно старшее поколение) ведется на уловки мошенников — мягко останови их и помоги перепроверить информацию. Вместе мы создаем цифровой иммунитет!</p>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <div class="download-card">
+                <div class="download-icon">
+                    <i class="fas fa-file-download"></i>
+                </div>
+                <h3>Памятка по социальной инженерии</h3>
+                <p>Скачайте краткую инструкцию с алгоритмом действий при подозрительном звонке или сообщении. В памятке — четкие шаги и правило «СТОП», которое нужно запомнить.</p>
+                <a href="javascript:void(0)" class="download-button">
+                    <i class="fas fa-download"></i>
+                    <span>Скачать памятку (PDF)</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="lecture-footer">
+            <a href="netiquette.html" class="next-lecture">
+                Следующая лекция <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Прогресс-бар
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+        
+        // Проверка ответов в квизе
+        let score = 0;
+        const totalQuestions = 5;
+        
+        function checkAnswer(element, isCorrect) {
+            // Сначала сбросим все выделения в этом вопросе
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+            
+            // Подсветим выбранный ответ
+            if (isCorrect) {
+                element.classList.add('correct');
+                score++;
+            } else {
+                element.classList.add('incorrect');
+                
+                // Покажем правильный ответ
+                options.forEach(opt => {
+                    if (opt.getAttribute('onclick') && opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            // Отключим клики по всем вариантам в этом вопросе
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+        }
+        
+        function showResults() {
+            const resultsDiv = document.getElementById('quiz-results');
+            let message = '';
+            
+            if (score === totalQuestions) {
+                message = `<h4><i class="fas fa-trophy"></i> Отлично! ${score}/${totalQuestions}</h4>
+                          <p>Ты отлично разбираешься в социальной инженерии! Поделись этими знаниями с друзьями и родными.</p>`;
+            } else if (score >= totalQuestions / 2) {
+                message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
+                          <p>Ты уже многое знаешь, но есть куда расти. Перечитай лекцию еще раз, чтобы закрепить знания.</p>`;
+            } else {
+                message = `<h4><i class="fas fa-book"></i> Есть над чем поработать: ${score}/${totalQuestions}</h4>
+                          <p>Социальная инженерия — коварная штука. Пройди лекцию еще раз и обрати внимание на раздел защиты.</p>`;
+            }
+            
+            resultsDiv.innerHTML = message;
+            resultsDiv.style.display = 'block';
+            
+            // Прокрутка к результатам
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Плавная прокрутка к якорям
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
