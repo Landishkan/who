@@ -1,4 +1,4 @@
-﻿
+
 :root {
     --primary-color: #0f4cff;
     --primary-light: #3a6bff;
@@ -1952,8 +1952,8 @@ button:active, .cyber-button:active, .scenario-button:active {
 
 .hidden {
     display: none;
-
 }
+/* Стили для мобильной игры */
 .mobile-only-game {
     display: none; /* По умолчанию скрыта на десктопе */
     position: relative;
@@ -2225,6 +2225,7 @@ button:active, .cyber-button:active, .scenario-button:active {
         -webkit-tap-highlight-color: rgba(0, 242, 255, 0.2);
     }
 }
+/* Стили для десктопной игры (Фейковый детектив) */
 .desktop-only-game {
     display: block; /* Видна на десктопе по умолчанию */
 }
@@ -2255,7 +2256,6 @@ button:active, .cyber-button:active, .scenario-button:active {
         display: none; /* Скрываем мобильную игру на планшетах */
     }
 }
-
 /* Стили для страницы "О нас" */
 .about-content {
     padding: 40px 20px;
@@ -2534,7 +2534,7 @@ button:active, .cyber-button:active, .scenario-button:active {
 
 /* Стили для логотипа в about-section */
 .about-icon .logo-image {
-    max-width: 150px; /* Уменьшаем размер */
+    max-width: 250px; /* Уменьшаем размер */
     height: auto;
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0, 114, 255, 0.3);
@@ -2564,6 +2564,7 @@ button:active, .cyber-button:active, .scenario-button:active {
         max-width: 100px; /* Минимальный размер для маленьких экранов */
     }
 }
+
 /* Редизайн главной*/
 
 .logo-pulse {
