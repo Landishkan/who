@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (topic && action === 'select-level') {
         showLevelSelection(topic);
     } else {
-        window.location.href = 'index.html';
+        window.location.href = '../tests.html';
     }
 });
 
@@ -293,4 +293,5 @@ function getTopicName(topicId) {
     };
     
     return names[topicId] || topicId;
+
 }
