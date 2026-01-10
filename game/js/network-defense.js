@@ -1,5 +1,5 @@
-﻿document.addEventListener('DOMContentLoaded', function() {
-    // Элементы игры
+document.addEventListener('DOMContentLoaded', function() {
+ 
     const gameStats = {
         level: document.querySelector('#level span'),
         health: document.querySelector('#health span'),
@@ -10,7 +10,7 @@
         server: document.getElementById('main-server'),
         firewall: document.getElementById('firewall'),
         firewallStrength: document.querySelector('.firewall-strength span'),
-        attackLog: document.getElementById('attack-log'),
+         attackLog: document.getElementById('attack-log'),
         currentAttack: document.getElementById('current-attack'),
         attackProgress: document.getElementById('attack-progress')
     };
@@ -32,10 +32,38 @@
         attackDamage: 0,
         lastDefenseAction: null,
         attacks: [
-            { name: "Фишинг", damage: 5, speed: 50, defense: "update", message: "Обнаружена фишинговая атака! Обновите ПО для защиты." },
-            { name: "DDoS", damage: 8, speed: 30, defense: "block", message: "DDoS атака! Блокируйте подозрительные IP-адреса." },
-            { name: "Вирус", damage: 10, speed: 20, defense: "scan", message: "Вирусная атака! Сканируйте систему на угрозы." },
-            { name: "Взлом", damage: 15, speed: 15, defense: "backup", message: "Попытка взлома! Убедитесь, что есть резервные копии." }
+             { 
+          name: "Брутфорс", 
+        damage: 5, 
+        speed: 50, 
+        defense: "scan",  
+        message: "Атака брутфорс! Подбор паролей к учётным записям.",
+        hint: "Брутфорс подбирает слабые пароли. Защита: сложные пароли + двухфакторная аутентификация."
+    },
+    { 
+        name: "DDoS", 
+        damage: 8, 
+        speed: 30, 
+        defense: "block", 
+        message: "DDoS атака! Тысячи запросов перегружают сервер.",
+        hint: "DDoS лечится фильтрацией трафика и блокировкой ботнета."
+    },
+    { 
+        name: "Вирус-шифровальщик", 
+        damage: 10, 
+        speed: 20, 
+        defense: "backup", 
+        message: "Вирус в системе! Ищет уязвимости для кражи данных.",
+        hint: "Антивирусное сканирование обнаруживает и изолирует вредоносные файлы."
+    },
+    { 
+        name: "Взлом", 
+        damage: 15, 
+        speed: 15, 
+        defense: "update", 
+        message: "Хакер пытается получить доступ к данным.",
+        hint: "Даже при взломе резервные копии позволяют восстановить данные."
+    }
         ]
     };
     
@@ -60,32 +88,57 @@
     }
     
     // Обработка действий защиты
-    function handleDefenseAction(e) {
-        const action = e.currentTarget.getAttribute('data-action');
-        gameState.lastDefenseAction = action;
-        
-        // Добавить запись в журнал
-        addLogEntry(`Выполнено действие: ${getActionName(action)}`);
-        
-        // Проверить, правильно ли действие для текущей атаки
-        if (gameState.currentAttack && action === gameState.currentAttack.defense) {
-            stopCurrentAttack(true);
-            addScore(25 * gameState.level);
-            addLogEntry(`Атака "${gameState.currentAttack.name}" успешно отражена!`);
-        } else {
-            // Неправильное действие - небольшой бонус к здоровью
-            if (action === 'backup') {
-                gameState.health = Math.min(100, gameState.health + 10);
-                addLogEntry("Резервная копия создана. Здоровье системы +10%");
-                updateGameStats();
-            } else if (action === 'update') {
-                gameState.firewall = Math.min(100, gameState.firewall + 15);
-                updateGameStats();
-                addLogEntry("ПО обновлено. Защита фаервола +15%");
-            }
-        }
-    }
+function handleDefenseAction(e) {
+    if (!gameState.running || !gameState.currentAttack) return;
     
+    const action = e.currentTarget.getAttribute('data-action');
+    gameState.lastDefenseAction = action;
+    
+    addLogEntry(`Выполнено: ${getActionName(action)}`);
+    
+  
+    if (action === gameState.currentAttack.defense) {
+        stopCurrentAttack(true);
+    addScore(25 * gameState.level);
+    
+    showAttackHint(gameState.currentAttack.hint); 
+    } else {
+     
+        gameState.firewall = Math.max(0, gameState.firewall - 5);
+        addLogEntry(`Ошибка! Фаервол ослаблен: -5%`);
+        updateGameStats();
+    }
+}
+    function showAttackHint(hint) {
+    // Создаём временное сообщение на экране
+    const hintElement = document.createElement('div');
+    hintElement.className = 'attack-hint';
+    hintElement.textContent = `💡 ${hint}`;
+    hintElement.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: #00ff88;
+        padding: 20px;
+        border-radius: 10px;
+        z-index: 1000;
+        font-size: 18px;
+        text-align: center;
+        max-width: 80%;
+        animation: fadeInOut 3s forwards;
+    `;
+    
+    document.body.appendChild(hintElement);
+    
+    // Удаляем через 3 секунды
+    setTimeout(() => {
+        if (hintElement.parentNode) {
+            hintElement.remove();
+        }
+    }, 3000);
+}
     function getActionName(action) {
         const names = {
             'update': 'Обновление ПО',
@@ -97,7 +150,11 @@
     }
     
     // Начать случайную атаку
-    function startRandomAttack() {
+   function startRandomAttack() {
+    // Очистить предыдущий интервал при его наличии 
+    if (gameState.attackInterval) {
+        clearInterval(gameState.attackInterval);
+    }
         if (!gameState.running) return;
         
         // Выбрать случайную атаку с учетом уровня сложности
@@ -180,13 +237,10 @@
         }
     }
     
-    // Добавить запись в журнал
+   
     function addLogEntry(message) {
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
-        entry.textContent = message;
-        networkElements.attackLog.appendChild(entry);
-        networkElements.attackLog.scrollTop = networkElements.attackLog.scrollHeight;
+     
+        console.log('Игра:', message);
     }
     
     // Обновить статистику игры
@@ -212,17 +266,18 @@
     
     // Добавить очки
 function addScore(points) {
+    if (!gameState.running) return; // Не начислять, если игра окончена
+    
     gameState.score += points;
     
-    // Проверка уровня (каждые 100 очков = 1 уровень)
     const newLevel = Math.floor(gameState.score / 100) + 1;
     if (newLevel > gameState.level) {
         gameState.level = newLevel;
-        addLogEntry(`Поздравляем! Достигнут уровень ${gameState.level}! Атаки становятся опаснее.`);
+        addLogEntry(`Уровень ${gameState.level}!`);
         
-        // Условие победы (например, 10 уровень)
         if (gameState.level >= 10) {
-            endGame(true); // Победа!
+            endGame(true);
+            return; // Важно: прекращаем выполнение
         }
     }
     
@@ -267,9 +322,13 @@ function endGame(win) {
         resetGame();
     };
 }
-    
+   
     // Сбросить игру
-    function resetGame() {
+   function resetGame() {
+    // 1. Очистить ВСЕ возможные интервалы
+    if (gameState.attackInterval) {
+        clearInterval(gameState.attackInterval);
+    }
         // Сбросить состояние
         gameState = {
             ...gameState,
@@ -285,6 +344,7 @@ function endGame(win) {
         };
         
         // Сбросить UI
+        networkElements.server.style.animation = '';
         networkElements.currentAttack.textContent = 'Нет';
         networkElements.attackProgress.style.width = '0%';
         networkElements.server.innerHTML = '<i class="fas fa-server"></i><div class="server-label">Сервер</div>';
@@ -292,8 +352,7 @@ function endGame(win) {
         networkElements.server.classList.remove('server-under-attack');
         networkElements.firewall.classList.remove('firewall-weakened');
         networkElements.server.classList.remove('victory-effect');
-        // Очистить журнал
-        networkElements.attackLog.innerHTML = '<div class="log-entry">Система защиты активирована. Ожидание атак...</div>';
+      
         document.getElementById('result-modal').style.display = 'none';
         updateGameStats();
         startGame();
