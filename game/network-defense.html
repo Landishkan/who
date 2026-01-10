@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -43,31 +43,37 @@
                 </div>
             </div>
 
-            <div class="attack-log">
+            <div class="attack-log" style="display: none;" >
                 <h3>Журнал атак:</h3>
-                <div class="log-entries" id="attack-log">
+                <div class="log-entries" id="attack-log" style="display: none;">
                     <div class="log-entry">Система защиты активирована. Ожидание атак...</div>
                 </div>
             </div>
 
-            <div class="defense-options">
-                <h3>Действия защиты:</h3>
-                <div class="options-grid">
-                    <button class="defense-action" data-action="update">
-                        <i class="fas fa-sync-alt"></i> Обновить ПО
-                    </button>
-                    <button class="defense-action" data-action="block">
-                        <i class="fas fa-ban"></i> Блокировать IP
-                    </button>
-                    <button class="defense-action" data-action="scan">
-                        <i class="fas fa-search"></i> Сканировать
-                    </button>
-                    <button class="defense-action" data-action="backup">
-                        <i class="fas fa-database"></i> Резервная копия
-                    </button>
-                </div>
-            </div>
-
+       <div class="defense-options">
+    <h3>Действия защиты:</h3>
+    <div class="options-grid">
+        <!-- Было: Обновить ПО (update) -->
+        <button class="defense-action" data-action="update">
+            <i class="fas fa-shield-alt"></i> Установить патч
+        </button>
+        
+        <!-- Было: Блокировать IP (block) -->
+        <button class="defense-action" data-action="block">
+            <i class="fas fa-filter"></i> Фильтровать трафик
+        </button>
+        
+        <!-- Было: Сканировать (scan) -->
+        <button class="defense-action" data-action="scan">
+            <i class="fas fa-user-lock"></i> Проверить пароли
+        </button>
+        
+        <!-- Было: Резервная копия (backup) -->
+        <button class="defense-action" data-action="backup">
+            <i class="fas fa-history"></i> Восстановить данные
+        </button>
+    </div>
+</div>
             <div class="attack-info">
                 <h3>Текущая атака: <span id="current-attack">Нет</span></h3>
                 <div class="attack-progress">
@@ -77,26 +83,60 @@
                 </div>
             </div>
         </div>
-
-        <div class="tutorial-overlay" id="tutorial">
-            <div class="tutorial-content">
-                <h2>Как играть в "Защиту сети"?</h2>
-                <p>Ваша задача - защитить сервер от хакерских атак, используя доступные инструменты защиты.</p>
-                <ul>
-                    <li><strong>Обновить ПО</strong> - устраняет уязвимости в системе</li>
-                    <li><strong>Блокировать IP</strong> - останавливает текущую атаку</li>
-                    <li><strong>Сканировать</strong> - выявляет скрытые угрозы</li>
-                    <li><strong>Резервная копия</strong> - восстанавливает здоровье сервера</li>
-                </ul>
-                <p>Каждая успешная защита приносит очки. Чем быстрее вы реагируете, тем больше очков получаете!</p>
-                <button id="start-game" class="cyber-button">
-                    <span class="button-content">
-                        <span class="button-text">Начать игру</span>
-                    </span>
-                    <span class="button-glitch"></span>
-                </button>
+<div class="tutorial-overlay" id="tutorial">
+    <div class="tutorial-content">
+        <h2>ПРАВИЛА</h2>
+        <p>Защищайте сервер от реальных кибератак. <strong>К каждой атаке — одно верное действие.</strong></p>
+        
+        <div class="rules-grid">
+            <div class="rule-item">
+                <div class="rule-icon">💉</div>
+                <div class="rule-text">
+                    <strong>Установить патч</strong>
+                    <div class="rule-desc">Закрывает уязвимости в ПО. Защита от <em>взлома</em> через дыры в системе.</div>
+                </div>
+            </div>
+            
+            <div class="rule-item">
+                <div class="rule-icon">🌊</div>
+                <div class="rule-text">
+                    <strong>Фильтровать трафик</strong>
+                    <div class="rule-desc">Отсеивает ботов и фейковые запросы. Защита от <em>DDoS</em>-атак.</div>
+                </div>
+            </div>
+            
+            <div class="rule-item">
+                <div class="rule-icon">🔑</div>
+                <div class="rule-text">
+                    <strong>Проверить пароли</strong>
+                    <div class="rule-desc">Находит слабые учётные записи. Защита от <em>подбора паролей</em> (брутфорс).</div>
+                </div>
+            </div>
+            
+            <div class="rule-item">
+                <div class="rule-icon">💾</div>
+                <div class="rule-text">
+                    <strong>Восстановить данные</strong>
+                    <div class="rule-desc">Возвращает систему из резервной копии. Защита от <em>вирусов-шифровальщиков</em>.</div>
+                </div>
             </div>
         </div>
+        
+     
+        
+        <div class="warning-box">
+            ⚠️ <strong>Цель:</strong> понять, какая защита эффективна против конкретной угрозы в реальных условиях.
+        </div>
+        
+        <button id="start-game" class="cyber-button">
+            <span class="button-content">
+                <span class="button-text" style="color: #4a6bff;"> <b>НАЧАТЬ ТРЕНИРОВКУ </b> </span>
+            </span>
+            <span class="button-glitch"></span>
+        </button>
+    </div>
+</div>
+</div>
         <div class="game-modal" id="result-modal">
     <div class="modal-content cyber-card">
         <div class="modal-icon" id="modal-icon">🏆</div>
