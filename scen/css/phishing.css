@@ -1,0 +1,203 @@
+﻿/* CSS для второй игры - фиксируем отступы */
+.scenario-header {
+    position: relative !important;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.scenario-header .container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px !important; /* Добавляем отступы слева и справа */
+    box-sizing: border-box !important; /* Чтобы padding не ломал ширину */
+}
+
+/* Кнопка остаётся в том же месте, но теперь внутри отступа контейнера */
+.scenario-header .back-button {
+    position: absolute !important;
+    left: 40px !important; /* Совпадает с padding-left контейнера */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: var(--secondary-color) !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.3s !important;
+    z-index: 1000 !important;
+    white-space: nowrap;
+}
+
+.scenario-header .back-button:hover {
+    color: var(--accent-color) !important;
+    transform: translateY(-50%) translateX(-3px) !important;
+}
+
+/* Заголовок - убираем лишние отступы */
+.scenario-header .logo-pulse {
+    position: relative;
+    z-index: 1;
+    /* padding больше не нужен здесь */
+}
+
+.scenario-header .logo-pulse h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    margin: 20px 0 10px;
+    background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 1px;
+}
+/* Общие стили для модальных окон */
+.feedback-modal,
+.completion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.feedback-modal.hidden,
+.completion-modal.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.feedback-modal:not(.hidden),
+.completion-modal:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Контент модального окна */
+.feedback-modal .modal-content,
+.completion-modal .modal-content {
+    background: linear-gradient(135deg, rgba(10, 12, 28, 0.95) 0%, rgba(15, 18, 40, 0.95) 100%);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 231, 255, 0.2);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(0, 231, 255, 0.1);
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+    z-index: 1001;
+    backdrop-filter: blur(10px);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.feedback-modal:not(.hidden) .modal-content,
+.completion-modal:not(.hidden) .modal-content {
+    transform: translateY(0);
+}
+
+/* Специфичные стили для окна победы */
+.completion-modal .modal-content {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(20, 25, 60, 0.95) 0%, rgba(10, 15, 35, 0.95) 100%);
+    border: 1px solid rgba(0, 255, 170, 0.3);
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(0, 255, 170, 0.15);
+}
+
+.completion-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+.completion-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2rem;
+    color: #00ffaa;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+}
+
+.completion-text {
+    font-size: 1.3rem;
+    color: #b8c1ec;
+    margin-bottom: 25px;
+}
+
+.final-score {
+    font-weight: bold;
+    color: #00ffaa;
+    font-size: 1.5rem;
+}
+
+.completion-rating {
+    font-size: 1.1rem;
+    color: #64ffda;
+    margin: 25px 0;
+    padding: 15px;
+    background: rgba(0, 255, 170, 0.1);
+    border-radius: 10px;
+    border-left: 3px solid #00ffaa;
+}
+
+.completion-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.completion-buttons .scenario-button {
+    flex: 1;
+    max-width: 250px;
+}
+
+/* Анимации */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+    }
+    50% {
+        transform: scale(1.1);
+        text-shadow: 0 0 20px rgba(0, 255, 170, 0.8);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .feedback-modal .modal-content,
+    .completion-modal .modal-content {
+        padding: 30px 20px;
+        width: 95%;
+    }
+    
+    .completion-title {
+        font-size: 1.8rem;
+    }
+    
+    .completion-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .completion-buttons .scenario-button {
+        max-width: 100%;
+        width: 100%;
+    }
+}
