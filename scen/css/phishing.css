@@ -17,7 +17,7 @@
 }
 
 .back-button {
-    position: absolute;
+   /* position: absolute;*/
     left: 20px;
     top: 50%;
     transform: translateY(-50%);
@@ -310,3 +310,4 @@
         width: 100%;
     }
 }
+
