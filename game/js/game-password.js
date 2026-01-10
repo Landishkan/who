@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const charSets = {
         1: '0123456789', // Только цифры
         2: '0123456789abcdefghijklmnopqrstuvwxyz', // Цифры + строчные буквы
-        3: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=?' // Все символы
+        3: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@$%*()_+-=?' // Все символы
     };
 
     // Конфигурация игры 
@@ -475,3 +475,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Запуск игры
     init();
 });
+
