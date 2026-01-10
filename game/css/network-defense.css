@@ -347,4 +347,78 @@
 
 /* Для поражения */
 .defeat .modal-icon { color: #ff2d75; }
+
 .defeat .modal-content { border-color: #ff2d75; }
+
+/* Базовые стили для tutorial-content */
+.tutorial-content {
+    background: #0a0e1a;
+    border: 2px solid #2a3b6b;
+    border-radius: 15px;
+    padding: 25px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh; /* Ограничиваем высоту окна */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Контейнер с прокруткой */
+.tutorial-scroll {
+    flex: 1; /* Занимает всё доступное пространство */
+    overflow-y: auto; /* Включаем вертикальную прокрутку */
+    margin: 15px 0;
+    padding-right: 10px; /* Отступ для полосы прокрутки */
+}
+
+/* Кастомный скроллбар (опционально, для красоты) */
+.tutorial-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tutorial-scroll::-webkit-scrollbar-track {
+    background: rgba(20, 25, 45, 0.3);
+    border-radius: 3px;
+}
+
+.tutorial-scroll::-webkit-scrollbar-thumb {
+    background: #4a6bff;
+    border-radius: 3px;
+}
+
+/* Заголовок и кнопка остаются на месте */
+.tutorial-content h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.cyber-button {
+    margin-top: 15px;
+    flex-shrink: 0; /* Чтобы кнопка не сжималась */
+}
+
+/* Адаптация для очень маленьких экранов */
+@media (max-height: 600px) {
+    .tutorial-content {
+        padding: 15px;
+        max-height: 85vh;
+    }
+    
+    .rule-item {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .rule-icon {
+        font-size: 20px;
+        margin-right: 12px;
+    }
+    
+    .rule-text strong {
+        font-size: 15px;
+    }
+    
+    .rule-desc {
+        font-size: 13px;
+    }
+}
