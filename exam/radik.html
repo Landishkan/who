@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Психология радикализации</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
+            authDomain: "cyber-questor.firebaseapp.com",
+            projectId: "cyber-questor",
+            storageBucket: "cyber-questor.firebasestorage.app",
+            messagingSenderId: "347078202285",
+            appId: "1:347078202285:web:7ac8581765d5fdc76a4724",
+            measurementId: "G-GWS13K2FW1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+    <style>
+        :root {
+            --primary-color: #9c27b0;
+            --primary-light: #ba68c8;
+            --primary-dark: #7b1fa2;
+            --secondary-color: #ce93d8;
+            --accent-color: #ab47bc;
+            --accent-green: #164da5;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+            
+            --text-color: #ffffff;
+            --text-secondary: #f3e5f5;
+            
+            --background-dark: #0a0a20;
+            --background-light: #121235;
+            
+            --card-bg: rgba(18, 18, 53, 0.7);
+            --border-color: rgba(156, 39, 176, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            background: var(--background-dark);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(156, 39, 176, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(206, 147, 216, 0.05) 0%, transparent 20%);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes toxicPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .lecture-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(58, 107, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 0 30px 0;
+            overflow: hidden;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            transition: width 0.5s ease;
+        }
+        
+        .lecture-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 15px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            background: rgba(206, 147, 216, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            color: var(--accent-color);
+            background: rgba(206, 147, 216, 0.2);
+            transform: translateX(-3px);
+        }
+        
+        .lecture-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(171, 71, 188, 0.3);
+        }
+        
+        .lecture-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty {
+            padding: 5px 15px;
+            background: rgba(156, 39, 176, 0.2);
+            border: 1px solid var(--primary-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .duration {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            padding: 5px 15px;
+            background: rgba(171, 71, 188, 0.1);
+            border-radius: 20px;
+        }
+        
+        .lecture-section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(10, 10, 32, 0.5);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+        
+        .lecture-section:hover {
+            transform: translateY(-2px);
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .title-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+        }
+        
+        .section-content {
+            font-size: 1.1rem;
+        }
+        
+        .definition-block {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(171, 71, 188, 0.05));
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .definition-block h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .danger-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .danger-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .danger-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .danger-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .danger-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+            box-shadow: 0 10px 20px rgba(156, 39, 176, 0.2);
+        }
+        
+        .danger-icon {
+            font-size: 2.5rem;
+            color: var(--error-color);
+            margin-bottom: 15px;
+        }
+        
+        .danger-card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .danger-card ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .danger-card li {
+            padding: 5px 0;
+            position: relative;
+        }
+        
+        .danger-card li:before {
+            content: '☣️';
+            position: absolute;
+            left: -20px;
+        }
+        
+        .warning-block {
+            background: rgba(244, 67, 54, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid var(--error-color);
+            position: relative;
+            overflow: hidden;
+            animation: toxicPulse 2s infinite;
+        }
+        
+        .warning-block::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, transparent, rgba(244, 67, 54, 0.1));
+            border-radius: 0 0 0 50px;
+        }
+        
+        .warning-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--error-color);
+        }
+        
+        .protection-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .protection-step {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .protection-step:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2);
+        }
+        
+        .step-icon {
+            font-size: 2.5rem;
+            color: var(--accent-green);
+            margin-bottom: 15px;
+        }
+        
+        .protection-step h4 {
+            color: var(--accent-green);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .quiz-block {
+            background: rgba(10, 10, 32, 0.7);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+            border-top: 3px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(156, 39, 176, 0.05), transparent);
+            transform: translateX(-100%);
+        }
+        
+        .quiz-block:hover::before {
+            animation: slide 2s infinite;
+        }
+        
+        .quiz-block h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .quiz-question {
+            margin: 25px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .quiz-question:last-of-type {
+            border-bottom: none;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quiz-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-color);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+        
+        .quiz-option:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.correct {
+            background: rgba(22, 165, 65, 0.2);
+            border-color: var(--accent-green);
+        }
+        
+        .quiz-option.correct::before {
+            background: var(--accent-green);
+            transform: scaleY(1);
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(244, 67, 54, 0.2);
+            border-color: var(--error-color);
+        }
+        
+        .quiz-option.incorrect::before {
+            background: var(--error-color);
+            transform: scaleY(1);
+        }
+        
+        .quiz-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3);
+        }
+        
+        .quiz-submit:active {
+            transform: translateY(1px);
+        }
+        
+        .quiz-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(22, 165, 65, 0.1);
+            border-radius: 5px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+            border-left: 4px solid var(--accent-green);
+        }
+        
+        .conclusion-block {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(206, 147, 216, 0.1));
+            border-radius: 12px;
+            padding: 30px;
+            margin: 50px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .conclusion-block::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(206, 147, 216, 0.1) 0%, transparent 70%);
+        }
+        
+        .conclusion-block h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .key-points {
+            list-style: none;
+            padding-left: 0;
+            margin: 20px 0;
+        }
+        
+        .key-points li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .key-points li:before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+        
+        .lecture-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .next-lecture {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 25px;
+            border: 1px solid var(--accent-color);
+            border-radius: 5px;
+            transition: all 0.3s;
+            background: rgba(171, 71, 188, 0.1);
+        }
+        
+        .next-lecture:hover {
+            background: rgba(171, 71, 188, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .lecture-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(206, 147, 216, 0.1);
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-button:hover {
+            background: rgba(206, 147, 216, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(206, 147, 216, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .lecture-container {
+                padding: 15px;
+            }
+            
+            .lecture-title {
+                font-size: 2.2rem;
+            }
+            
+            .lecture-section {
+                padding: 20px;
+            }
+            
+            .danger-types, .protection-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .lecture-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .next-lecture, .lecture-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        .stat-highlight {
+            font-size: 1.2em;
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+        
+        .legal-info {
+            background: rgba(33, 150, 243, 0.1);
+            border-left-color: #2196f3;
+        }
+        
+        .legal-info .warning-header {
+            color: #2196f3;
+        }
+        
+        .example-block {
+            background: rgba(255, 193, 7, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="lecture-container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="lecture-header">
+            <a href="../learning.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Назад к списку лекций
+            </a>
+            <h1 class="lecture-title">Психология радикализации</h1>
+            <div class="lecture-meta">
+                <span class="difficulty intermediate">Продвинутый уровень</span>
+                <span class="duration"><i class="far fa-clock"></i> 20 мин</span>
+            </div>
+        </div>
+        
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">1</span> История Максима: как всё начинается</h2>
+            <div class="section-content">
+                <p>Максиму было 15, когда он начал чувствовать себя лишним. Учёба давалась тяжело, с родителями — постоянные ссоры, а в школе он был частью "непопулярной" компании. Он много времени проводил в сети, и однажды алгоритмы предложили ему группу, где говорили о "несправедливом мире" и "сильных людях, которые не боятся действовать". Сначала это был просто мемы и шутки, которые понятны только своим. Там он впервые почувствовал себя частью чего-то важного — его приняли, его мнение ценили. Но путь от чувства одиночества до одобрения насилия оказался короче, чем он думал.</p>
+
+                <div class="definition-block">
+                    <h4><i class="fas fa-user"></i> Психологический портрет</h4>
+<p>Радикализация — это <strong>постепенный процесс изменения мыслей, чувств и поведения</strong> в сторону принятия крайних идей и насильственных действий. Современные исследования показывают, что этот процесс редко связан с одной причиной, а представляет собой «идеальный шторм» из нескольких факторов.</p>                </div>
+            </div>
+        </div>
+
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">2</span> 3 этапа вовлечения: невидимая дорога к крайностям</h2>
+            <div class="section-content">
+                <p>Психологи выделяют чёткие стадии, через которые проходит человек на пути радикализации. Понимая их, легче распознать опасность.</p>
+
+                <div class="danger-types">
+                    <div class="danger-card">
+                        <div class="danger-icon"><i class="fas fa-search"></i></div>
+                        <h4>Этап 1: Идентификация</h4>
+                        <ul>
+                            <li><strong>Суть:</strong> "Наконец-то меня поняли!"</li>
+                            <li><strong>Что происходит:</strong> Человек находит группу (онлайн или офлайн), где разделяют его обиды, разочарования или гнев. Он начинает отождествлять себя с этой группой, её символикой, языком, врагами.</li>
+                            <li><strong>Психологический механизм:</strong> Удовлетворение базовой потребности в принадлежности и уважении.</li>
+                        </ul>
+                    </div>
+
+                    <div class="danger-card">
+                        <div class="danger-icon"><i class="fas fa-democrat"></i></div>
+                        <h4>Этап 2: Демонизация</h4>
+                        <ul>
+                            <li><strong>Суть:</strong> "Они — причина всех наших бед"</li>
+                            <li><strong>Что происходит:</strong> Формируется образ врага. Им может быть другая социальная, этническая группа, государство, "система". Их начинают изображать не просто чужими, а безусловно злыми, недочеловеками.</li>
+                            <li><strong>Психологический механизм:</strong> Когнитивное искажение "чёрно-белого мышления". Это упрощает картину мира и сплачивает группу против общего врага.</li>
+                        </ul>
+                    </div>
+
+                    <div class="danger-card">
+                        <div class="danger-icon"><i class="fas fa-gavel"></i></div>
+                        <h4>Этап 3: Оправдание насилия</h4>
+                        <ul>
+                            <li><strong>Суть:</strong> "Это наша священная обязанность"</li>
+                            <li><strong>Что происходит:</strong> Насилие перестаёт быть преступлением. Оно представляется как единственный возможный ответ на угрозу, как инструмент "справедливости", "защиты" или "очищения".</li>
+                            <li><strong>Психологический механизм:</strong> Моральное отключение (Moral Disengagement). Человек перестаёт применять к себе и своей группе обычные моральные нормы.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="warning-block">
+                    <div class="warning-header">
+                        <i class="fas fa-filter-circle-dollar"></i>
+                        <h4>Эхо-камера: главный ускоритель радикализации</h4>
+                    </div>
+                    <p>Эхо-камера — это информационное пространство (чаще всего в соцсетях), где человек встречает только те мнения, которые совпадают с его собственными. Алгоритмы усиливают этот эффект, показывая контент, похожий на тот, что вы уже лайкнули.<br><br>
+                    <strong>Как это работает на пути к крайностям?</strong><br>
+                    1. <strong>Изоляция:</strong> Человек постепенно отсекает альтернативные точки зрения.<br>
+                    2. <strong>Усиление:</strong> Его изначальные идеи постоянно подтверждаются и становятся более жёсткими.<br>
+                    3. <strong>Поляризация:</strong> Любое другое мнение начинает казаться не просто ошибочным, а враждебным.<br>
+                    Из эхо-камеры, где просто разделяют твои обиды, легко попасть в радикальную группу, которая предлагает "решение".</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">3</span> Тревожные звоночки: как распознать опасность</h2>
+            <div class="section-content">
+                <p>Радикализация меняет мышление и поведение. Эти изменения можно заметить в себе или в друге.</p>
+
+                <div class="protection-steps">
+                    <div class="protection-step">
+                        <div class="step-icon"><i class="fas fa-brain"></i></div>
+                        <h4>Изменения в мышлении</h4>
+                        <ul>
+                            <li><strong>Чёрно-белая картина мира:</strong> Всё делится на "абсолютно правильное" (наша группа) и "абсолютно неправильное" (все остальные).</li>
+                            <li><strong>Конспирологическое мышление:</strong> Сложные события объясняются простыми теориями заговора "злых сил".</li>
+                            <li><strong>Язык вражды:</strong> В речи появляются обобщающие оскорбительные ярлыки для целых групп людей ("все они...").</li>
+                        </ul>
+                    </div>
+
+                    <div class="protection-step">
+                        <div class="step-icon"><i class="fas fa-user-friends"></i></div>
+                        <h4>Изменения в поведении</h4>
+                        <ul>
+                            <li><strong>Социальная изоляция:</strong> Разрыв старых дружеских связей, конфликты с семьёй, уход от прежних увлечений.</li>
+                            <li><strong>Секретность:</strong> Скрытность в использовании телефона и компьютера, новые непонятные знакомства.</li>
+                            <li><strong>Оправдание насилия:</strong> Разговоры о том, что насилие — это "необходимость" или "ответ на несправедливость".</li>
+                        </ul>
+                    </div>
+
+                    <div class="protection-step">
+                        <div class="step-icon"><i class="fas fa-heart-crack"></i></div>
+                        <h4>Эмоциональные изменения</h4>
+                        <ul>
+                            <li><strong>Постоянный гнев или подавленность:</strong> Фоновая эмоция — раздражение на мир, чувство унижения или безнадёжности.</li>
+                            <li><strong>Потеря эмпатии:</strong> Равнодушие или даже злорадство к страданиям людей, которых группа считает "врагами".</li>
+                            <li><strong>Апатия или гипервозбуждение:</strong> Потеря интереса к жизни или, наоборот, фанатичная вовлечённость в идеи группы.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-block legal-info">
+                    <div class="warning-header">
+                        <i class="fas fa-handshake"></i>
+                        <h4>Важный принцип</h4>
+                    </div>
+                    <p>Заметив один или два признака у друга, <strong>не спешите делать выводы и вешать ярлыки</strong>. Подростковый возраст — время поиска себя, и некоторые из этих проявлений могут быть его частью. Однако сочетание нескольких признаков, особенно оправдание насилия и социальная изоляция, — это серьёзный повод для беспокойства и действия.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lecture-section">
+            <h2 class="section-title"><span class="title-number">4</span> 3 шага защиты: ваш личный щит</h2>
+            <div class="section-content">
+                <p>Профилактика — это не про запреты, а про развитие внутренней устойчивости. Вот три ключевых навыка, которые стоит в себе тренировать.</p>
+
+                <div class="danger-types">
+                    <div class="danger-card">
+                        <div class="danger-icon"><i class="fas fa-cogs"></i></div>
+                        <h4>Шаг 1: Развивайте критическое мышление</h4>
+                        <ul>
+                            <li><strong>Задавайте вопросы источнику:</strong> Кто это говорит? Какую выгоду он преследует? Что он хочет, чтобы я почувствовал или сделал?</li>
+                            <li><strong>Ищите альтернативные точки зрения:</strong> Намеренно читайте и смотрите мнения, с которыми не согласны.</li>
+                            <li><strong>Проверяйте эмоции:</strong> Если контент вызывает сильный гнев или чувство превосходства — это может быть манипуляция.</li>
+                        </ul>
+                    </div>
+
+                    <div class="danger-card">
+                        <div class="danger-icon"><i class="fas fa-life-ring"></i></div>
+                        <h4>Шаг 2: Сохраняйте внешние связи</h4>
+                        <ul>
+                            <li><strong>Цените разнообразие:</strong> Поддерживайте отношения с людьми из разных социальных кругов, с разными взглядами.</li>
+                            <li><strong>Доверяйте близким:</strong> Найдите хотя бы одного взрослого (родитель, родственник, педагог, психолог), с которым можно безопасно обсудить любые сомнения.</li>
+                            <li><strong>Помните: сильная группа не требует разрыва всех других связей.</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="danger-card">
+                        <div class="danger-icon"><i class="fas fa-door-open"></i></div>
+                        <h4>Шаг 3: Выходите из информационного пузыря</h4>
+                        <ul>
+                            <li><strong>Диагностируйте свою ленту:</strong> Подпишитесь на 5-10 новых источников с противоположными взглядами. Что алгоритмы будут предлагать завтра?</li>
+                            <li><strong>Цифровая гигиена:</strong> Регулярно чистите список подписок, выходя из групп, где царит ненависть и агрессия.</li>
+                            <li><strong>Возвращайтесь в реальный мир:</strong> Хобби, спорт, волонтёрство, искусство — всё, что даёт чувство accomplishment (достижения) и связи вне сети.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quiz-block">
+            <h3><i class="fas fa-question-circle"></i> Проверь себя</h3>
+            <p>Ответь на вопросы о механизмах радикализации:</p>
+
+            <div class="quiz-question" id="question1">
+                <p>1. Какой психологический механизм лежит в основе этапа "Оправдание насилия"?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Когнитивный диссонанс</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Моральное отключение (Moral Disengagement)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Проекция</div>
+                </div>
+            </div>
+
+            <div class="quiz-question" id="question2">
+                <p>2. Что такое "эхо-камера" и как она влияет на радикализацию?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Это приложение для общения, где все кричат</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Информационное пространство, усиливающее только одну точку зрения и ведущее к поляризации</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Музыкальный жанр</div>
+                </div>
+            </div>
+
+            <div class="quiz-question" id="question3">
+                <p>3. Какой из перечисленных признаков НЕ является однозначным "тревожным звоночком"?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Оправдание насилия в речи</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Спор с родителями из-за оценок</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Полный разрыв старых дружеских связей и скрытность</div>
+                </div>
+            </div>
+
+            <div class="quiz-question" id="question4">
+                <p>4. Что является самым важным действием, если вы заметили признаки радикализации у друга?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Немедленно сообщить в полицию</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Начать публично спорить с ним, чтобы образумить</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Аккуратно поговорить, выразить беспокойство и предложить помощь доверенного взрослого</div>
+                </div>
+            </div>
+
+            <button class="quiz-submit" id="check-results-btn" onclick="showResults()">Проверить ответы</button>
+            <div class="quiz-results" id="quiz-results"></div>
+        </div>
+        
+        <div class="conclusion-block">
+            <h3><i class="fas fa-star"></i> Главное запомнить</h3>
+            <ul class="key-points">
+                <li><strong>Радикализация — это процесс.</strong> Она происходит поэтапно: Идентификация → Демонизация → Оправдание насилия.</li>
+                <li><strong>Эхо-камеры в соцсетях — мощный ускоритель,</strong> который изолирует человека от других мнений и усиливает крайности.</li>
+                <li><strong>Тревожные признаки — в мышлении, поведении и эмоциях.</strong> Ключевой маркер — оправдание насилия и социальная изоляция.</li>
+                <li><strong>Ваша защита — критическое мышление, разнообразие социальных связей и умение выходить из информационного пузыря.</strong></li>
+                <li><strong>Вы не одни.</strong> Если вас или вашего друга что-то тревожит, всегда можно обратиться к психологу, на линии доверия или к проверенному взрослому.</li>
+            </ul>
+            <p style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);"><strong>Куда обратиться за помощью или консультацией:</strong></p>
+            <p>Всероссийский детский телефон доверия: <strong>8-800-2000-122</strong> (круглосуточно, бесплатно, анонимно).</p>
+        </div>    
+        <div class="lecture-footer">
+            <a href="../index.html" class="next-lecture">
+                На главную <i class="fas fa-home"></i>
+            </a>
+            <div class="lecture-actions">
+                <button class="action-button" onclick="saveLecture()"><i class="far fa-bookmark"></i> Сохранить</button>
+                <button class="action-button" onclick="shareLecture()"><i class="fas fa-share-alt"></i> Поделиться</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+        
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                
+                const size = Math.random() * 3 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        let score = 0;
+        const totalQuestions = 4;
+        
+        function checkAnswer(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                score++;
+            } else {
+                element.classList.add('incorrect');
+                
+                options.forEach(opt => {
+                    if (opt.getAttribute('onclick') && opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+        }
+        
+        function showResults() {
+            const resultsDiv = document.getElementById('quiz-results');
+            let message = '';
+            
+            if (score === totalQuestions) {
+                message = `<h4><i class="fas fa-shield-alt"></i> Отлично! ${score}/${totalQuestions}</h4>
+                          <p>Ты отлично понимаешь механизмы радикализации! Продолжай развивать критическое мышление!</p>`;
+            } else if (score >= totalQuestions / 2) {
+                message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
+                          <p>Ты уже многое знаешь о психологии радикализации. Обрати внимание на вопросы с ошибками!</p>`;
+            } else {
+                message = `<h4><i class="fas fa-exclamation-triangle"></i> Внимание! ${score}/${totalQuestions}</h4>
+                          <p>Психология радикализации — важная тема для безопасности. Пройди лекцию ещё раз!</p>`;
+            }
+            
+            resultsDiv.innerHTML = message;
+            resultsDiv.style.display = 'block';
+            
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            setTimeout(() => {
+                document.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                score = 0;
+                resultsDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function saveLecture() {
+            const user = auth.currentUser;
+            if (user) {
+                db.collection('saved_lectures').add({
+                    userId: user.uid,
+                    lectureTitle: 'Психология радикализации',
+                    lectureUrl: window.location.href,
+                    savedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    category: 'psychology_safety'
+                })
+                .then(() => {
+                    alert('Лекция о психологии радикализации сохранена в вашем профиле!');
+                })
+                .catch((error) => {
+                    console.error('Ошибка сохранения:', error);
+                    alert('Войдите в систему для сохранения лекций');
+                });
+            } else {
+                alert('Войдите в систему для сохранения лекций');
+            }
+        }
+        
+        function shareLecture() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Психология радикализации — как распознать и защититься',
+                    text: 'Узнай о механизмах вовлечения в радикальные группы и научись защищать себя и друзей',
+                    url: window.location.href
+                })
+                .then(() => console.log('Успешный шаринг'))
+                .catch((error) => console.log('Ошибка шаринга', error));
+            } else {
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => alert('Ссылка на лекцию о психологии радикализации скопирована!'))
+                    .catch(() => alert('Не удалось скопировать ссылку'));
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log('Пользователь авторизован:', user.email);
+                }
+            });
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.lecture-section, .quiz-block, .conclusion-block').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            });
+            
+            const dangerCards = document.querySelectorAll('.danger-card');
+            dangerCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    const icon = card.querySelector('.danger-icon');
+                    icon.style.transform = 'scale(1.2)';
+                    icon.style.transition = 'transform 0.3s ease';
+                });
+                card.addEventListener('mouseleave', () => {
+                    const icon = card.querySelector('.danger-icon');
+                    icon.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
