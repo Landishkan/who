@@ -13,7 +13,7 @@
 <body>
     <div class="tests-container">
         <div class="results-container animate-fade">
-        <button class="back-button" onclick="window.location.href='../tests.html'">
+            <button class="back-button" onclick="window.location.href='../tests.html'">
                 <i class="fas fa-home"></i> На главную
             </button>
             
@@ -91,85 +91,110 @@
 
     <script src="progress.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Получаем результаты из localStorage
-            const results = JSON.parse(localStorage.getItem('lastTestResults'));
-            
-            if (!results) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            // Обновляем информацию о тесте
-            document.getElementById('testInfo').textContent = 
-                `${results.topic} • ${results.level === 'basic' ? 'Базовый уровень' : 'Углубленный уровень'}`;
-            
-            // Обновляем статистику
-            document.getElementById('correctAnswers').textContent = results.correct;
-            document.getElementById('totalQuestions').textContent = results.total;
-            document.getElementById('percentage').textContent = results.percentage + '%';
-            document.getElementById('timeSpent').textContent = results.time;
-            document.getElementById('scoreNumber').textContent = results.percentage + '%';
-            
-            // Настраиваем круг прогресса
-            const scoreCircle = document.getElementById('scoreCircle');
-            const percentage = results.percentage;
-            scoreCircle.style.background = `conic-gradient(
-                var(--cyber-success) 0% ${percentage}%, 
-                rgba(255,255,255,0.1) ${percentage}% 100%
-            )`;
-            
-            // Устанавливаем сообщение в зависимости от результата
-            let message = '';
-            let description = '';
-            let feedback = '';
-            
-            if (percentage >= 90) {
-                message = 'Отличный результат!';
-                description = 'Вы отлично разбираетесь в теме!';
-                feedback = 'Продолжайте в том же духе! Вы можете попробовать углубленные тесты по другим темам.';
-            } else if (percentage >= 70) {
-                message = 'Хороший результат!';
-                description = 'Вы хорошо ориентируетесь в теме, но есть куда расти.';
-                feedback = 'Рекомендуем повторить материалы по теме и пройти тест еще раз через несколько дней.';
-            } else if (percentage >= 50) {
-                message = 'Неплохой результат';
-                description = 'Вы понимаете основы, но нужно углубить знания.';
-                feedback = 'Внимательно изучите материалы курса и обратите внимание на темы, которые вызвали затруднения.';
-            } else {
-                message = 'Есть над чем поработать';
-                description = 'Рекомендуем изучить материалы еще раз.';
-                feedback = 'Не расстраивайтесь! Кибербезопасность — сложная тема. Пройдите обучающие материалы и попробуйте снова.';
-            }
-            
-            document.getElementById('scoreMessage').textContent = message;
-            document.getElementById('scoreDescription').textContent = description;
-            document.getElementById('feedbackContent').innerHTML = `<p>${feedback}</p>`;
-            
-            // Сохраняем прогресс
-            saveTestResult(results.topicId, results.level, percentage);
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Получаем результаты из localStorage
+    const results = JSON.parse(localStorage.getItem('lastTestResults'));
+    
+    if (!results) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // 2. Рассчитываем количество ошибок
+    const wrongCount = results.total - results.correct;
+    let feedbackHTML = '';
+
+    // 3. Логика ПЕРСОНАЛЬНЫХ или ОБЩИХ рекомендаций
+    if (wrongCount === 0) {
+        feedbackHTML = '<p class="success-text">Вы отлично справились! Все ответы верны.</p>';
+    } else if (wrongCount <= 3) {
+        // Если ошибок мало (1-3) — выводим персональные советы из hints
+        feedbackHTML = '<p>Хороший результат! Вот несколько персональных рекомендаций для вас:</p><ul class="hint-list" style="text-align: left; list-style: none; padding-left: 10px;">';
+        if (results.hints && results.hints.length > 0) {
+            results.hints.forEach(hint => {
+                feedbackHTML += `<li style="margin-bottom: 8px; border-left: 3px solid var(--cyber-accent); padding-left: 10px;">— ${hint}</li>`;
+            });
+        } else {
+            feedbackHTML += '<li>Продолжайте изучение материалов для закрепления успеха.</li>';
+        }
+        feedbackHTML += '</ul>';
+    } else {
+        // Если ошибок больше 3 — выводим общие советы в зависимости от процента
+        if (results.percentage >= 50) {
+            feedbackHTML = '<p>Тема кибербуллинга требует дополнительного изучения. Рекомендуем ознакомиться с нашими базовыми статьями о безопасности, чтобы закрыть пробелы.</p>';
+        } else {
+            feedbackHTML = '<p>Похоже, эта тема для вас совсем новая. Советуем внимательно пройти обучающий курс перед повторным тестированием.</p>';
+        }
+    }
+
+    // Вставляем итоговый текст в блок на странице
+    document.getElementById('feedbackContent').innerHTML = feedbackHTML;
+
+    // 4. Обновляем остальную информацию на странице
+    document.getElementById('testInfo').textContent = 
+        `${results.topic} • ${results.level === 'basic' ? 'Базовый уровень' : 'Углубленный уровень'}`;
+    
+    document.getElementById('correctAnswers').textContent = results.correct;
+    document.getElementById('totalQuestions').textContent = results.total;
+    document.getElementById('percentage').textContent = results.percentage + '%';
+    document.getElementById('timeSpent').textContent = results.time;
+    document.getElementById('scoreNumber').textContent = results.percentage + '%';
+    
+    // 5. Настраиваем круг прогресса
+    const scoreCircle = document.getElementById('scoreCircle');
+    const percentage = results.percentage;
+    scoreCircle.style.background = `conic-gradient(
+        var(--cyber-success) 0% ${percentage}%, 
+        rgba(255,255,255,0.1) ${percentage}% 100%
+    )`;
+    
+    // 6. Устанавливаем главный заголовок и описание
+    let message = '';
+    let description = '';
+    
+    if (percentage >= 90) {
+        message = 'Отличный результат!';
+        description = 'Вы отлично разбираетесь в теме!';
+    } else if (percentage >= 70) {
+        message = 'Хороший результат!';
+        description = 'Вы хорошо ориентируетесь в теме, но есть куда расти.';
+    } else if (percentage >= 50) {
+        message = 'Неплохой результат';
+        description = 'Вы понимаете основы, но нужно углубить знания.';
+    } else {
+        message = 'Есть над чем поработать';
+        description = 'Рекомендуем изучить материалы еще раз.';
+    }
+    
+    document.getElementById('scoreMessage').textContent = message;
+    document.getElementById('scoreDescription').textContent = description;
+    
+    // 7. Сохраняем прогресс в общую статистику
+    if (typeof saveTestResult === 'function') {
+        saveTestResult(results.topicId, results.level, percentage);
+    }
+});
+
+// Функции кнопок
+function retryTest() {
+    const results = JSON.parse(localStorage.getItem('lastTestResults'));
+    if (results) {
+        window.location.href = `test.html?topic=${results.topicId}&level=${results.level}`;
+    }
+}
+
+function shareResults() {
+    const results = JSON.parse(localStorage.getItem('lastTestResults'));
+    if (results && navigator.share) {
+        navigator.share({
+            title: 'Мой результат теста по кибербезопасности',
+            text: `Я набрал ${results.percentage}% в тесте "${results.topic}"!`,
+            url: window.location.href
         });
-        
-        function retryTest() {
-            const results = JSON.parse(localStorage.getItem('lastTestResults'));
-            if (results) {
-                window.location.href = `test.html?topic=${results.topicId}&level=${results.level}`;
-            }
-        }
-        
-        function shareResults() {
-            const results = JSON.parse(localStorage.getItem('lastTestResults'));
-            if (results && navigator.share) {
-                navigator.share({
-                    title: 'Мой результат теста по кибербезопасности',
-                    text: `Я набрал ${results.percentage}% в тесте "${results.topic}"!`,
-                    url: window.location.href
-                });
-            } else {
-                alert('Скопируйте ссылку, чтобы поделиться результатом: ' + window.location.href);
-            }
-        }
+    } else {
+        alert('Скопируйте ссылку, чтобы поделиться результатом: ' + window.location.href);
+    }
+}
     </script>
 </body>
-
 </html>
