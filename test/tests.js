@@ -292,9 +292,9 @@ function getTopicName(topicId) {
         'fraud': 'Онлайн-мошенничество',
         'phishing': 'Фишинг',
         'destructive-content': 'Деструктивный контент',
-        'echo-chambers': 'Эхо-камера' // изм
+        'echo-chambers': 'Эхо-камера', // изм
+        'fakes': 'Фейки и дезинформация'
     };
     
     return names[topicId] || topicId;
 }
-
