@@ -597,7 +597,7 @@ const testData = {
     ]
 }
 },
-'echo-chambers': {
+/* 'echo-chambers': {
     'basic': {
         title: 'Эхо-камеры - Базовый уровень',
         questions: [
@@ -714,7 +714,7 @@ const testData = {
         ]
     }
 
-   },
+   }, */
 'netiquette': {
     'basic': {
         title: 'Сетевой этикет - Базовый уровень',
@@ -1326,3 +1326,4 @@ const testData = {
             }
 }
 };
+
