@@ -178,31 +178,33 @@ function previousQuestion() {
 
 // Завершить тест
 function finishTest() {
-    // Остановка таймера
     stopTimer();
-    
-    // Расчет результатов
     const correctAnswers = calculateCorrectAnswers();
     const totalQuestions = currentTest.questions.length;
     const percentage = Math.round((correctAnswers / totalQuestions) * 100);
-    
-    // Сохранение результатов
+
+    // Собираем подсказки только для тех вопросов, где пользователь ошибся
+    const hintsForErrors = [];
+    currentTest.questions.forEach((question, index) => {
+        if (userAnswers[index] !== question.correct) {
+            // Берем подсказку из вопроса, если она там есть
+            hintsForErrors.push(question.hint || "Стоит повторить этот раздел.");
+        }
+    });
+
     const results = {
-        topic: currentTest.title.split(' - ')[0],
         topicId: window.currentTopic,
-        level: currentTest.title.includes('Углубленный') ? 'advanced' : 'basic',
+        topic: getTopicName(window.currentTopic),
+        level: currentTest.level,
         correct: correctAnswers,
         total: totalQuestions,
         percentage: percentage,
         time: formatTime(timeSpent),
-        timestamp: new Date().toISOString()
+        hints: hintsForErrors // Сохраняем все подсказки для страницы результатов
     };
-    
+
     localStorage.setItem('lastTestResults', JSON.stringify(results));
-    
-    // Показать экран завершения
-    testScreen.style.display = 'none';
-    completionScreen.style.display = 'block';
+    window.location.href = 'results.html';
 }
 
 // Показать результаты
@@ -289,9 +291,9 @@ function getTopicName(topicId) {
         'cyberterrorism': 'Кибертерроризм',
         'online-fraud': 'Онлайн-мошенничество',
         'phishing': 'Фишинг',
-        'destructive-content': 'Деструктивный контент'
+        'destructive-content': 'Деструктивный контент',
+        'echo-chambers': 'Эхо-камера' // изм
     };
     
     return names[topicId] || topicId;
-
 }
