@@ -289,7 +289,7 @@ function getTopicName(topicId) {
         'social-engineering': 'Социальная инженерия',
         'netiquette': 'Сетевой этикет',
         'cyberterrorism': 'Кибертерроризм',
-        'online-fraud': 'Онлайн-мошенничество',
+        'fraud': 'Онлайн-мошенничество',
         'phishing': 'Фишинг',
         'destructive-content': 'Деструктивный контент',
         'echo-chambers': 'Эхо-камера' // изм
@@ -297,3 +297,4 @@ function getTopicName(topicId) {
     
     return names[topicId] || topicId;
 }
+
