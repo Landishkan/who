@@ -84,7 +84,7 @@
                                 <i class="fas fa-trophy"></i>
                             </div>
                             <div class="instruction-content">
-                                <h4>Только результаты</h4>
+                                <h4>Только результаты и рекомендации</h4>
                                 <p>После теста вы увидите только количество правильных ответов, но не сами ответы</p>
                             </div>
                         </div>
@@ -101,8 +101,8 @@
         </footer>
     </div>
 
-    <script src="test/data.js"></script>
-    <script src="test/progress.js"></script>
+    <script src="test2/data.js"></script>
+    <script src="test2/progress.js"></script>
     <script>
         // Генерация карточек тем
         document.addEventListener('DOMContentLoaded', function() {
@@ -116,7 +116,9 @@
                 'cyberterrorism': 'fa-globe',
                 'fraud': 'fa-user-secret',
                 'phishing': 'fa-fish',
-                'destructive-content': 'fa-radiation'
+                'destructive-content': 'fa-radiation',
+                 'echo-chambers': 'fa-radiation',
+                 'fakes': 'fa-mask'// измен
             };
             
             const topicNames = {
@@ -126,7 +128,9 @@
                 'cyberterrorism': 'Кибертерроризм',
                 'fraud': 'Онлайн-мошенничество',
                 'phishing': 'Фишинг',
-                'destructive-content': 'Деструктивный контент'
+                'destructive-content': 'Деструктивный контент',
+                'echo-chambers': 'Эхо-камера',
+                'fakes': 'Фейки' // измен
             };
             
             const topicDescriptions = {
@@ -136,7 +140,9 @@
                 'cyberterrorism': 'Кибер-угрозы национальной безопасности',
                 'fraud': 'Мошенничество в интернете',
                 'phishing': 'Кража личных данных',
-                'destructive-content': 'Вредоносная информация'
+                'destructive-content': 'Вредоносная информация',
+                'echo-chambers': 'Информационные пузыри в интернете',
+                'fakes': 'Фейки и дезинформация' // измен
             };
             
             topics.forEach(topicId => {
@@ -156,7 +162,7 @@
                 `;
                 
                 card.addEventListener('click', () => {
-                    window.location.href = `test/test.html?topic=${topicId}&action=select-level`;
+                    window.location.href = `test2/test.html?topic=${topicId}&action=select-level`;
                 });
                 
                 topicsGrid.appendChild(card);
@@ -198,7 +204,4 @@
         }
     </script>
 </body>
-
 </html>
-
-
