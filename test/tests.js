@@ -150,11 +150,11 @@ function selectAnswer(answerIndex) {
     nextButton.disabled = false;
     
     // Автоматический переход к следующему вопросу через 1 секунду
-    setTimeout(() => {
+  /*  setTimeout(() => {
         if (currentQuestionIndex < currentTest.questions.length - 1) {
             nextQuestion();
         }
-    }, 1000);
+    }, 1000); */
 }
 
 // Следующий вопрос
@@ -304,5 +304,6 @@ function getTopicName(topicId) {
     
     return names[topicId] || topicId;
 }
+
 
 
