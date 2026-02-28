@@ -210,7 +210,7 @@ function finishTest() {
 
     // 4. Сохраняем и переходим
     localStorage.setItem('lastTestResults', JSON.stringify(results));
-    window.location.href = 'result.html'; // Проверь, result.html или results.html (у тебя в коде было и так, и так)
+    window.location.href = 'results.html'; // Проверь, result.html или results.html (у тебя в коде было и так, и так)
 }
 
 // Показать результаты
@@ -304,4 +304,5 @@ function getTopicName(topicId) {
     
     return names[topicId] || topicId;
 }
+
 
