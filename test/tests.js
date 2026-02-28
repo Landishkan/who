@@ -179,32 +179,38 @@ function previousQuestion() {
 // Завершить тест
 function finishTest() {
     stopTimer();
+    
+    // 1. Получаем реальный уровень из URL (чтобы избежать путаницы с данными)
+    const urlParams = new URLSearchParams(window.location.search);
+    const actualLevel = urlParams.get('level') || 'basic'; 
+
     const correctAnswers = calculateCorrectAnswers();
     const totalQuestions = currentTest.questions.length;
     const percentage = Math.round((correctAnswers / totalQuestions) * 100);
 
-    // Собираем подсказки только для тех вопросов, где пользователь ошибся
+    // 2. Собираем подсказки только для ошибок
     const hintsForErrors = [];
     currentTest.questions.forEach((question, index) => {
         if (userAnswers[index] !== question.correct) {
-            // Берем подсказку из вопроса, если она там есть
             hintsForErrors.push(question.hint || "Стоит повторить этот раздел.");
         }
     });
 
+    // 3. Формируем объект результатов
     const results = {
         topicId: window.currentTopic,
         topic: getTopicName(window.currentTopic),
-        level: currentTest.level,
+        level: actualLevel, // ИСПОЛЬЗУЕМ ПРОВЕРЕННЫЙ УРОВЕНЬ
         correct: correctAnswers,
         total: totalQuestions,
         percentage: percentage,
         time: formatTime(timeSpent),
-        hints: hintsForErrors // Сохраняем все подсказки для страницы результатов
+        hints: hintsForErrors
     };
 
+    // 4. Сохраняем и переходим
     localStorage.setItem('lastTestResults', JSON.stringify(results));
-    window.location.href = 'results.html';
+    window.location.href = 'result.html'; // Проверь, result.html или results.html (у тебя в коде было и так, и так)
 }
 
 // Показать результаты
@@ -298,3 +304,4 @@ function getTopicName(topicId) {
     
     return names[topicId] || topicId;
 }
+
