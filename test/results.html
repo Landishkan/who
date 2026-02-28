@@ -174,12 +174,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Функции кнопок
 function retryTest() {
+    // 1. Достаем сохраненные результаты, чтобы узнать, какая была тема
     const results = JSON.parse(localStorage.getItem('lastTestResults'));
-    if (results) {
-        window.location.href = `test.html?topic=${results.topicId}&level=${results.level}`;
+    
+    if (results && results.topicId) {
+        // 2. Переходим на страницу теста с параметром выбора уровня
+        // Используем results.topicId, чтобы вернуться к той же теме
+        window.location.href = `test.html?topic=${results.topicId}&action=select-level`;
+    } else {
+        // 3. Если данных нет, тогда уже на общий список тем
+        window.location.href = '../tests.html';
     }
 }
-
 /* function shareResults() {
     const results = JSON.parse(localStorage.getItem('lastTestResults'));
     if (results && navigator.share) {
@@ -195,5 +201,6 @@ function retryTest() {
     </script>
 </body>
 </html>
+
 
 
