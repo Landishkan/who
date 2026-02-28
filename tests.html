@@ -101,8 +101,8 @@
         </footer>
     </div>
 
-    <script src="test2/data.js"></script>
-    <script src="test2/progress.js"></script>
+    <script src="test/data.js"></script>
+    <script src="test/progress.js"></script>
     <script>
         // Генерация карточек тем
         document.addEventListener('DOMContentLoaded', function() {
@@ -162,7 +162,7 @@
                 `;
                 
                 card.addEventListener('click', () => {
-                    window.location.href = `test2/test.html?topic=${topicId}&action=select-level`;
+                    window.location.href = `test/test.html?topic=${topicId}&action=select-level`;
                 });
                 
                 topicsGrid.appendChild(card);
@@ -205,3 +205,4 @@
     </script>
 </body>
 </html>
+
