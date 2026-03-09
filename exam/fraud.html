@@ -9,21 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
-            authDomain: "cyber-questor.firebaseapp.com",
-            projectId: "cyber-questor",
-            storageBucket: "cyber-questor.firebasestorage.app",
-            messagingSenderId: "347078202285",
-            appId: "1:347078202285:web:7ac8581765d5fdc76a4724",
-            measurementId: "G-GWS13K2FW1"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-    </script>
+
     <style>
         :root {
             --primary-color: #067887;
@@ -1002,7 +988,8 @@
             </div>
         </div>
     </div>
-
+<script src="js/lectureConstants.js"></script>
+<script src="../js/progressUtils.js"></script>
     <script>
         window.addEventListener('scroll', function() {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -1056,25 +1043,54 @@
             }
         }
         
-        function showResults() {
-            const resultsDiv = document.getElementById('quiz-results');
-            let message = '';
-            
-            if (score === totalQuestions) {
-                message = `<h4><i class="fas fa-user-shield"></i> Отлично! ${score}/${totalQuestions}</h4>
-                          <p>Ты отлично разбираешься в схемах мошенников! Будь бдителен и делись знаниями с друзьями!</p>`;
-            } else if (score >= totalQuestions / 2) {
-                message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
-                          <p>Ты уже многое знаешь, но мошенники постоянно придумывают новые схемы. Оставайся начеку!</p>`;
-            } else {
-                message = `<h4><i class="fas fa-exclamation-circle"></i> Внимание! ${score}/${totalQuestions}</h4>
-                          <p>Онлайн-мошенничество очень распространено. Перечитай лекцию и запомни главные правила защиты!</p>`;
+         const firebaseConfig = {
+            apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
+            authDomain: "cyber-questor.firebaseapp.com",
+            projectId: "cyber-questor",
+            storageBucket: "cyber-questor.firebasestorage.app",
+            messagingSenderId: "347078202285",
+            appId: "1:347078202285:web:7ac8581765d5fdc76a4724"
+        };
+        
+        // Инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+      async function showResults() {
+    const resultsDiv = document.getElementById('quiz-results');
+    let message = '';
+    
+    // Формируем сообщение в зависимости от счета
+    if (score === totalQuestions) {
+        message = `<h4><i class="fas fa-trophy"></i> Отлично! ${score}/${totalQuestions}</h4>
+                  <p>Ты настоящий эксперт! Твои знания помогут защитить себя и других.</p>`;
+    } else if (score >= totalQuestions / 2) {
+        message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
+                  <p>Ты уже многое знаешь, но есть куда расти.</p>`;
+    } else {
+        message = `<h4><i class="fas fa-book"></i> Попробуй еще раз: ${score}/${totalQuestions}</h4>
+                  <p>Перечитай лекцию, чтобы лучше разобраться в теме.</p>`;
+    }
+
+    // --- ВОЗВРАЩАЕМ ЛОГИКУ FIREBASE ---
+    const user = firebase.auth().currentUser;
+    if (user) {
+        try {
+            // Используем функцию из progressUtils.js
+            const success = await updateUserProgress(user.uid, 'lecture_4', score);
+            if (success) {
+                message += `<div class="motivation"><p>✅ Прогресс сохранен в твоем личном кабинете!</p></div>`;
             }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            message += `<p style="color: var(--error-color)">⚠️ Ошибка сохранения: ${error.message}</p>`;
+        }
+    } else {
+        message += `<p style="color: var(--warning-color)">🔒 Войди в аккаунт, чтобы сохранить прогресс.</p>`;
+    }
             
-            resultsDiv.innerHTML = message;
-            resultsDiv.style.display = 'block';
-            
-            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+          resultsDiv.innerHTML = message;
+    resultsDiv.style.display = 'block';
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
             
             setTimeout(() => {
                 document.querySelectorAll('.quiz-option').forEach(opt => {
@@ -1177,4 +1193,5 @@
     </script>
 </body>
 </html>
+
 
