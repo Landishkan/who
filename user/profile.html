@@ -287,7 +287,59 @@
             opacity: 0.7;
             pointer-events: none;
         }
+.tabs-container {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 25px;
+}
 
+.test-results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.test-card {
+    background: var(--background-light);
+    border: 1px solid rgba(143, 184, 237, 0.2);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    transition: 0.3s;
+}
+
+.test-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(91, 156, 240, 0.2);
+}
+
+.test-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Orbitron';
+    vertical-align: middle;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.test-badge.basic { background: var(--accent-color); }
+.test-badge.advanced { background: #ff00ff; } /* Пурпурный для PRO */
+
+.test-score-circle {
+    width: 80px;
+    height: 80px;
+    border: 4px solid var(--primary-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px auto;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -387,20 +439,42 @@
             </section>
 
             <section class="progress-section">
-                <h2 class="section-title">Прогресс обучения</h2>
-                <div id="progress-container">
-                    <!-- Прогресс будет загружен динамически -->
-                    <div class="progress-item">
-                        <div class="progress-title">
-                            <span>Загрузка прогресса...</span>
-                            <span>0%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%"></div>
-                        </div>
-                    </div>
+    <div class="tabs-container">
+        <h2 class="section-title active-tab" id="tab-lectures">Прогресс лекций</h2>
+        <h2 class="section-title" id="tab-tests" style="margin-left: 30px; opacity: 0.5; cursor: pointer;">Результаты тестов</h2>
+    </div>
+
+    <div id="lectures-container">
+        <div id="progress-container">
+            </div>
+    </div>
+
+    <div id="tests-container" style="display: none; margin-top: 20px;">
+        <div class="test-results-grid">
+            <div class="test-card cyber-card">
+                <div class="test-info">
+                    <span class="test-badge basic">BASE</span>
+                    <h3>Базовый уровень</h3>
                 </div>
-            </section>
+                <div class="test-score-circle">
+                    <span id="score-base">0%</span>
+                </div>
+                <p id="status-base">Не пройден</p>
+            </div>
+
+            <div class="test-card cyber-card">
+                <div class="test-info">
+                    <span class="test-badge advanced">PRO</span>
+                    <h3>Углубленный уровень</h3>
+                </div>
+                <div class="test-score-circle">
+                    <span id="score-advanced">0%</span>
+                </div>
+                <p id="status-advanced">Не пройден</p>
+            </div>
+        </div>
+    </div>
+</section>
         </div>
     </div>
 
@@ -412,6 +486,32 @@
 <script src="../js/progressUtils.js"></script>
 
     <script>
+        document.getElementById('tab-lectures').onclick = () => {
+    document.getElementById('lectures-container').style.display = 'block';
+    document.getElementById('tests-container').style.display = 'none';
+    document.getElementById('tab-lectures').style.opacity = '1';
+    document.getElementById('tab-tests').style.opacity = '0.5';
+};
+
+document.getElementById('tab-tests').onclick = () => {
+    document.getElementById('lectures-container').style.display = 'none';
+    document.getElementById('tests-container').style.display = 'grid';
+    document.getElementById('tab-tests').style.opacity = '1';
+    document.getElementById('tab-lectures').style.opacity = '0.5';
+};
+
+// 2. Функция для отображения результатов тестов (вызывай её внутри onSnapshot)
+function updateMainTests(userData) {
+    const mainTests = userData.mainTests || { base: 0, advanced: 0 };
+    
+    // Обновляем базовый
+    document.getElementById('score-base').textContent = `${mainTests.base}%`;
+    document.getElementById('status-base').textContent = mainTests.base > 0 ? 'Пройден' : 'Не начат';
+    
+    // Обновляем продвинутый
+    document.getElementById('score-advanced').textContent = `${mainTests.advanced}%`;
+    document.getElementById('status-advanced').textContent = mainTests.advanced > 0 ? 'Пройден' : 'Не начат';
+}
         // Конфигурация Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
@@ -565,8 +665,12 @@ async function initializeUserProgress(userId) {
             progress: defaultProgress,
             quizResults: {},
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+        mainTests: {
+        base: 0,
+        advanced: 0
+    }
+}, { merge: true });
         
       
         return true;
@@ -748,3 +852,4 @@ async function initializeUserProgress(userId) {
 </body>
 
 </html>
+
