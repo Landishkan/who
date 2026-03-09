@@ -832,4 +832,32 @@ body {
     .test-info {
         text-align: center;
     }
+
+}
+.exit-test-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.exit-test-button:hover {
+    background: rgba(255, 50, 50, 0.2); /* Красноватый оттенок при наведении */
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+/* На мобильных устройствах можно скрыть текст и оставить только иконку */
+@media (max-width: 600px) {
+    .exit-test-button span {
+        display: none;
+    }
 }
