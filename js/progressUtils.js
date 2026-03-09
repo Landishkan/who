@@ -35,7 +35,12 @@ async function initializeUserProgress(userId) {
             'lecture_2': 0,
             'lecture_3': 0, 
             'lecture_4': 0,
-            'lecture_5': 0
+            'lecture_5': 0,
+            'lecture_6': 0,
+            'lecture_7': 0,
+            'lecture_8': 0,
+            'lecture_9': 0,
+            'lecture_10': 0
         };
         
         await db.collection("users").doc(userId).set({
@@ -66,4 +71,5 @@ async function getUserProgress(userId) {
         console.error('Error getting progress:', error);
         return {};
     }
+
 }
