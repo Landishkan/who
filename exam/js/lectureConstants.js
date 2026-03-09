@@ -6,7 +6,12 @@ const LECTURE_IDS = {
     'lecture_2': 'Сетевой этикет',
     'lecture_3': 'Кибертерроризм',  // поменять       
     'lecture_4': 'Мошенничество',
-    'lecture_5': 'Фишинг'
+    'lecture_5': 'Фишинг',
+     'lecture_6': 'Деструктивный контент',
+    'lecture_7': 'Эхо-камера',
+    'lecture_8': 'Фейки',
+    'lecture_9': 'Радикализация',
+    'lecture_10': 'Социальная инженерия'
 };
 
 // Функция для получения ID лекции по названию
@@ -22,4 +27,5 @@ function getLectureId(lectureName) {
 // Функция для получения названия лекции по ID
 function getLectureName(lectureId) {
     return LECTURE_IDS[lectureId] || 'Неизвестная лекция';
+
 }
