@@ -9,6 +9,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+       <script>
+    function confirmExit() {
+    if (confirm("Вы уверены, что хотите прервать тест? Прогресс не будет сохранен.")) {
+        // Возвращаемся на экран выбора тем
+        window.location.href = '../tests.html'; 
+    }
+}
+</script>
 </head>
 <body>
     <div class="tests-container">
@@ -74,10 +82,14 @@
         </div>
         
         <!-- Экран прохождения теста -->
-        <div id="testScreen" class="test-screen" style="display: none;">
-            <div class="test-header">
-                <div class="test-info">
-                    <h2 id="testTopic" class="test-topic"></h2>
+       <div id="testScreen" class="test-screen" style="display: none;">
+    <div class="test-header">
+        <button class="exit-test-button" onclick="confirmExit()">
+            <i class="fas fa-times"></i> Назад к тестам
+        </button>
+
+        <div class="test-info">
+            <h2 id="testTopic" class="test-topic"></h2>
                     <div class="test-meta">
                         <span class="meta-item" id="currentQuestion">Вопрос 1 из 10</span>
                         <span class="meta-item" id="testLevel"></span>
@@ -151,3 +163,4 @@
 </body>
 
 </html>
+
