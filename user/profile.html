@@ -436,7 +436,12 @@
             'lecture_2': 'Сетевой этикет',
             'lecture_3': 'Кибертерроризм', 
           'lecture_4': 'Мошенничество',
-            'lecture_5': 'Фишинг'
+            'lecture_5': 'Фишинг',
+             'lecture_6': 'Деструктивный контент',
+    'lecture_7': 'Эхо-камера',
+    'lecture_8': 'Фейки',
+    'lecture_9': 'Радикализация',
+    'lecture_10': 'Социальная инженерия'
         };
 
         let unsubscribeUserData = null;
@@ -546,7 +551,12 @@ async function initializeUserProgress(userId) {
             'lecture_2': 0,
             'lecture_3': 0,
             'lecture_4': 0,
-            'lecture_5': 0
+            'lecture_5': 0,
+             'lecture_6': 0,
+            'lecture_7': 0,
+            'lecture_8': 0,
+            'lecture_9': 0,
+            'lecture_10': 0
         };
         
         await db.collection("users").doc(userId).set({
@@ -736,4 +746,5 @@ async function initializeUserProgress(userId) {
         };
     </script>
 </body>
+
 </html>
