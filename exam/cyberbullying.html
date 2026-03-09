@@ -1092,7 +1092,18 @@
                 });
             }
         }
+          const firebaseConfig = {
+            apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
+            authDomain: "cyber-questor.firebaseapp.com",
+            projectId: "cyber-questor",
+            storageBucket: "cyber-questor.firebasestorage.app",
+            messagingSenderId: "347078202285",
+            appId: "1:347078202285:web:7ac8581765d5fdc76a4724"
+        };
         
+        // Инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
       async function showResults() {
     const resultsDiv = document.getElementById('quiz-results');
     let message = '';
@@ -1183,4 +1194,5 @@
     </script>
 </body>
 </html>
+
 
