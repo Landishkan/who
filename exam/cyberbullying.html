@@ -1024,7 +1024,12 @@
             </a>
         </div>
     </div>
+<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore-compat.js"></script>
 
+<script src="js/lectureConstants.js"></script>
+<script src="../js/progressUtils.js"></script>
     <script>
         // Прогресс-бар
         window.addEventListener('scroll', function() {
@@ -1088,26 +1093,42 @@
             }
         }
         
-        function showResults() {
-            const resultsDiv = document.getElementById('quiz-results');
-            let message = '';
-            
-            if (score === totalQuestions) {
-                message = `<h4><i class="fas fa-trophy"></i> Отлично! ${score}/${totalQuestions}</h4>
-                          <p>Ты отлично разбираешься в теме кибербуллинга! Твои знания помогут защитить себя и других.</p>`;
-            } else if (score >= totalQuestions / 2) {
-                message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
-                          <p>Ты уже многое знаешь, но есть куда расти. Перечитай раздел "Как защитить себя?"</p>`;
-            } else {
-                message = `<h4><i class="fas fa-book"></i> Есть над чем поработать: ${score}/${totalQuestions}</h4>
-                          <p>Кибербуллинг — серьезная проблема. Пройди лекцию еще раз, чтобы лучше разобраться в теме.</p>`;
+      async function showResults() {
+    const resultsDiv = document.getElementById('quiz-results');
+    let message = '';
+    
+    // Формируем сообщение в зависимости от счета
+    if (score === totalQuestions) {
+        message = `<h4><i class="fas fa-trophy"></i> Отлично! ${score}/${totalQuestions}</h4>
+                  <p>Ты настоящий эксперт! Твои знания помогут защитить себя и других.</p>`;
+    } else if (score >= totalQuestions / 2) {
+        message = `<h4><i class="fas fa-check-circle"></i> Хорошо! ${score}/${totalQuestions}</h4>
+                  <p>Ты уже многое знаешь, но есть куда расти.</p>`;
+    } else {
+        message = `<h4><i class="fas fa-book"></i> Попробуй еще раз: ${score}/${totalQuestions}</h4>
+                  <p>Перечитай лекцию, чтобы лучше разобраться в теме.</p>`;
+    }
+
+    // --- ВОЗВРАЩАЕМ ЛОГИКУ FIREBASE ---
+    const user = firebase.auth().currentUser;
+    if (user) {
+        try {
+            // Используем функцию из progressUtils.js
+            const success = await updateUserProgress(user.uid, 'lecture_1', score);
+            if (success) {
+                message += `<div class="motivation"><p>✅ Прогресс сохранен в твоем личном кабинете!</p></div>`;
             }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            message += `<p style="color: var(--error-color)">⚠️ Ошибка сохранения: ${error.message}</p>`;
+        }
+    } else {
+        message += `<p style="color: var(--warning-color)">🔒 Войди в аккаунт, чтобы сохранить прогресс.</p>`;
+    }
             
-            resultsDiv.innerHTML = message;
-            resultsDiv.style.display = 'block';
-            
-            // Прокрутка к результатам
-            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+          resultsDiv.innerHTML = message;
+    resultsDiv.style.display = 'block';
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
             
             // Сбросим счётчик для возможной повторной проверки
             setTimeout(() => {
@@ -1162,3 +1183,4 @@
     </script>
 </body>
 </html>
+
