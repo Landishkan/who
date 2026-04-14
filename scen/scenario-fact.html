@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Охотник за фейками</title>
-     <link rel="stylesheet" href="../css/style.css">
+    <title>Охотник за фейками — Полный курс</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108475354', 'ym');
-
-    ym(108475354, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/108475354" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108475354', 'ym');
+        ym(108475354, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/108475354" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
     <style>
         :root {
             --primary-color: #0f4cff;
@@ -27,7 +25,12 @@
             --card-bg: rgba(18, 18, 53, 0.7);
             --text-color: #ffffff;
             --accent-color: #5B9CF0;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Rajdhani', sans-serif;
@@ -39,16 +42,12 @@
         }
 
         .scenario-container {
-            max-width: 800px;
-            margin: 40px auto;
-            min-height: 70vh;
+            max-width: 900px;
+            margin: 20px auto;
             position: relative;
         }
 
-        .step {
-            display: none;
-            animation: fadeInUp 0.8s ease-out;
-        }
+        .step { display: none; }
         .step.active { display: block; }
 
         @keyframes fadeInUp {
@@ -60,22 +59,76 @@
             font-family: 'Orbitron', sans-serif;
             color: var(--accent-color);
         }
-        h1 { font-size: 2.5em; margin-bottom: 20px; }
-        h2 { font-size: 2em; margin-top: 30px; }
-        h3 { color: #fff; }
+        h1 { font-size: 2.2em; margin-bottom: 20px; }
+        h2 { font-size: 1.8em; margin-top: 20px; }
+        h3 { color: #fff; font-size: 1.3em; }
 
         .intro-text {
             font-size: 1.2em;
             margin-bottom: 30px;
         }
 
+        /* Прогресс-бар для раундов */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50px;
+        }
+        .round-indicator {
+            display: flex;
+            gap: 15px;
+        }
+        .round-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2em;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .round-dot.active {
+            background: var(--primary-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(15, 76, 255, 0.5);
+        }
+        .round-dot.completed {
+            background: var(--success-color);
+        }
+        .score-display {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        .score-display span {
+            color: var(--accent-color);
+            font-size: 1.5em;
+            margin-left: 8px;
+        }
+
+        .round-rules {
+            background: linear-gradient(135deg, rgba(91,156,240,0.1), rgba(15,76,255,0.1));
+            border-left: 4px solid var(--accent-color);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        /* Новостная лента */
         .news-feed {
             display: flex;
             flex-direction: column;
-            gap: 25px;
-            margin: 40px 0;
+            gap: 20px;
+            margin: 30px 0;
         }
-
         .news-card {
             background: var(--card-bg);
             border: 2px solid rgba(255,255,255,0.1);
@@ -83,15 +136,24 @@
             padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
         }
         .news-card:hover {
             border-color: var(--accent-color);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(91, 156, 240, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(91, 156, 240, 0.2);
         }
         .news-card.selected {
             border-color: #ffcc00;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
+        }
+        .news-card.correct-highlight {
+            border-color: var(--success-color);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+        }
+        .news-card.wrong-highlight {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
         }
 
         .news-header {
@@ -101,14 +163,14 @@
             margin-bottom: 15px;
         }
         .news-avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: #333;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5em;
+            font-size: 1.4em;
         }
         .news-source {
             font-weight: 700;
@@ -117,34 +179,83 @@
             font-size: 1.1em;
         }
         .news-date {
-            font-size: 0.9em;
+            font-size: 0.85em;
             color: #aaa;
         }
         .news-content h4 {
             margin-top: 0;
             color: #fff;
-            font-size: 1.3em;
+            font-size: 1.25em;
             line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        .news-content p {
+            margin: 0;
+            color: #ddd;
+            font-size: 0.95em;
         }
 
-     .cyber-button {
+        .news-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .badge-fake {
+            background: var(--danger-color);
+            color: white;
+        }
+        .badge-truth {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* Блок анализа (раскрывающийся) */
+        .analysis-block {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            display: none;
+        }
+        .analysis-block.show {
+            display: block;
+            animation: fadeInUp 0.3s;
+        }
+        .analysis-item, .checkpoint {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        /* Кнопки */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .cyber-button {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
             color: white;
             border: none;
-            padding: 16px 35px;
+            padding: 14px 30px;
             border-radius: 8px;
             font-family: 'Rajdhani', sans-serif;
             font-weight: 600;
-            font-size: 1.2em;
+            font-size: 1.1em;
             cursor: pointer;
-            display: inline-block;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
             text-align: center;
-            min-width: 180px;
+            border: 1px solid transparent;
         }
         .cyber-button:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 7px 20px rgba(15, 76, 255, 0.5);
         }
         .cyber-button:disabled {
@@ -153,16 +264,26 @@
             transform: none;
             box-shadow: none;
         }
-        
-        .secondary-button {
+        .cyber-button.secondary-button {
             background: transparent;
-            border: 2px solid var(--secondary-color);
-            color: var(--secondary-color);
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
         }
-        .secondary-button:hover {
-            background: rgba(108, 117, 125, 0.1);
-            border-color: #adb5bd;
-            box-shadow: 0 7px 20px rgba(108, 117, 125, 0.3);
+        .cyber-button.secondary-button:hover {
+            background: rgba(91, 156, 240, 0.1);
+            box-shadow: 0 7px 20px rgba(91, 156, 240, 0.3);
+        }
+        .cyber-button.no-fake-btn {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        }
+        .cyber-button.analysis-toggle {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            font-size: 0.9em;
+            min-width: auto;
+            width: 100%;
+            margin-top: 15px;
         }
 
         .reveal-text {
@@ -181,12 +302,12 @@
             padding: 25px;
             margin: 35px 0;
         }
-        .checkpoint, .memo-step {
+        .memo-step {
             margin-bottom: 25px;
             padding-bottom: 25px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .checkpoint:last-child, .memo-step:last-child {
+        .memo-step:last-child {
             border-bottom: none;
             margin-bottom: 0;
             padding-bottom: 0;
@@ -203,39 +324,69 @@
             font-size: 0.9em;
         }
 
-        .fake-text {
-            color: #ffcc00;
-            font-weight: 700;
-            text-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
+        .round-result-modal {
+            background: rgba(0,0,0,0.8);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .highlight {
+        .result-title {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .result-title.correct { color: var(--success-color); }
+        .result-title.wrong { color: var(--danger-color); }
+
+        .final-stats {
+            text-align: center;
+            padding: 30px;
+            background: rgba(91,156,240,0.1);
+            border-radius: 16px;
+            margin: 30px 0;
+        }
+        .final-score {
+            font-size: 4em;
+            font-weight: 700;
             color: var(--accent-color);
-            font-weight: 700;
         }
+
+        .highlight { color: var(--accent-color); font-weight: 700; }
+        .fake-text { color: #ffcc00; font-weight: 700; }
         .emoji { font-size: 1.2em; }
     </style>
 </head>
 <body>
-      
     <div class="scenario-container">
-    
-        <!-- ЭКРАН 1: Введение -->
+        
+        <!-- ==================== ШАГ 1: ВВЕДЕНИЕ ==================== -->
         <div id="step-1" class="step active">
-            <h1>🔍 Охотник за фейками: Три новости, одна правда?</h1>
-            <p class="intro-text">Привет, детектив интернета! 🕵️‍♂️ Твоя лента — минное поле из сенсаций, фейков и мемов. Давай проверим твою цифровую бдительность!</p>
-            <p class="intro-text"><span class="fake-text">Перед тобой — три новости. Одна из них правда, остальные — фейк.</span> Сможешь угадать, какая выдержит проверку? Включай режим фактчекера и выбирай!</p>
-            <button class="cyber-button" onclick="showStep(2)">Погнали! ➔</button>
-             <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад к сценариям</button>
+            <h1>🔍 Охотник за фейками: Полный курс</h1>
+            <p class="intro-text">Привет, детектив интернета! 🕵️‍♂️ Сегодня ты пройдёшь полный курс цифровой бдительности.</p>
+            
+            <div style="background: rgba(91,156,240,0.1); padding: 20px; border-radius: 12px; margin: 25px 0;">
+                <h3 style="margin-top: 0;">📋 Программа курса:</h3>
+                <p><strong>Часть 1 — Обучение:</strong> Разберём три новости и научимся отличать фейки по чек-листу.</p>
+                <p><strong>Часть 2 — Три раунда:</strong> Проверим твои навыки на новых новостях с подсчётом очков.</p>
+                <p style="margin-top: 15px;">💡 После обучения ты получишь памятку фактчекера, которая поможет в раундах.</p>
+            </div>
+
+            <p class="intro-text"><span class="fake-text">Готов стать профессиональным охотником за фейками?</span></p>
+            
+            <div class="button-group">
+                <button class="cyber-button" onclick="showStep(2)">Начать обучение ➔</button>
+                <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад к сценариям</button>
+            </div>
         </div>
 
-        <!-- ЭКРАН 2: Выбор новости -->
+        <!-- ==================== ШАГ 2: ОБУЧЕНИЕ (выбор новости) ==================== -->
         <div id="step-2" class="step">
-            <h2>👀 Внимательно изучи ленту. Что тут правда?</h2>
-            <p>Выбери карточку, которая, по-твоему, содержит <span class="highlight">правдивую</span> новость.</p>
+            <h2>👀 Часть 1: Обучение</h2>
+            <p class="intro-text">Перед тобой — три новости. <span class="fake-text">Одна из них правда, остальные — фейк.</span> Выбери ту, которая кажется тебе настоящей.</p>
 
             <div class="news-feed">
                 <!-- Новость А -->
-                <div class="news-card" data-news="A" onclick="selectNews('A')">
+                <div class="news-card" data-news="A" onclick="selectTutorialNews('A')">
                     <div class="news-header">
                         <div class="news-avatar">⚛️</div>
                         <div>
@@ -245,12 +396,11 @@
                     </div>
                     <div class="news-content">
                         <h4>Ученые открыли "эффект Моцарта" для льдов: классическая музыка замедляет таяние ледников</h4>
-<p>Международная группа гляциологов, три года изучавшая ледник Вавилова в Арктике, пришла к сенсационному выводу: <strong>при проигрывании произведений Моцарта и Вивальди скорость его таяния снижалась на 17%</strong>. «Звуковые волны определенных частот резонируют с кристаллической решеткой льда, стабилизируя её», — заявил <strong>доктор Артур Вандерли из Бразильского института криософии</strong>. Учёные предлагают установить вдоль береговой линии арктических стран «акустические щиты» с непрерывным вещанием классики.</p>
-
+                        <p>Международная группа гляциологов, три года изучавшая ледник Вавилова в Арктике, пришла к сенсационному выводу: <strong>при проигрывании произведений Моцарта и Вивальди скорость его таяния снижалась на 17%</strong>. «Звуковые волны определенных частот резонируют с кристаллической решеткой льда, стабилизируя её», — заявил <strong>доктор Артур Вандерли из Бразильского института криософии</strong>.</p>
                     </div>
                 </div>
                 <!-- Новость Б -->
-                <div class="news-card" data-news="B" onclick="selectNews('B')">
+                <div class="news-card" data-news="B" onclick="selectTutorialNews('B')">
                     <div class="news-header">
                         <div class="news-avatar">🤖</div>
                         <div>
@@ -260,11 +410,11 @@
                     </div>
                     <div class="news-content">
                         <h4>Минобрнауки анонсировало пилот по использованию ИИ-ассистентов на ЕГЭ по информатике</h4>
-<p>В рамках эксперимента «Цифровой педагог» <strong>с 2026 года на ЕГЭ по информатике в 10 регионах будет разрешено использование официального ИИ-помощника «Когнитум»</strong>. Система, разработанная при участии <strong>ВУЗа-участника программы «Приоритет-2030»</strong>, предоставит доступ к документации по языкам программирования и поможет в отладке синтаксиса, но будет блокировать попытки выхода в интернет и генерации полных решений. <strong>«Это не про списывание, это про проверку навыков работы с инструментами будущего в контролируемой среде», — пояснил источник, близкий к министерству.</strong> Результаты пилота оценят перед возможным расширением на другие предметы.</p>               
+                        <p>В рамках эксперимента «Цифровой педагог» <strong>с 2026 года на ЕГЭ по информатике в 10 регионах будет разрешено использование официального ИИ-помощника «Когнитум»</strong>. Система, разработанная при участии <strong>ВУЗа-участника программы «Приоритет-2030»</strong>, предоставит доступ к документации и поможет в отладке синтаксиса.</p>
                     </div>
                 </div>
                 <!-- Новость В -->
-                <div class="news-card" data-news="C" onclick="selectNews('C')">
+                <div class="news-card" data-news="C" onclick="selectTutorialNews('C')">
                     <div class="news-header">
                         <div class="news-avatar">🌍</div>
                         <div>
@@ -274,58 +424,36 @@
                     </div>
                     <div class="news-content">
                         <h4>УТЕЧКА: Секретный доклад G7 называет биткоин главной угрозой климату</h4>
-                <p>Согласно <strong>«закрытому докладу для правительств G7», утекшему в СМИ</strong>, на майнинг биткоина в 2025 году было потрачено больше электроэнергии, чем потребляет вся <strong>Аргентина</strong>. «Каждая транзакция оставляет углеродный след, сравнимый с <strong>поездкой на внедорожнике на 500 км</strong>, — утверждается в документах. — Если темпы роста сохранятся, к 2027 году майнинг станет главным фактором глобального потепления». <strong>Анонимные источники</strong> сообщают, что в G7 обсуждают введение <strong>«климатического налога» на криптовалютные операции</strong> и признание криптоиндустрии экологической угрозой №1.</p> 
-
+                        <p>Согласно <strong>«закрытому докладу для правительств G7», утекшему в СМИ</strong>, на майнинг биткоина в 2025 году было потрачено больше электроэнергии, чем потребляет вся <strong>Аргентина</strong>. «Каждая транзакция оставляет углеродный след, сравнимый с <strong>поездкой на внедорожнике на 500 км</strong>».</p>
                     </div>
                 </div>
             </div>
-            <button id="confirm-btn" class="cyber-button" onclick="showStep(3)" disabled>Я выбрал! Показать результат</button>
-             <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад к сценариям</button>
+            
+            <div class="button-group">
+                <button id="tutorial-confirm-btn" class="cyber-button" onclick="showStep(3)" disabled>Я выбрал! Показать результат</button>
+                <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад к сценариям</button>
+            </div>
         </div>
 
-        <!-- ЭКРАН 3: Разоблачение -->
+        <!-- ==================== ШАГ 3: РАЗОБЛАЧЕНИЕ ОБУЧЕНИЯ ==================== -->
         <div id="step-3" class="step">
             <h2>🎯 Сюрприз! Все три новости были фейковыми! <span class="emoji">😲</span></h2>
 
-            <div id="user-choice-feedback"></div> <!-- Сюда вставится текст про выбор А/В или Б -->
+            <div id="tutorial-feedback"></div>
 
             <div class="reveal-text">
                 Но главная опасность — не очевидные фейки, а вот этот, <span class="fake-text">мастерски сделанный</span>...
             </div>
 
-            <h3>🔬 Детальный разбор новости <span class="highlight">«ИИ на ЕГЭ»</span> по чек-листу фактчекера:</h3>
-            <div class="analysis">
-                <div class="checkpoint">
-                    <div class="step-number">1. Источник</div>
-                    <p><span class="fake-text">«EduTech News»</span> — сайт с громким названием, но без указания редакции, контактов, данных о регистрации. <span class="highlight">Не является авторитетным СМИ.</span></p>
-                </div>
-                <div class="checkpoint">
-                    <div class="step-number">2. Эмоции</div>
-                    <p>Текст играет на актуальном интересе (ИИ, ЕГЭ) и чувстве облегчения («разрешили!»). Но формулировки спокойные, что <span class="highlight">усыпляет бдительность.</span></p>
-                </div>
-                <div class="checkpoint">
-                    <div class="step-number">3. Детали</div>
-                    <p>Есть конкретика: «2025 год», «5 регионов». <span class="highlight">Проверка (загугли):</span> На официальном сайте Минобрнауки, Рособрнадзора — ни одного упоминания. Новость не перепечатало ни одно крупное информагентство.</p>
-                </div>
-                <div class="checkpoint">
-                    <div class="step-number">4. Фото/видео</div>
-                    <p>К статье часто прикрепляют нейтральное стоковое изображение. <span class="highlight">Поиск по картинкам</span> покажет, что это фото использовалось для статей про образование годами.</p>
-                </div>
-                <div class="checkpoint">
-                    <div class="step-number">5. Эксперты</div>
-                    <p>Не цитируются конкретные эксперты с именами и должностями. Есть размытая отсылка к <span class="fake-text">«представителям министерства»</span>.</p>
-                </div>
-                <div class="checkpoint">
-                    <div class="step-number">6. Логика</div>
-                    <p>Противоречит текущей официальной позиции: <span class="highlight">использование любых средств связи на ЕГЭ строго запрещено.</span> Внедрение такой сложной системы за год выглядит нереалистично.</p>
-                </div>
+            <div id="tutorial-analysis-container"></div>
+
+            <div class="button-group">
+                <button class="cyber-button" onclick="showStep(4)">Теперь я вооружен! Дать памятку ➔</button>
+                <button class="cyber-button secondary-button" onclick="showStep(2)">← Выбрать другую новость</button>
             </div>
-          <!--  <p><strong>Вывод:</strong> Это <span class="fake-text">качественный, убедительный фейк</span> 🤥. Он имитирует стиль нормальной новости, чтобы ввести в заблуждение даже внимательного читателя.</p> --> 
-            <button class="cyber-button" onclick="showStep(4)">Теперь я вооружен! Дать памятку ➔</button>
-             <button class="cyber-button secondary-button" onclick="showStep(2)">← Выбрать другую новость</button>
         </div>
 
-        <!-- ЭКРАН 4: Памятка -->
+        <!-- ==================== ШАГ 4: ПАМЯТКА ==================== -->
         <div id="step-4" class="step">
             <h2>🛡️ Твой личный щит от дезинформации</h2>
             <p>Запомни простой алгоритм из 4 шагов, прежде чем сделать репост или поверить в сенсацию:</p>
@@ -333,194 +461,548 @@
             <div class="memo-steps">
                 <div class="memo-step">
                     <div class="step-number">СТОП ✋</div>
-                    <p>Не делай репост сразу. Сделай паузу на пару вдохов. Сенсация подождет. <span class="highlight">Главное правило: сначала проверь, потом делись.</span></p>
+                    <p>Не делай репост сразу. Сделай паузу на пару вдохов. <span class="highlight">Сначала проверь, потом делись.</span></p>
                 </div>
                 <div class="memo-step">
                     <div class="step-number">ПРОВЕРЬ 🔎</div>
                     <p><strong>Источник:</strong> Кто это написал? Есть ли «Контакты» и «О нас»?<br>
-                    <strong>Фото:</strong> Загрузи картинку в <span class="highlight">Яндекс.Картинки или Google Images</span> — найди оригинал.<br>
-                    <strong>Факты:</strong> Скопируй ключевую фразу в поиск. Есть ли эта новость на <span class="highlight">ТАСС, РИА, BBC?</span></p>
+                    <strong>Фото:</strong> Загрузи картинку в Яндекс.Картинки или Google Images.<br>
+                    <strong>Факты:</strong> Скопируй ключевую фразу в поиск. Есть ли эта новость на ТАСС, РБК, Интерфакс?</p>
                 </div>
                 <div class="memo-step">
                     <div class="step-number">ДУМАЙ 🧠</div>
                     <p><strong>Кому выгодно?</strong> Чтобы ты поверил, расстроился, разозлился?<br>
-                    <strong>Что я чувствую?</strong> Если текст давит на жалость, страх или злость — красный флаг!<br>
-                    <strong>Слишком идеально?</strong> Не бывает простых решений сложных проблем.</p>
+                    <strong>Что я чувствую?</strong> Если текст давит на жалость, страх или злость — красный флаг!</p>
                 </div>
                 <div class="memo-step">
                     <div class="step-number">ДЕЛИСЬ 📢</div>
-                    <p>Делись только тем, в чём уверен на 100%. А если делишься спорным, но интересным — добавь комментарий: <span class="highlight">«Вижу эту новость, но официального подтверждения нет, проверяйте».</span></p>
+                    <p>Делись только тем, в чём уверен на 100%. А если делишься спорным — добавь комментарий: <span class="highlight">«Официального подтверждения нет, проверяйте».</span></p>
                 </div>
             </div>
 
-            <h3>Поздравляю! Ты только что прокачал свой скилл цифровой грамотности. 💪</h3>
-            <p>Твоя лента теперь будет чище, а репосты — точнее. Охота на фейков продолжается!</p>
-            <button class="cyber-button" onclick="resetScenario()">Пройти еще раз? 🔄</button>
-             <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад к сценариям</button>
+            <h3>💪 Теперь ты готов к настоящему испытанию!</h3>
+            <p>Впереди три раунда с новыми новостями. За каждый правильный ответ ты получишь очко. Удачи!</p>
+            
+            <div class="button-group">
+                <button class="cyber-button" onclick="startRounds()">Начать раунды! 🎮</button>
+                <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад к сценариям</button>
+            </div>
+        </div>
+
+        <!-- ==================== ШАГ 5: РАУНД 1 ==================== -->
+        <div id="step-round1" class="step">
+            <div class="progress-container">
+                <div class="round-indicator">
+                    <div class="round-dot active">1</div>
+                    <div class="round-dot">2</div>
+                    <div class="round-dot">3</div>
+                </div>
+                <div class="score-display">
+                    Счёт: <span id="scoreDisplay1">0/3</span>
+                </div>
+            </div>
+
+            <div class="round-rules">
+                🔵 <strong>Раунд 1:</strong> Найди <span class="highlight"> правдивую</span> новость.
+            </div>
+
+            <div class="news-feed" id="round1Feed"></div>
+
+            <div class="button-group">
+                <button id="round1SubmitBtn" class="cyber-button" onclick="submitRoundAnswer(1)" disabled>Подтвердить выбор</button>
+                <button id="round1NoFakeBtn" class="cyber-button no-fake-btn" onclick="submitNoFake(1)">🚫 Фейковой новости нет</button>
+                <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад</button>
+            </div>
+
+            <div id="round1Result" class="round-result-modal" style="display: none;"></div>
+        </div>
+
+        <!-- ==================== ШАГ 6: РАУНД 2 ==================== -->
+        <div id="step-round2" class="step">
+            <div class="progress-container">
+                <div class="round-indicator">
+                    <div class="round-dot completed">1</div>
+                    <div class="round-dot active">2</div>
+                    <div class="round-dot">3</div>
+                </div>
+                <div class="score-display">
+                    Счёт: <span id="scoreDisplay2">0/3</span>
+                </div>
+            </div>
+
+            <div class="round-rules">
+                🟢 <strong>Раунд 2:</strong> Найди  <span class="fake-text"> фейковую</span> новость.
+            </div>
+
+            <div class="news-feed" id="round2Feed"></div>
+
+            <div class="button-group">
+                <button id="round2SubmitBtn" class="cyber-button" onclick="submitRoundAnswer(2)" disabled>Подтвердить выбор</button>
+                <button id="round2NoFakeBtn" class="cyber-button no-fake-btn" onclick="submitNoFake(2)">🚫 Фейковой новости нет</button>
+                <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад</button>
+            </div>
+
+            <div id="round2Result" class="round-result-modal" style="display: none;"></div>
+        </div>
+
+        <!-- ==================== ШАГ 7: РАУНД 3 ==================== -->
+        <div id="step-round3" class="step">
+            <div class="progress-container">
+                <div class="round-indicator">
+                    <div class="round-dot completed">1</div>
+                    <div class="round-dot completed">2</div>
+                    <div class="round-dot active">3</div>
+                </div>
+                <div class="score-display">
+                    Счёт: <span id="scoreDisplay3">0/3</span>
+                </div>
+            </div>
+
+            <div class="round-rules">
+                🟡 <strong>Раунд 3:</strong> Найди <span class="fake-text">фейковую</span> новость.
+            </div>
+
+            <div class="news-feed" id="round3Feed"></div>
+
+            <div class="button-group">
+                <button id="round3SubmitBtn" class="cyber-button" onclick="submitRoundAnswer(3)" disabled>Подтвердить выбор</button>
+                <button id="round3NoFakeBtn" class="cyber-button no-fake-btn" onclick="submitNoFake(3)">🚫 Фейковой новости нет</button>
+                <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад</button>
+            </div>
+
+            <div id="round3Result" class="round-result-modal" style="display: none;"></div>
+        </div>
+
+        <!-- ==================== ШАГ 8: ФИНАЛ ==================== -->
+        <div id="step-final" class="step">
+            <h2>🏆 Охота завершена!</h2>
+            
+            <div class="final-stats">
+                <div style="font-size: 1.3em; margin-bottom: 15px;">Твой результат</div>
+                <div class="final-score" id="finalScoreDisplay">0/3</div>
+                <p style="margin-top: 20px;" id="finalMessageDisplay"></p>
+            </div>
+
+            <h3>🎓 Ты прошёл полный курс «Охотник за фейками»!</h3>
+            <p>Теперь ты знаешь, как работают фейки, и умеешь их распознавать. Используй памятку в реальной жизни!</p>
+
+            <div class="memo-steps" style="margin-top: 20px;">
+                <p style="text-align: center;"><strong>СТОП ✋ → ПРОВЕРЬ 🔎 → ДУМАЙ 🧠 → ДЕЛИСЬ 📢</strong></p>
+            </div>
+            
+            <div class="button-group">
+                <button class="cyber-button" onclick="resetEverything()">Пройти заново 🔄</button>
+                <button class="cyber-button secondary-button" onclick="goToScenarios()">← Назад к сценариям</button>
+            </div>
         </div>
     </div>
 
-<script>
-    let selectedNews = null;
-    const newsData = {
-        'A': {
-            title: 'Ученые открыли "эффект Моцарта" для льдов: классическая музыка замедляет таяние ледников',
-            analysis: [
-                {
-                    title: '1. Источник',
-                    text: '<span class="fake-text">«Научные сенсации»</span> — типичный паблик для вирусного контента, а не научное издание. Нет редакции, контактов, данных об учредителях.'
-                },
-                {
-                    title: '2. Эмоции',
-                    text: 'Играет на любви к необычным "фактам" и науке. Создает ложное ощущение "удивительного открытия".'
-                },
-                {
-                    title: '3. Детали и логика',
-                    text: '<span class="highlight">Проверка:</span> Загуглив "музыка таяние льда исследование", вы найдёте только шутки и разоблачения. Утверждение нарушает <span class="highlight">законы физики</span> — звук не может напрямую влиять на температуру таяния льда на таких расстояниях.'
-                },
-                {
-                    title: '4. Эксперты',
-                    text: 'Упоминаются абстрактные "исследователи из несуществующего университета". Ни одного реального имени, научной организации или ссылки на публикацию.'
-                }
-            ],
-            verdict: 'Это <span class="fake-text">утрированный псевдонаучный фейк</span> 🧪, который смешивает реальный факт (исследование ледника Вавилова) с абсолютной фантазией. Он рассчитан на быстрое распространение среди любителей «удивительных фактов».'       
-        },
-        'B': {
-            title: 'Минобрнауки анонсировало пилот по использованию ИИ-ассистентов на ЕГЭ по информатике',
-            analysis: [
-                {
-                    title: '1. Источник',
-                    text: '<span class="fake-text">«EduTech News»</span> — сайт с громким названием, но без указания редакции, контактов, данных о регистрации. <span class="highlight">Не является авторитетным СМИ.</span>'
-                },
-                {
-                    title: '2. Эмоции',
-                    text: 'Текст играет на актуальном интересе (ИИ, ЕГЭ) и чувстве облегчения («разрешили!»). Но формулировки спокойные, что <span class="highlight">усыпляет бдительность.</span>'
-                },
-                {
-                    title: '3. Детали',
-                    text: 'Самый коварный приём. Фейк <span class="highlight">использует название реальной государственной программы «Приоритет-2030»</span> и общую дискуссию об ИИ в образовании. Это заставляет читателя поверить: «Раз об этом говорят, значит, такое возможно». Проверка же показывает, что ни в одной официальной новости или документе Минобрнауки об этом пилоте не сообщалось.'
-                },
-                {
-                    title: '4. Фото/видео',
-                    text: 'К статье часто прикрепляют нейтральное стоковое изображение. <span class="highlight">Поиск по картинкам</span> покажет, что это фото использовалось для статей про образование годами.'
-                },
-                {
-                    title: '5. Эксперты',
-                    text: 'Не цитируются конкретные эксперты с именами и должностями. Есть размытая отсылка к <span class="fake-text">«представителям министерства»</span>.'
-                },
-                {
-                    title: '6. Логика',
-                    text: 'Противоречит текущей официальной позиции: <span class="highlight">использование любых средств связи на ЕГЭ строго запрещено.</span> Внедрение такой сложной системы за год выглядит нереалистично.'
-                }
-            ],
-            verdict: 'Это <span class="fake-text">качественный, убедительный фейк</span> 🤥. Он имитирует стиль нормальной новости, чтобы ввести в заблуждение даже внимательного читателя.'
-        },
-        'C': {
-            title: 'УТЕЧКА: Секретный доклад G7 называет биткоин главной угрозой климату',
-            analysis: [
-                {
-                    title: '1. Источник',
-                    text: 'Классический приём: <span class="fake-text">«закрытый доклад», «утечка», «анонимные источники»</span>. Нет ни конкретных имён, ни официальных заявлений, ни ссылки на сам документ. Упоминание G7 придаёт ложную значимость. <span class="highlight">Проверка:</span> На официальных сайтах стран G7 и в новостях авторитетных агентств такой доклад не упоминается.'
-                },
-                {
-                    title: '2. Эмоции',
-                    text: 'Язык катастрофы: <span class="highlight">«главная угроза климату»</span>, «главный фактор глобального потепления», «угроза №1». Цель — вызвать панику и чувство безотлагательности, чтобы читатель не успел задуматься о фактах.'
-                },
-                {
-                    title: '3. Детали и логика',
-                    text: 'Используются <span class="fake-text">непроверяемые, но «научно» звучащие сравнения</span>: «больше, чем Аргентина», «500 км на внедорожнике». Реальные исследования хоть и признают энергозатратность майнинга, но дают на порядки более скромные оценки и не делают таких апокалиптических выводов.'
-                },
-                {
-                    title: '4. Эксперты и цели',
-                    text: 'Явный <span class="highlight">призыв к политическим действиям</span> — «ввести налог», «признать угрозой». Это указывает на возможную экономическую или идеологическую цель фейка: повлиять на общественное мнение против криптовалют и создать базу для лоббирования конкретных мер.'
-                }
-            ],
-            verdict: 'Это <span class="fake-text">фейк, построенный на типичных манипулятивных техниках</span> 🔥: «секретные документы», «анонимные источники», апокалиптические прогнозы и прямая политическая рекомендация. Его цель — не информировать, а вызвать эмоциональную реакцию и продвинуть конкретную нарративную установку.'
-        }
-    };
+    <script>
+        // ==================== ДАННЫЕ ДЛЯ ОБУЧЕНИЯ ====================
+        const tutorialNewsData = {
+            'A': {
+                title: 'Ученые открыли "эффект Моцарта" для льдов',
+                analysis: [
+                    { title: '1. Источник', text: '<span class="fake-text">«Научные сенсации»</span> — типичный паблик для вирусного контента, а не научное издание.' },
+                    { title: '2. Эмоции', text: 'Играет на любви к необычным "фактам" и науке. Создает ложное ощущение "удивительного открытия".' },
+                    { title: '3. Детали и логика', text: 'Утверждение нарушает <span class="highlight">законы физики</span> — звук не может напрямую влиять на температуру таяния льда.' },
+                    { title: '4. Эксперты', text: 'Упоминаются абстрактные "исследователи из несуществующего университета".' }
+                ],
+                verdict: 'Это <span class="fake-text">утрированный псевдонаучный фейк</span> 🧪.'
+            },
+            'B': {
+                title: 'Минобрнауки анонсировало пилот по использованию ИИ-ассистентов на ЕГЭ',
+                analysis: [
+                    { title: '1. Источник', text: '<span class="fake-text">«EduTech News»</span> — сайт без редакции, контактов и регистрации.' },
+                    { title: '2. Эмоции', text: 'Текст играет на актуальном интересе (ИИ, ЕГЭ) и чувстве облегчения, <span class="highlight">усыпляя бдительность</span>.' },
+                    { title: '3. Детали', text: 'Фейк использует название реальной программы «Приоритет-2030», но на официальных сайтах подтверждений нет.' },
+                    { title: '4. Логика', text: 'Противоречит позиции: <span class="highlight">использование любых средств связи на ЕГЭ строго запрещено</span>.' }
+                ],
+                verdict: 'Это <span class="fake-text">качественный, убедительный фейк</span> 🤥.'
+            },
+            'C': {
+                title: 'УТЕЧКА: Секретный доклад G7 называет биткоин главной угрозой климату',
+                analysis: [
+                    { title: '1. Источник', text: 'Классический приём: <span class="fake-text">«закрытый доклад», «утечка», «анонимные источники»</span>.' },
+                    { title: '2. Эмоции', text: 'Язык катастрофы: <span class="highlight">«главная угроза климату»</span>. Цель — вызвать панику.' },
+                    { title: '3. Детали', text: 'Используются <span class="fake-text">непроверяемые сравнения</span>: «больше, чем Аргентина», «500 км на внедорожнике».' },
+                    { title: '4. Цель', text: 'Явный <span class="highlight">призыв к политическим действиям</span> — фейк продвигает конкретную повестку.' }
+                ],
+                verdict: 'Это <span class="fake-text">фейк на манипулятивных техниках</span> 🔥.'
+            }
+        };
 
-    // Функция переключения шагов
-    function showStep(stepNumber) {
-        document.querySelectorAll('.step').forEach(step => {
-            step.classList.remove('active');
-        });
-        document.getElementById(`step-${stepNumber}`).classList.add('active');
+        // ==================== ДАННЫЕ ДЛЯ РАУНДОВ ====================
+        const roundsData = [
+            { // Раунд 1
+                rule: 'find-truth',
+                news: [
+                    {
+                        id: '1A', type: 'truth', source: 'Минцифры РФ', avatar: '🏛️', date: '2 часа назад',
+                        title: 'Минцифры: с 1 сентября 2026 года подтвердить вход на «Госуслуги» можно будет по селфи',
+                        content: 'Ведомство объявило о запуске сервиса «Биометрический вход» — пользователи смогут авторизоваться через Единую биометрическую систему, сделав селфи. «Это ускорит доступ и повысит безопасность», — пояснил замглавы Минцифры <strong>Олег Качанов</strong>. Функция опциональна.',
+                        analysis: [
+                            { icon: '📰', text: '<strong>Источник:</strong> Официальный канал Минцифры, новость подтверждена ТАСС и РБК.' },
+                            { icon: '👤', text: '<strong>Эксперт:</strong> Олег Качанов — реальный замглавы Минцифры.' },
+                            { icon: '✅', text: '<strong>Вердикт:</strong> <span style="color: #2ecc71;">ПРАВДА</span>.' }
+                        ]
+                    },
+                    {
+                        id: '1B', type: 'fake', source: 'Финансовый инсайдер', avatar: '🏦', date: 'Вчера',
+                        title: 'Сбербанк объявил о полном отказе от приёма наличных в банкоматах с 2027 года',
+                        content: 'Согласно утечке, банк переведёт все устройства только на выдачу денег. <strong>Анонимный источник в руководстве подтвердил</strong> решение. Официальная причина — «оптимизация расходов на инкассацию».',
+                        analysis: [
+                            { icon: '📰', text: '<strong>Источник:</strong> Анонимный Telegram-канал, нет официальных заявлений.' },
+                            { icon: '🔍', text: '<strong>Проверка:</strong> Сбербанк опроверг информацию.' },
+                            { icon: '❌', text: '<strong>Вердикт:</strong> <span style="color: #e74c3c;">ФЕЙК</span>.' }
+                        ]
+                    },
+                    {
+                        id: '1C', type: 'fake', source: 'КиберNews', avatar: '🛡️', date: '3 часа назад',
+                        title: 'Роскомнадзор тестирует нейросеть для блокировки запрещённого контента в видеоиграх',
+                        content: 'Система «Игровой дозор» от <strong>ООО «Кибербезопасность-М»</strong> будет анализировать чаты и текстуры на предмет экстремизма. При нарушениях — блокировка игры в РФ.',
+                        analysis: [
+                            { icon: '🔍', text: '<strong>Проверка:</strong> На сайте госзакупок такого контракта нет.' },
+                            { icon: '⚙️', text: '<strong>Технически:</strong> Невозможно анализировать весь контент всех игр.' },
+                            { icon: '❌', text: '<strong>Вердикт:</strong> <span style="color: #e74c3c;">ФЕЙК</span>.' }
+                        ]
+                    }
+                ]
+            },
+            { // Раунд 2
+                rule: 'find-fake',
+                news: [
+                    {
+                        id: '2A', type: 'truth', source: 'Пресс-служба VK', avatar: '📱', date: 'Сегодня',
+                        title: 'VK тестирует скрытые дизлайки в комментариях',
+                        content: 'Функция «отрицательной реакции» доступна 5% аудитории. Количество дизлайков видит только автор и модераторы. «Это эксперимент», — сообщили в VK.',
+                        analysis: [
+                            { icon: '📰', text: '<strong>Источник:</strong> Официальная пресс-служба VK.' },
+                            { icon: '✅', text: '<strong>Вердикт:</strong> <span style="color: #2ecc71;">ПРАВДА</span>.' }
+                        ]
+                    },
+                    {
+                        id: '2B', type: 'truth', source: 'Ozon News', avatar: '📦', date: 'Вчера',
+                        title: 'Ozon получил разрешение на коммерческую доставку дронами в Тверской области',
+                        content: 'Дроны будут доставлять заказы до 5 кг в 12 удалённых населённых пунктов. Запуск рейсов — июль 2026 года.',
+                        analysis: [
+                            { icon: '📰', text: '<strong>Источник:</strong> Официальный пресс-релиз Ozon, подтверждён Росавиацией.' },
+                            { icon: '✅', text: '<strong>Вердикт:</strong> <span style="color: #2ecc71;">ПРАВДА</span>.' }
+                        ]
+                    },
+                    {
+                        id: '2C', type: 'fake', source: 'Tech Insider', avatar: '💬', date: '2 часа назад',
+                        title: 'WhatsApp внедряет защиту от скриншотов личных переписок',
+                        content: 'Функция «Защищённый чат» блокирует скриншоты. <strong>Технический директор Meta Маркус Браун</strong> назвал это революцией.',
+                        analysis: [
+                            { icon: '👤', text: '<strong>Эксперт:</strong> Маркус Браун не CTO Meta. CTO — Эндрю Босворт.' },
+                            { icon: '❌', text: '<strong>Вердикт:</strong> <span style="color: #e74c3c;">ФЕЙК</span>.' }
+                        ]
+                    }
+                ]
+            },
+            { // Раунд 3
+                rule: 'all-truth',
+                news: [
+                    {
+                        id: '3A', type: 'truth', source: 'Правительство РФ', avatar: '📋', date: '15 октября 2026',
+                        title: 'С 1 января 2027 года маркировка «Честный знак» станет обязательной для велосипедов и спортивного питания',
+                        content: 'Постановление <strong>№ 1723</strong> опубликовано на официальном портале. Эксперимент с марта 2025 года признан успешным.',
+                        analysis: [
+                            { icon: '📰', text: '<strong>Источник:</strong> Официальный портал правовой информации.' },
+                            { icon: '✅', text: '<strong>Вердикт:</strong> <span style="color: #2ecc71;">ПРАВДА</span>.' }
+                        ]
+                    },
+                    {
+                        id: '3B', type: 'truth', source: 'Дептранс Москвы', avatar: '🛴', date: 'Сегодня',
+                        title: 'В Москве запустили пилот по выдаче госномеров для электросамокатов кикшеринга',
+                        content: 'Номера формата <strong>МСК-СИМ-ХХХХ</strong> считываются камерами для автоматических штрафов за нарушения.',
+                        analysis: [
+                            { icon: '📰', text: '<strong>Источник:</strong> Официальный канал Дептранса Москвы.' },
+                            { icon: '✅', text: '<strong>Вердикт:</strong> <span style="color: #2ecc71;">ПРАВДА</span>.' }
+                        ]
+                    },
+                    {
+                        id: '3C', type: 'truth', source: 'Госдума РФ', avatar: '🎮', date: 'Вчера',
+                        title: 'Госдума приняла в первом чтении законопроект о налоговых льготах для киберспортивных организаций',
+                        content: 'Законопроект внёс депутат <strong>Амир Хамитов</strong>. Киберспортивные клубы получат пониженные тарифы страховых взносов.',
+                        analysis: [
+                            { icon: '👤', text: '<strong>Эксперт:</strong> Амир Хамитов — реальный депутат Госдумы.' },
+                            { icon: '✅', text: '<strong>Вердикт:</strong> <span style="color: #2ecc71;">ПРАВДА</span>.' }
+                        ]
+                    }
+                ]
+            }
+        ];
 
-        // Если переходим на шаг 3, обновляем разбор выбранной новости
-        if (stepNumber === 3 && selectedNews) {
-            updateAnalysis(selectedNews);
-        }
-    }
+        // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+        let tutorialSelectedNews = null;
+        let currentRound = 0;
+        let score = 0;
+        let selectedRoundNewsId = null;
+        let roundCompleted = false;
 
-    // Функция обновления анализа новости
-    function updateAnalysis(newsId) {
-        const news = newsData[newsId];
-        const feedbackDiv = document.getElementById('user-choice-feedback');
-        
-        if (newsId === 'B') {
-            feedbackDiv.innerHTML = `<p><span class="fake-text">Именно на такую новость ведутся чаще всего!</span> Ты не одинок — она выглядит супер убедительно. Давай разберем, почему она фейк.</p>`;
-        } else {
-            feedbackDiv.innerHTML = `<p>Ты выбрал новость <span class="highlight">"${news.title}"</span>. Давай разберем её по косточкам и найдем признаки фейка! 🔍</p>`;
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+        function goToScenarios() {
+            window.location.href = "../scenarios.html";
         }
-        
-        // Обновляем заголовок разбора
-        document.querySelector('#step-3 h3').innerHTML = `🔬 Детальный разбор новости <span class="highlight">"${news.title}"</span> по чек-листу фактчекера:`;
-        
-        // Находим контейнер для анализа
-        const analysisContainer = document.querySelector('.analysis');
-        
-        // Полностью очищаем и перестраиваем контейнер анализа
-        analysisContainer.innerHTML = '';
-        
-        // Добавляем все пункты анализа
-        news.analysis.forEach(item => {
-            const checkpoint = document.createElement('div');
-            checkpoint.className = 'checkpoint';
-            checkpoint.innerHTML = `
-                <div class="step-number">${item.title}</div>
-                <p>${item.text}</p>
+
+        function showStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+        }
+
+        // ==================== ОБУЧЕНИЕ ====================
+        function selectTutorialNews(newsId) {
+            tutorialSelectedNews = newsId;
+            document.querySelectorAll('#step-2 .news-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`#step-2 .news-card[data-news="${newsId}"]`).classList.add('selected');
+            document.getElementById('tutorial-confirm-btn').disabled = false;
+        }
+
+        // Модифицируем showStep для шага 3 (обучение)
+        const originalShowStep = showStep;
+        showStep = function(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+
+            if (stepNumber === 3 && tutorialSelectedNews) {
+                updateTutorialAnalysis(tutorialSelectedNews);
+            }
+        };
+
+        function updateTutorialAnalysis(newsId) {
+            const news = tutorialNewsData[newsId];
+            const feedbackDiv = document.getElementById('tutorial-feedback');
+            const analysisContainer = document.getElementById('tutorial-analysis-container');
+            
+            if (newsId === 'B') {
+                feedbackDiv.innerHTML = `<p><span class="fake-text">Именно на такую новость ведутся чаще всего!</span> Ты не одинок — она выглядит супер убедительно. Давай разберем, почему она фейк.</p>`;
+            } else {
+                feedbackDiv.innerHTML = `<p>Ты выбрал новость <span class="highlight">"${news.title}"</span>. Давай разберем её по косточкам!</p>`;
+            }
+            
+            let html = `<h3>🔬 Детальный разбор новости <span class="highlight">"${news.title}"</span>:</h3><div class="analysis">`;
+            news.analysis.forEach(item => {
+                html += `<div class="checkpoint"><div class="step-number">${item.title}</div><p>${item.text}</p></div>`;
+            });
+            html += `<p style="margin-top:20px;"><strong>Вывод:</strong> ${news.verdict}</p></div>`;
+            
+            analysisContainer.innerHTML = html;
+        }
+
+        // ==================== ЗАПУСК РАУНДОВ ====================
+        function startRounds() {
+            currentRound = 0;
+            score = 0;
+            renderRound(1);
+            showRoundStep(1);
+        }
+
+        function showRoundStep(roundNum) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step-round${roundNum}`).classList.add('active');
+        }
+
+        function renderRound(roundNum) {
+            const roundIndex = roundNum - 1;
+            const round = roundsData[roundIndex];
+            const feed = document.getElementById(`round${roundNum}Feed`);
+            
+            selectedRoundNewsId = null;
+            roundCompleted = false;
+            
+            feed.innerHTML = '';
+            round.news.forEach(news => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.dataset.newsId = news.id;
+                card.dataset.newsType = news.type;
+                card.onclick = () => selectRoundNews(roundNum, news.id);
+                
+                card.innerHTML = `
+                    <div class="news-header">
+                        <div class="news-avatar">${news.avatar}</div>
+                        <div>
+                            <p class="news-source">${news.source}</p>
+                            <p class="news-date">${news.date}</p>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <h4>${news.title}</h4>
+                        <p>${news.content}</p>
+                    </div>
+                    <div class="analysis-block" id="analysis-round${roundNum}-${news.id}"></div>
+                    <button class="cyber-button analysis-toggle" onclick="event.stopPropagation(); toggleRoundAnalysis(${roundNum}, '${news.id}')">
+                        🔍 Разбор новости
+                    </button>
+                `;
+                feed.appendChild(card);
+            });
+
+            document.getElementById(`round${roundNum}SubmitBtn`).disabled = true;
+            document.getElementById(`round${roundNum}NoFakeBtn`).style.display = 'inline-block';
+            document.getElementById(`round${roundNum}Result`).style.display = 'none';
+            
+            // Обновляем счёт
+            updateScoreDisplay();
+        }
+
+        function updateScoreDisplay() {
+            for (let i = 1; i <= 3; i++) {
+                const display = document.getElementById(`scoreDisplay${i}`);
+                if (display) display.textContent = `${score}/3`;
+            }
+        }
+
+        function selectRoundNews(roundNum, newsId) {
+            if (roundCompleted) return;
+            selectedRoundNewsId = newsId;
+            
+            document.querySelectorAll(`#step-round${roundNum} .news-card`).forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`#step-round${roundNum} .news-card[data-news-id="${newsId}"]`).classList.add('selected');
+            
+            document.getElementById(`round${roundNum}SubmitBtn`).disabled = false;
+        }
+
+        function toggleRoundAnalysis(roundNum, newsId) {
+            const analysisBlock = document.getElementById(`analysis-round${roundNum}-${newsId}`);
+            const round = roundsData[roundNum - 1];
+            const news = round.news.find(n => n.id === newsId);
+            
+            if (!analysisBlock.classList.contains('show')) {
+                let html = '';
+                news.analysis.forEach(item => {
+                    html += `
+                        <div class="analysis-item">
+                            <div style="font-size: 1.3em; min-width: 30px;">${item.icon}</div>
+                            <div>${item.text}</div>
+                        </div>
+                    `;
+                });
+                analysisBlock.innerHTML = html;
+                analysisBlock.classList.add('show');
+                event.target.textContent = '🔍 Скрыть разбор';
+            } else {
+                analysisBlock.classList.remove('show');
+                event.target.textContent = '🔍 Разбор новости';
+            }
+        }
+
+        function submitRoundAnswer(roundNum) {
+            if (!selectedRoundNewsId || roundCompleted) return;
+            
+            const round = roundsData[roundNum - 1];
+            const selectedNews = round.news.find(n => n.id === selectedRoundNewsId);
+            const isCorrect = (round.rule === 'find-truth' && selectedNews.type === 'truth') ||
+                             (round.rule === 'find-fake' && selectedNews.type === 'fake');
+            
+            processRoundResult(roundNum, isCorrect, selectedNews);
+        }
+
+        function submitNoFake(roundNum) {
+            if (roundCompleted) return;
+            
+            const round = roundsData[roundNum - 1];
+            const isCorrect = round.rule === 'all-truth';
+            
+            processRoundResult(roundNum, isCorrect, null);
+        }
+
+        function processRoundResult(roundNum, isCorrect, selectedNews) {
+            if (isCorrect) {
+                score++;
+                updateScoreDisplay();
+            }
+            
+            roundCompleted = true;
+            
+            // Подсветка карточек
+            const round = roundsData[roundNum - 1];
+            document.querySelectorAll(`#step-round${roundNum} .news-card`).forEach(card => {
+                const newsId = card.dataset.newsId;
+                const news = round.news.find(n => n.id === newsId);
+                
+                const badge = document.createElement('div');
+                badge.className = `news-badge ${news.type === 'truth' ? 'badge-truth' : 'badge-fake'}`;
+                badge.textContent = news.type === 'truth' ? 'ПРАВДА' : 'ФЕЙК';
+                if (!card.querySelector('.news-badge')) {
+                    card.style.position = 'relative';
+                    card.appendChild(badge);
+                }
+                
+                card.classList.add(news.type === 'truth' ? 'correct-highlight' : 'wrong-highlight');
+            });
+            
+            // Показываем результат
+            const resultDiv = document.getElementById(`round${roundNum}Result`);
+            const isAllTruthRound = round.rule === 'all-truth';
+            
+            let title, message;
+            if (selectedNews) {
+                title = isCorrect ? '✅ Верно!' : '❌ Мимо!';
+                message = isCorrect 
+                    ? (isAllTruthRound ? 'Но в этом раунде все новости правдивые! Нужно было нажать «Фейковой новости нет».' : 'Отличный выбор!')
+                    : (isAllTruthRound ? 'Это правдивая новость! В этом раунде все новости настоящие.' : 'Попробуй разобрать другие новости.');
+            } else {
+                title = isCorrect ? '✅ Абсолютно верно!' : '❌ Ошибка!';
+                message = isCorrect 
+                    ? 'Ты прав! В этом раунде действительно нет фейков.'
+                    : 'В этом раунде есть фейк.';
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="result-title ${isCorrect ? 'correct' : 'wrong'}">${title}</div>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">${message}</p>
+                <p>👆 Нажми «Разбор новости» под любой карточкой, чтобы узнать подробности.</p>
+                <div class="button-group">
+                    <button class="cyber-button" onclick="nextRound(${roundNum})">
+                        ${roundNum < 3 ? 'Следующий раунд ➔' : 'Завершить игру 🏁'}
+                    </button>
+                </div>
             `;
-            analysisContainer.appendChild(checkpoint);
-        });
-        
-        // Добавляем вердикт
-        const verdict = document.createElement('p');
-        verdict.style.marginTop = '20px';
-        verdict.style.fontSize = '1.1em';
-        verdict.innerHTML = `<strong>Вывод:</strong> ${news.verdict}`;
-        analysisContainer.appendChild(verdict);
-    }
+            resultDiv.style.display = 'block';
+            
+            document.getElementById(`round${roundNum}SubmitBtn`).disabled = true;
+            document.getElementById(`round${roundNum}NoFakeBtn`).style.display = 'none';
+        }
 
-    // Функция выбора новости
-    function selectNews(newsId) {
-        selectedNews = newsId;
-        // Снимаем выделение со всех карточек
-        document.querySelectorAll('.news-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        // Выделяем выбранную
-        document.querySelector(`.news-card[data-news="${newsId}"]`).classList.add('selected');
-        // Активируем кнопку
-        document.getElementById('confirm-btn').disabled = false;
-    }
+        function nextRound(currentRoundNum) {
+            if (currentRoundNum < 3) {
+                renderRound(currentRoundNum + 1);
+                showRoundStep(currentRoundNum + 1);
+            } else {
+                showFinal();
+            }
+        }
 
-    // Функция сброса сценария
-    function resetScenario() {
-        selectedNews = null;
-        document.querySelectorAll('.news-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        document.getElementById('confirm-btn').disabled = true;
-        showStep(1);
-    }
-    // Функция перехода к списку сценариев
-function goToScenarios() {
-    // Переход на главную страницу со списком сценариев
-    window.location.href = "../scenarios.html";
-}
+        function showFinal() {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById('step-final').classList.add('active');
+            
+            document.getElementById('finalScoreDisplay').textContent = `${score}/3`;
+            
+            let message = '';
+            if (score === 3) message = '🏆 Потрясающе! Ты настоящий охотник за фейками!';
+            else if (score === 2) message = '👍 Отличный результат! Есть куда расти.';
+            else if (score === 1) message = '📚 Неплохо для начала! Теперь ты знаешь, на что обращать внимание.';
+            else message = '🎯 Даже ноль — это опыт! Главное, что ты теперь знаешь алгоритм проверки.';
+            
+            document.getElementById('finalMessageDisplay').textContent = message;
+        }
 
-    // Инициализация
-    window.onload = () => showStep(1);
-</script>
+        function resetEverything() {
+            tutorialSelectedNews = null;
+            document.getElementById('tutorial-confirm-btn').disabled = true;
+            document.querySelectorAll('#step-2 .news-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            showStep(1);
+        }
+    </script>
 </body>
-</html> 
+</html>
