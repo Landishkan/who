@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Политика конфиденциальности | Кибер Квестор</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Animate.css & Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* ===== ОСНОВНЫЕ СТИЛИ (из вашего файла) ===== */
+        :root {
+            --primary-color: #0f4cff;
+            --primary-light: #3a6bff;
+            --primary-dark: #0028a8;
+            --secondary-color: #8FB8ED;
+            --accent-color: #5B9CF0;
+            --accen-color: #16a541;
+            --error-color: #ff2d75;
+            
+            --text-color: #ffffff;
+            --text-secondary: #c3d1ff;
+            
+            --background-dark: #0a0a20;
+            --background-light: #121235;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', 'Roboto', sans-serif;
+            background: var(--background-dark);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Анимация фона */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 242, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 136, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Анимация для основного контента */
+        .main-content {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Стили навигации */
+        .header-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            padding: 12px 20px;
+            background: rgba(143, 184, 237, 0.1);
+            border: 1px solid var(--secondary-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button:hover {
+            background: rgba(143, 184, 237, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-button:active {
+            transform: translateY(1px);
+        }
+
+        .nav-button i {
+            font-size: 1.2rem;
+        }
+
+        .nav-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-button:hover::after {
+            width: 100%;
+        }
+
+        /* Логотип */
+        .logo-pulse h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .tagline {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-top: -10px;
+            letter-spacing: 1px;
+        }
+
+        /* Секция политики */
+        .policy-section {
+            background: rgba(10, 10, 32, 0.7);
+            border-radius: 12px;
+            border-top: 3px solid var(--accent-color);
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .policy-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--secondary-color);
+            font-size: 2.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .policy-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        }
+
+        .last-updated {
+            color: var(--text-secondary);
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .policy-block {
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(143, 184, 237, 0.2);
+        }
+
+        .policy-block:last-child {
+            border-bottom: none;
+        }
+
+        .policy-block h3 {
+            color: var(--accent-color);
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .policy-block h3 i {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .policy-block p {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .policy-list {
+            list-style: none;
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .policy-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+
+        .policy-list li i {
+            color: var(--accent-color);
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .highlight-box {
+            background: rgba(91, 156, 240, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .contact-card {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            transition: transform 0.3s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .contact-card i {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .contact-card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .contact-card a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-card a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Футер */
+        .cyber-footer {
+            background: var(--background-dark);
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 50px;
+            border-top: 1px solid rgba(58, 107, 255, 0.2);
+        }
+
+        .footer-logo {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-color);
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-link {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .social-link:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .logo-pulse h1 {
+                font-size: 2.2rem;
+            }
+            
+            .policy-section {
+                padding: 20px;
+            }
+            
+            .policy-header h2 {
+                font-size: 1.6rem;
+            }
+            
+            .policy-block h3 {
+                font-size: 1.3rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+            }
+            
+            .header-nav {
+                gap: 8px;
+            }
+            
+            .nav-button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Убираем фиолетовое выделение */
+        a, button {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        
+        *:focus {
+            outline: none;
+        }
+        
+        a:visited {
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="logo-pulse">
+                <h1>Кибер Квестор</h1>
+                <p class="tagline">Изучай кибербезопасность через игру</p>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="index.html" class="nav-button">
+                    <i class="fas fa-home"></i> Главная
+                </a>
+                <a href="games.html" class="nav-button">
+                    <i class="fas fa-gamepad"></i> Игры
+                </a>
+                <a href="scenarios.html" class="nav-button">
+                    <i class="fas fa-scroll"></i> Сценарии
+                </a>
+                <a href="learning.html" class="nav-button">
+                    <i class="fas fa-graduation-cap"></i> Обучение
+                </a>
+                <a href="about.html" class="nav-button">
+                    <i class="fas fa-info-circle"></i> О нас
+                </a>
+            </nav>
+        </header>
+        
+        <main class="main-content">
+            <div class="policy-section">
+                <div class="policy-header">
+                    <h2>
+                        <i class="fas fa-shield-alt"></i>
+                        Политика конфиденциальности
+                    </h2>
+                    <div class="last-updated">
+                        <i class="far fa-calendar-alt"></i> Последнее обновление: 14 апреля 2026 года
+                    </div>
+                </div>
+                
+                <div class="policy-block">
+                    <h3>
+                        <i class="fas fa-lock"></i>
+                        1. Общие положения
+                    </h3>
+                    <p>Добро пожаловать на платформу «Кибер Квестор» (далее — «Мы», «Наш», «Сервис»). Мы ценим ваше доверие и стремимся защищать вашу конфиденциальность. Настоящая Политика конфиденциальности объясняет, какие данные мы собираем, как их используем и какие меры предпринимаем для их безопасности.</p>
+                    <p>Используя наш сайт и сервисы, вы соглашаетесь с условиями данной Политики. Если вы не согласны с какими-либо положениями, пожалуйста, прекратите использование Сервиса.</p>
+                </div>
+                
+           <div class="policy-block">
+    <h3>
+        <i class="fas fa-database"></i>
+        2. Какие данные мы собираем
+    </h3>
+    <p>Мы уважаем вашу конфиденциальность и собираем только минимально необходимые технические данные для обеспечения работы сайта:</p>
+    <ul class="policy-list">
+        <li><i class="fas fa-network-wired"></i> <strong>IP-адрес</strong> — для защиты от злоупотреблений и обеспечения безопасности.</li>
+        <li><i class="fas fa-cookie"></i> <strong>Cookies</strong> — для запоминания настроек отображения и улучшения работы сайта.</li>
+        <li><i class="fas fa-globe"></i> <strong>Технические данные:</strong> Тип браузера, версия операционной системы, разрешение экрана, реферер (откуда вы перешли).</li>
+        <li><i class="fas fa-chart-simple"></i> <strong>Анонимная статистика посещений</strong> — с помощью Яндекс.Метрики.</li>
+    </ul>
+    <div class="highlight-box">
+        <i class="fas fa-check-circle"></i> <strong>Важно:</strong> Мы НЕ собираем и не храним ваше имя, номер телефона, адрес электронной почты или другие персональные данные. Регистрация на сайте не требуется.
+    </div>
+</div>
+                
+               <div class="policy-block">
+    <h3>
+        <i class="fas fa-cogs"></i>
+        3. Как мы используем ваши данные
+    </h3>
+    <p>Собранные технические данные используются исключительно для:</p>
+    <ul class="policy-list">
+        <li><i class="fas fa-chart-line"></i> Анализа популярности игр и сценариев для улучшения контента.</li>
+        <li><i class="fas fa-bug"></i> Выявления и устранения технических проблем и ошибок.</li>
+        <li><i class="fas fa-shield-virus"></i> Защиты от DDoS-атак и других злоумышленных действий.</li>
+        <li><i class="fas fa-chart-simple"></i> Сбора анонимной статистики посещений через Яндекс.Метрику.</li>
+    </ul>
+</div>
+                
+               <div class="policy-block">
+    <h3>
+        <i class="fas fa-share-alt"></i>
+        4. Передача данных третьим лицам
+    </h3>
+    <p>Мы НЕ продаем и НЕ передаем данные третьим лицам. Исключением является:</p>
+    <ul class="policy-list">
+        <li><i class="fas fa-chart-simple"></i> <strong>Яндекс.Метрика</strong> — сервис аналитики, который собирает обезличенные статистические данные. Политику конфиденциальности Яндекс можно прочитать <a href="https://yandex.ru/legal/confidential/" target="_blank" style="color: var(--accent-color);">здесь</a>.</li>
+        <li><i class="fas fa-gavel"></i> По требованию государственных органов в установленных законом случаях.</li>
+    </ul>
+    <div class="highlight-box">
+        <i class="fas fa-info-circle"></i> Все данные собираются в обезличенном виде и не позволяют идентифицировать конкретного пользователя.
+    </div>
+</div>
+                <div class="policy-block">
+    <h3>
+        <i class="fas fa-cookie-bite"></i>
+        5. Файлы Cookie и технологии отслеживания
+    </h3>
+    <p>Наш сайт использует файлы cookie для корректной работы. Cookie — это небольшие текстовые файлы, которые сохраняются на вашем устройстве.</p>
+    <p>Мы используем:</p>
+    <ul class="policy-list">
+        <li><i class="fas fa-cookie"></i> <strong>Технические cookie</strong> — необходимые для работы сайта.</li>
+        <li><i class="fas fa-chart-simple"></i> <strong>Яндекс.Метрика</strong> — использует cookie для сбора анонимной статистики.</li>
+    </ul>
+    <p>Вы можете отключить cookie в настройках вашего браузера, однако это может повлиять на работу некоторых игр и сценариев.</p>
+    <p>Если вы хотите отказаться от сбора данных Яндекс.Метрикой, вы можете установить <a href="https://yandex.ru/support/metrica/general/opt-out.html" target="_blank" style="color: var(--accent-color);">расширение для браузера</a>.</p>
+</div>
+                
+               <div class="policy-block">
+    <h3>
+        <i class="fas fa-child"></i>
+        6. Использование сайта несовершеннолетними
+    </h3>
+    <p>«Кибер Квестор» — образовательная платформа, открытая для всех возрастов. Поскольку мы не собираем персональные данные (имя, почта, телефон), специальных ограничений для несовершеннолетних не требуется. Однако мы рекомендуем родителям обсуждать с детьми правила безопасного поведения в интернете.</p>
+</div>
+                
+               <div class="policy-block">
+    <h3>
+        <i class="fas fa-edit"></i>
+        7. Ваши права
+    </h3>
+    <p>Поскольку мы не храним персональные данные, вам не нужно запрашивать их удаление или исправление. Если вы хотите отказаться от сбора анонимной статистики Яндекс.Метрикой, вы можете:</p>
+    <ul class="policy-list">
+        <li><i class="fas fa-ban"></i> Установить блокировщик рекламы или специальное <a href="https://yandex.ru/support/metrica/general/opt-out.html" target="_blank" style="color: var(--accent-color);">расширение от Яндекс</a>.</li>
+        <li><i class="fas fa-cookie"></i> Отключить cookie в настройках браузера.</li>
+    </ul>
+</div>
+                
+                <div class="policy-block">
+                    <h3>
+                        <i class="fas fa-history"></i>
+                        8. Изменения политики конфиденциальности
+                    </h3>
+                    <p>Мы можем периодически обновлять данную Политику. О значительных изменениях мы уведомим вас через сайт или по электронной почте (если вы зарегистрированы). Продолжая использовать Сервис после изменений, вы подтверждаете свое согласие с новой редакцией.</p>
+                </div>
+                
+                <div class="policy-block">
+                    <h3>
+                        <i class="fas fa-address-card"></i>
+                        9. Контактная информация
+                    </h3>
+                    <p>Если у вас есть вопросы или предложения относительно нашей Политики конфиденциальности, пожалуйста, свяжитесь с нами:</p>
+                    
+                    <div class="contact-info">
+                        <div class="contact-card">
+                            <i class="fas fa-envelope"></i>
+                            <h4>Электронная почта</h4>
+                            <a href="mailto:privacy@cyberquestor.ru">landysh-garayeva@mail.ru</a>
+                        </div>
+                        <div class="contact-card">
+                            <i class="fas fa-paper-plane"></i>
+                            <h4>Форма обратной связи</h4>
+                            <a href="about.html">Раздел "О нас"</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="cyber-footer">
+            <div class="footer-logo">Кибер Квестор — Защити себя в цифровом мире</div>
+            <div class="footer-links">
+                <a href="index.html" class="footer-link">Главная</a>
+                <a href="games.html" class="footer-link">Мини-игры</a>
+                <a href="scenarios.html" class="footer-link">Сценарии</a>
+                <a href="learning.html" class="footer-link">Обучение</a>
+                <a href="privacy.html" class="footer-link">Политика конфиденциальности</a>
+            </div>
+         
+        </footer>
+    </div>
+
+    <!-- Скрипты для аналитики -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZTY849YPHM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-ZTY849YPHM');
+    </script>
+    
+    <script>
+        // Плавное появление элементов при прокрутке (опционально)
+        const animateBlocks = () => {
+            const blocks = document.querySelectorAll('.policy-block');
+            blocks.forEach((block, index) => {
+                const rect = block.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    block.style.opacity = '1';
+                    block.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Инициализация стилей для анимации
+        document.querySelectorAll('.policy-block').forEach(block => {
+            block.style.opacity = '0';
+            block.style.transform = 'translateY(20px)';
+            block.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+        
+        window.addEventListener('scroll', animateBlocks);
+        window.addEventListener('load', animateBlocks);
+    </script>
+</body>
+</html>
