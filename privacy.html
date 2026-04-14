@@ -349,7 +349,143 @@
             color: var(--accent-color);
             transform: translateY(-3px);
         }
+/* Плашка-баннер для юридического документа */
+.legal-doc-banner {
+    background: linear-gradient(135deg, rgba(15, 76, 255, 0.15), rgba(22, 165, 65, 0.1));
+    border: 1px solid rgba(91, 156, 240, 0.4);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    position: relative;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
 
+.legal-doc-banner:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(91, 156, 240, 0.2);
+    transform: translateY(-2px);
+}
+
+.legal-doc-banner__icon {
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    background: rgba(91, 156, 240, 0.15);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legal-doc-banner__icon i {
+    filter: drop-shadow(0 0 5px rgba(91, 156, 240, 0.5));
+}
+
+.legal-doc-banner__content {
+    flex: 1;
+}
+
+.legal-doc-banner__title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legal-doc-banner__title i {
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+.legal-doc-banner__text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.legal-doc-banner__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.legal-doc-banner__button:hover {
+    transform: translateX(5px);
+    filter: brightness(1.1);
+    gap: 15px;
+}
+
+.legal-doc-banner__button i:last-child {
+    transition: transform 0.3s ease;
+}
+
+.legal-doc-banner__button:hover i:last-child {
+    transform: translateX(3px);
+}
+
+.legal-doc-banner__badge {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: rgba(22, 165, 65, 0.2);
+    border: 1px solid var(--accen-color);
+    color: var(--accen-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Адаптив для плашки */
+@media (max-width: 768px) {
+    .legal-doc-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .legal-doc-banner__icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2.5rem;
+    }
+    
+    .legal-doc-banner__badge {
+        position: static;
+        display: inline-flex;
+        width: fit-content;
+        margin-top: 10px;
+    }
+    
+    .legal-doc-banner__button {
+        justify-content: center;
+    }
+}
         /* Адаптивность */
         @media (max-width: 768px) {
             .logo-pulse h1 {
@@ -426,6 +562,26 @@
         
         <main class="main-content">
             <div class="policy-section">
+                <!-- Плашка-ссылка на полный документ -->
+<div class="legal-doc-banner">
+    <div class="legal-doc-banner__icon">
+        <i class="fas fa-file-contract"></i>
+    </div>
+    <div class="legal-doc-banner__content">
+        <div class="legal-doc-banner__title">
+            <i class="fas fa-gavel"></i> Официальный документ
+        </div>
+        <div class="legal-doc-banner__text">
+            Полная версия политики конфиденциальности с указанием статуса оператора персональных данных, 
+            правовых оснований обработки и полным перечнем обязательств в соответствии с 152-ФЗ.
+        </div>
+        <a href="docs/privacy-policy-full.pdf" class="legal-doc-banner__button" target="_blank">
+            <i class="fas fa-file-pdf"></i> Открыть полный документ (PDF)
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+   
+</div>
                 <div class="policy-header">
                     <h2>
                         <i class="fas fa-shield-alt"></i>
