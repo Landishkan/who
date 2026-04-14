@@ -3159,3 +3159,46 @@ button:active, .cyber-button:active, .scenario-button:active {
         font-size: 0.9rem;
     }
 }
+a, button {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        
+        *:focus {
+            outline: none;
+        }
+        
+        a:visited {
+            color: inherit;
+        }
+          .cyber-footer {
+            background: var(--background-dark);
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 50px;
+            border-top: 1px solid rgba(58, 107, 255, 0.2);
+        }
+
+        .footer-logo {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-color);
+        }
