@@ -27,8 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const level = urlParams.get('level');
     const action = urlParams.get('action');
     
+    // ПРОВЕРКА: Если переданы и топик, и уровень (даже если уровень "special"), 
+    // запускаем тест сразу
     if (topic && level) {
-        startTest(topic, level);
+        window.currentTopic = topic; // Убеждаемся, что топик сохранен в глобальную переменную
+        startTest(level); 
     } else if (topic && action === 'select-level') {
         showLevelSelection(topic);
     } else {
@@ -53,7 +56,7 @@ function startTest(level) {
     const topic = window.currentTopic;
     
     if (!topic || !testData[topic] || !testData[topic][level]) {
-        console.error('Тест не найден');
+        console.error('Тест не найден', {topic, level});
         return;
     }
     
@@ -66,17 +69,18 @@ function startTest(level) {
     
     // Настройка интерфейса
     document.getElementById('testTopic').textContent = currentTest.title;
-    document.getElementById('testLevel').textContent = 
-        level === 'basic' ? 'Базовый уровень' : 'Углубленный уровень';
     
-    // Переключение экранов
-    levelSelectionScreen.style.display = 'none';
+    // Логика отображения текста уровня
+    const levelElement = document.getElementById('testLevel');
+    if (level === 'basic') levelElement.textContent = 'Базовый уровень';
+    else if (level === 'advanced') levelElement.textContent = 'Углубленный уровень';
+    else if (level === 'special') levelElement.textContent = 'Лимитированный тест'; // Текст для твоего спец-теста
+    
+    // Скрываем выбор уровня и показываем тест
+    levelSelectionScreen.style.display = 'none'; // Это принудительно скроет окно выбора
     testScreen.style.display = 'block';
     
-    // Запуск таймера
     startTimer();
-    
-    // Загрузка первого вопроса
     loadQuestion();
 }
 
@@ -119,6 +123,13 @@ function loadQuestion() {
     
     // Обновление состояния кнопок
     prevButton.disabled = currentQuestionIndex === 0;
+    // Скрываем кнопку "Назад" только для спец-теста
+    if (window.currentTopic === 'limited-event') {
+        prevButton.style.display = 'none';
+    } else {
+        prevButton.style.display = 'block';
+        prevButton.disabled = currentQuestionIndex === 0;
+    }
     nextButton.disabled = userAnswers[currentQuestionIndex] === null;
     
     if (currentQuestionIndex === currentTest.questions.length - 1) {
@@ -129,32 +140,36 @@ function loadQuestion() {
 }
 
 // Выбрать ответ
-function selectAnswer(answerIndex) {
-    if (userAnswers[currentQuestionIndex] !== null) {
-        return; // Ответ уже выбран
-    }
-    
-    userAnswers[currentQuestionIndex] = answerIndex;
-    
-    // Обновление отображения выбранного ответа
-    const optionItems = questionContainer.querySelectorAll('.option-item');
-    optionItems.forEach((item, index) => {
-        if (index === answerIndex) {
-            item.classList.add('selected');
+function selectAnswer(index) {
+    if (!timerRunning) return;
+
+    // Сохраняем ответ
+    userAnswers[currentQuestionIndex] = index;
+
+    // Если это наш спец-тест, делаем мгновенную проверку
+    if (window.currentTopic === 'limited-event') {
+        const question = currentTest.questions[currentQuestionIndex];
+        const options = document.querySelectorAll('.option-item');
+        
+        // Блокируем клики по всем вариантам
+        options.forEach(opt => opt.style.pointerEvents = 'none');
+
+        // Подсвечиваем результат
+        if (index === question.correct) {
+            options[index].classList.add('correct');
         } else {
-            item.classList.remove('selected');
+            options[index].classList.add('wrong');
+            // Показываем правильный, чтобы было наглядно
+            options[question.correct].classList.add('correct');
         }
-    });
-    
-    // Активация кнопки "Далее"
+    } else {
+        // Обычная логика: просто подсвечиваем выбранный
+        const options = document.querySelectorAll('.option-item');
+        options.forEach(opt => opt.classList.remove('selected'));
+        options[index].classList.add('selected');
+    }
+
     nextButton.disabled = false;
-    
-    // Автоматический переход к следующему вопросу через 1 секунду
-  /*  setTimeout(() => {
-        if (currentQuestionIndex < currentTest.questions.length - 1) {
-            nextQuestion();
-        }
-    }, 1000); */
 }
 
 // Следующий вопрос
@@ -220,19 +235,25 @@ function showResults() {
 
 // Перезапустить тест
 function restartTest() {
-    completionScreen.style.display = 'none';
-    testScreen.style.display = 'block';
-    
-    currentQuestionIndex = 0;
-    userAnswers = new Array(currentTest.questions.length).fill(null);
-    startTime = new Date();
-    timeSpent = 0;
-    timerRunning = true;
-    
-    startTimer();
-    loadQuestion();
-}
+    // Получаем текущие параметры из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const topic = urlParams.get('topic');
+    const level = urlParams.get('level');
 
+    // Если это наш спец-тест (у него уже есть параметр level в URL)
+    if (topic === 'limited-event' || level === 'special') {
+        // Перезагружаем с сохранением уровня, чтобы не вылетало окно выбора
+        window.location.href = `test.html?topic=${topic}&level=special`;
+    } 
+    // Если это обычный тест, где нужно выбрать сложность
+    else if (topic) {
+        window.location.href = `test.html?topic=${topic}&action=select-level`;
+    } 
+    // Если параметров нет, просто на главную
+    else {
+        window.location.href = '../tests.html';
+    }
+}
 // Таймер
 function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
@@ -299,11 +320,10 @@ function getTopicName(topicId) {
         'phishing': 'Фишинг',
         'destructive-content': 'Деструктивный контент',
         'echo-chambers': 'Эхо-камера', // изм
-        'fakes': 'Фейки и дезинформация'
+        'fakes': 'Фейки и дезинформация',
+        'limited-event': 'Тест для участников и посетителей Казанского марафона'
     };
     
     return names[topicId] || topicId;
 }
-
-
 
