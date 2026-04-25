@@ -861,3 +861,63 @@ body {
         display: none;
     }
 }
+/* Специальные стили для мгновенной проверки */
+.option-item.correct {
+    border-color: #2ed573 !important;
+    background-color: rgba(46, 213, 115, 0.1) !important;
+    color: #2ed573 !important;
+}
+
+.option-item.wrong {
+    border-color: #ff4757 !important;
+    background-color: rgba(255, 71, 87, 0.1) !important;
+    color: #ff4757 !important;
+}
+
+/* Фикс, чтобы при наведении на заблокированные кнопки не менялся курсор */
+.option-item[style*="pointer-events: none"] {
+    cursor: default;
+}
+/* Стили для особенной карточки */
+.topic-card.special-card {
+    border: 2px solid #edc168;
+    background: linear-gradient(145deg, #2f3273, #232357); /* Градиент с фиолетовым отливом */
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: special-glow 3s infinite alternate;
+}
+
+/* Пульсирующее свечение */
+@keyframes special-glow {
+    from {
+        box-shadow: 0 0 10px rgba(35, 35, 87, 0.2);
+        border-color: #2f3273;
+    }
+    to {
+        box-shadow: 0 0 25px rgba(35, 35, 87, 0.5);
+        border-color: #2f3273;
+    }
+}
+
+/* Маленький ярлычок "NEW" или "EVENT" в углу карточки */
+.topic-card.special-card::before {
+    content: "EVENT";
+    position: absolute;
+    top: 10px;
+    right: -25px;
+    background: #edc168;
+    color: white;
+    padding: 2px 30px;
+    transform: rotate(45deg);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Иконка в спец-карточке тоже может светиться ярче */
+.special-card .topic-icon i {
+    color: #f3f3f8 !important;
+    text-shadow: 0 0 10px rgba(157, 157, 230, 0.6);
+}
