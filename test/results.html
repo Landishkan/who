@@ -174,15 +174,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Функции кнопок
 function retryTest() {
-    // 1. Достаем сохраненные результаты, чтобы узнать, какая была тема
+    // 1. Достаем сохраненные результаты
     const results = JSON.parse(localStorage.getItem('lastTestResults'));
     
     if (results && results.topicId) {
-        // 2. Переходим на страницу теста с параметром выбора уровня
-        // Используем results.topicId, чтобы вернуться к той же теме
-        window.location.href = `test.html?topic=${results.topicId}&action=select-level`;
+        // Проверяем, был ли это наш лимитированный тест
+        if (results.topicId === 'limited-event') {
+            // Сразу отправляем на тест, указывая уровень special
+            window.location.href = `test.html?topic=${results.topicId}&level=special`;
+        } else {
+            // Для остальных тем оставляем выбор уровня
+            window.location.href = `test.html?topic=${results.topicId}&action=select-level`;
+        }
     } else {
-        // 3. Если данных нет, тогда уже на общий список тем
+        // Если данных нет, на общий список
         window.location.href = '../tests.html';
     }
 }
@@ -201,7 +206,3 @@ function retryTest() {
     </script>
 </body>
 </html>
-
-
-
-
