@@ -126,10 +126,15 @@
     <script src="test/progress.js"></script>
     <script>
         // Генерация карточек тем
+        document.addEventListener('DOMContentLoaded', () => {
+        if (typeof isSpecialTestActive !== 'undefined' && isSpecialTestActive) {
+            document.getElementById('specialTestContainer').style.display = 'block';
+        }
+    });
         document.addEventListener('DOMContentLoaded', function() {
             const topicsGrid = document.getElementById('topicsGrid');
             const topics = Object.keys(testData);
-            
+           
             const topicIcons = {
                 'cyberbullying': 'fa-user-shield',
                 'social-engineering': 'fa-mask',
@@ -139,10 +144,12 @@
                 'phishing': 'fa-fish',
                 'destructive-content': 'fa-radiation',
                  'echo-chambers': 'fa-radiation',
-                 'fakes': 'fa-mask'// измен
+                 'fakes': 'fa-mask',// измен
+                  'limited-event': 'fa-star'
             };
             
             const topicNames = {
+                'limited-event': 'Тест для участников и посетителей Казанского марафона',
                 'cyberbullying': 'Кибербуллинг',
                 'social-engineering': 'Социальная инженерия',
                 'netiquette': 'Сетевой этикет',
@@ -151,7 +158,8 @@
                 'phishing': 'Фишинг',
                 'destructive-content': 'Деструктивный контент',
                 'echo-chambers': 'Эхо-камера',
-                'fakes': 'Фейки' // измен
+                'fakes': 'Фейки'
+                 // измен
             };
             
             const topicDescriptions = {
@@ -166,28 +174,47 @@
                 'fakes': 'Фейки и дезинформация' // измен
             };
             
-            topics.forEach(topicId => {
-                const topic = testData[topicId];
-                const card = document.createElement('div');
-                card.className = 'topic-card';
-                card.innerHTML = `
-                    <div class="topic-icon">
-                        <i class="fas ${topicIcons[topicId] || 'fa-shield-alt'}"></i>
-                    </div>
-                    <h3>${topicNames[topicId] || topicId}</h3>
-                    <p class="topic-description">${topicDescriptions[topicId] || ''}</p>
-                    <div class="topic-levels">
-                        <span class="level-tag basic">Базовый: 10 вопросов</span>
-                        <span class="level-tag advanced">Углубленный: 15 вопросов</span>
-                    </div>
-                `;
-                
-                card.addEventListener('click', () => {
-                    window.location.href = `test/test.html?topic=${topicId}&action=select-level`;
-                });
-                
-                topicsGrid.appendChild(card);
-            });
+          topics.forEach(topicId => {
+    const topic = testData[topicId];
+    const card = document.createElement('div');
+    
+    // Если это спец-тест, добавляем дополнительный класс для стилей
+    const isSpecial = (topicId === 'limited-event');
+    card.className = `topic-card ${isSpecial ? 'special-card' : ''}`;
+    card.innerHTML = `
+        <div class="topic-icon">
+            <i class="fas ${topicIcons[topicId] || 'fa-shield-alt'}"></i>
+        </div>
+        <h3>${topicNames[topicId] || topicId}</h3>
+        <p class="topic-description">${topicDescriptions[topicId] || ''}</p>
+        <div class="topic-levels">
+            ${isSpecial 
+                ? '<span class="level-tag special">Лимитированный тест</span>' 
+                : `
+                    <span class="level-tag basic">Базовый: 10 вопросов</span>
+                    <span class="level-tag advanced">Углубленный: 15 вопросов</span>
+                  `
+            }
+        </div>
+    `;
+    
+    card.addEventListener('click', () => {
+        if (isSpecial) {
+            // СРАЗУ отправляем на тест, указывая и топик, и уровень special
+            window.location.href = `test/test.html?topic=${topicId}&level=special`;
+        } else {
+            // Обычное поведение для остальных тем
+            window.location.href = `test/test.html?topic=${topicId}&action=select-level`;
+        }
+    });
+    
+    // Если это спец-тест и он выключен в data.js — не добавляем карточку на страницу
+    if (isSpecial && (typeof isSpecialTestActive !== 'undefined' && !isSpecialTestActive)) {
+        return; // Пропускаем создание этой карточки
+    }
+
+    topicsGrid.appendChild(card);
+});
             
             // Загрузка статистики прогресса
             loadProgressStats();
