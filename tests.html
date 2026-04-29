@@ -113,7 +113,86 @@
                 </div>
             </section>
         </main>
+ <div id="cookie-consent-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background-color: #254883; color: #ffffff; padding: 15px; z-index: 1000; font-family: sans-serif; justify-content: center; align-items: center;">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; text-align: center; width: 100%; max-width: 1200px; margin: 0 auto;">
+        <p style="margin: 0;">Мы используем файлы cookie для улучшения вашего опыта. Продолжая, вы соглашаетесь с нашей <a href="https://cyberquestor.ru/privacy.html" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: underline;">Политикой конфиденциальности</a>.<a href="https://hostinside.ru/cookie-banner-generator/"></a></p>
+        <div style="display: flex; gap: 10px; flex-shrink: 0;">
+            <button id="cookie-consent-accept" style="background-color: #4bcde7; color: #ffffff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Принять</button>
 
+        </div>
+    </div>
+</div>
+<script id="cookie-consent-logic" type="text/javascript">
+(function() {
+    const COOKIE_NAME = 'user_cookie_consent';
+    const banner = document.getElementById('cookie-consent-banner');
+    const acceptBtn = document.getElementById('cookie-consent-accept');
+
+
+    // ИСПРАВЛЕНО: Более надежная функция для чтения cookie,
+    // которая не зависит от пробелов между парами ключ-значение.
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/; domain=" + "cyberquestor.ru" + "; SameSite=Lax";
+    }
+
+    function deleteCookie(name) {
+        // ИСПРАВЛЕНО: Добавлен домен при удалении, чтобы cookie точно удалился.
+        document.cookie = name + '=; Path=/; domain=' + "cyberquestor.ru" + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
+    function loadScripts() {
+        const scriptsContainer = document.createElement('div');
+        const scriptsString = "<script type=\"text\/javascript\">\r\n    (function(m,e,t,r,i,k,a){\r\n        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};\r\n        m[i].l=1*new Date();\r\n        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}\r\n        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)\r\n    })(window, document,'script','https:\/\/mc.yandex.ru\/metrika\/tag.js?id=108475354', 'ym');\r\n\r\n    ym(108475354, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:\"dataLayer\", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});\r\n<\/script>\r\n<noscript><div><img src=\"https:\/\/mc.yandex.ru\/watch\/108475354\" style=\"position:absolute; left:-9999px;\" alt=\"\" \/><\/div><\/noscript>";
+        scriptsContainer.innerHTML = scriptsString;
+        
+        Array.from(scriptsContainer.querySelectorAll('script')).forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            document.body.appendChild(newScript);
+        });
+    }
+
+    const consent = getCookie(COOKIE_NAME);
+    if (!consent) {
+        banner.style.display = 'flex'; // ИСПРАВЛЕНО: Используется правильный тип отображения
+    } else if (consent === 'accepted') {
+        loadScripts();
+    }
+
+    acceptBtn.addEventListener('click', function() {
+        setCookie(COOKIE_NAME, 'accepted', 365);
+        banner.style.display = 'none';
+        loadScripts();
+    });
+
+
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'cookie-consent-open') {
+            event.preventDefault();
+            deleteCookie(COOKIE_NAME);
+            banner.style.display = 'flex'; // ИСПРАВЛЕНО: Используется правильный тип отображения
+        }
+    });
+})();
+</script>
         <footer class="tests-footer">
             <p>Кибербезопасность — это навык, который нужно постоянно развивать</p>
             <a href="index.html" class="home-link">
