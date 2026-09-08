@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/check-auth.php';
 
 try {
     $pdo = getDB();
@@ -328,11 +329,14 @@ $themeNames = [
                 <h1>КиберКвестор</h1>
                 <p class="tagline">Панель управления спикера</p>
             </div>
-            <nav class="header-nav">
-                <a href="../index.html" class="nav-button">
-                    <i class="fas fa-home"></i> На главную
-                </a>
-            </nav>
+           <nav class="header-nav">
+    <a href="../index.html" class="nav-button">
+        <i class="fas fa-home"></i> На главную
+    </a>
+    <a href="check-auth.php?logout=1" class="nav-button" style="background: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545;">
+        <i class="fas fa-sign-out-alt"></i> Выйти
+    </a>
+</nav>
         </header>
         
         <main class="main-content speaker-dashboard animate__animated animate__fadeIn">

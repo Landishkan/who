@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/check-auth.php';
 
 $session_id = intval($_GET['session_id'] ?? 0);
 $calculated = false;

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/check-auth.php';
 
 $test_id = intval($_GET['test_id'] ?? 0);
 $calculated = false;
