@@ -24,12 +24,12 @@ function getDB() {
     if ($pdo === null) {
         try {
             $host = $_ENV['DB_HOST'] ?? 'localhost';
-            $port = $_ENV['DB_PORT'] ?? '5432';
+            $port = $_ENV['DB_PORT'] ?? '3306';
             $dbname = $_ENV['DB_NAME'] ?? '';
             $user = $_ENV['DB_USER'] ?? '';
             $password = $_ENV['DB_PASSWORD'] ?? '';
             
-            $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+            $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
             
             $pdo = new PDO($dsn, $user, $password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -38,7 +38,6 @@ function getDB() {
             ]);
             
         } catch (PDOException $e) {
-            // В продакшене не показываем детали ошибки
             error_log("Ошибка подключения к БД: " . $e->getMessage());
             die("Ошибка подключения к базе данных");
         }
