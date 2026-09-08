@@ -341,20 +341,24 @@ $theme_names = [
                             <?php endif; ?>
                             
                             <div class="session-actions">
-                                <?php if ($session['is_hidden']): ?>
-                                    <a href="delete-session.php?id=<?= $session['id'] ?>&action=unhide" class="action-btn unhide" onclick="return confirm('Показать эту сессию?')">
-                                        <i class="fas fa-eye"></i> Показать
-                                    </a>
-                                <?php else: ?>
-                                    <a href="delete-session.php?id=<?= $session['id'] ?>&action=hide" class="action-btn hide" onclick="return confirm('Скрыть эту сессию из списков?')">
-                                        <i class="fas fa-eye-slash"></i> Скрыть
-                                    </a>
-                                <?php endif; ?>
-                                
-                                <a href="delete-session.php?id=<?= $session['id'] ?>&action=delete" class="action-btn delete" onclick="return confirm('️ УДАЛИТЬ БЕЗВОЗВРАТНО? Это действие нельзя отменить!')">
-                                    <i class="fas fa-trash"></i> Удалить полностью
-                                </a>
-                            </div>
+    <?php if ($session['is_hidden']): ?>
+        <a href="delete-session.php?id=<?= $session['id'] ?>&action=unhide" class="action-btn unhide" onclick="return confirm('Показать эту сессию в списках?')">
+            <i class="fas fa-eye"></i> Показать
+        </a>
+    <?php else: ?>
+        <a href="delete-session.php?id=<?= $session['id'] ?>&action=hide" class="action-btn hide" onclick="return confirm('Скрыть эту сессию из списков?')">
+            <i class="fas fa-eye-slash"></i> Скрыть
+        </a>
+    <?php endif; ?>
+    
+    <a href="view-session-results.php?id=<?= $session['id'] ?>" class="action-btn" style="background: rgba(75, 205, 235, 0.2); color: #4bcde7; border: 1px solid #4bcde7;" onclick="window.open(this.href, '_blank'); return false;">
+        <i class="fas fa-chart-bar"></i> Результаты
+    </a>
+    
+    <a href="delete-session.php?id=<?= $session['id'] ?>&action=delete" class="action-btn delete" onclick="return confirm('⚠️ УДАЛИТЬ БЕЗВОЗВРАТНО? Это действие нельзя отменить!')">
+        <i class="fas fa-trash"></i> Удалить полностью
+    </a>
+</div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>

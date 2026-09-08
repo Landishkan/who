@@ -431,20 +431,23 @@ $themeNames = [
                                     <span><i class="fas fa-user-graduate"></i> <?= e($session['age_group']) ?></span>
                                 <?php endif; ?>
                             </div>
-                            
-                            <?php if ($session['problem_theme']): ?>
-                                <div class="status-box status-problem">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    Проблемная тема: <strong><?= $themeNames[$session['problem_theme']] ?? $session['problem_theme'] ?></strong>
-                                </div>
-                            <?php endif; ?>
-                            
-                            <?php if ($session['growth_percentage'] !== null): ?>
-                                <div class="status-box status-growth">
-                                    <i class="fas fa-chart-line"></i>
-                                    Прирост знаний: <strong>+<?= $session['growth_percentage'] ?>%</strong>
-                                </div>
-                            <?php endif; ?>
+                           <?php if ($session['problem_theme']): ?>
+    <div class="status-box status-problem">
+        <i class="fas fa-exclamation-triangle"></i>
+        Проблемная тема: <strong><?= $themeNames[$session['problem_theme']] ?? $session['problem_theme'] ?></strong>
+    </div>
+<?php endif; ?>
+
+<?php if ($session['growth_percentage'] !== null): ?>
+    <div class="status-box status-growth">
+        <i class="fas fa-chart-line"></i>
+        Прирост знаний: <strong>+<?= $session['growth_percentage'] ?>%</strong>
+    </div>
+<?php endif; ?>
+
+<a href="../admin/view-session-results.php?id=<?= $session['id'] ?>" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; padding: 10px 15px; background: rgba(75, 205, 235, 0.1); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 6px; color: #4bcde7; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">
+    <i class="fas fa-eye"></i> Подробнее
+</a>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
