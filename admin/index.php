@@ -227,59 +227,60 @@ $theme_names = [
             <?php endif; ?>
             
             <!-- Фильтры -->
-            <div class="filters-card">
-                <h2><i class="fas fa-filter"></i> Фильтры</h2>
-                <form method="GET" action="">
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label>Район</label>
-                            <select name="district">
-                                <option value="">Все районы</option>
-                                <?php foreach ($districts as $district): ?>
-                                    <option value="<?= e($district) ?>" <?= $filter_district === $district ? 'selected' : '' ?>>
-                                        <?= e($district) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label>Режим</label>
-                            <select name="mode">
-                                <option value="">Все режимы</option>
-                                <option value="online" <?= $filter_mode === 'online' ? 'selected' : '' ?>>Онлайн</option>
-                                <option value="offline" <?= $filter_mode === 'offline' ? 'selected' : '' ?>>Офлайн</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label>Дата с</label>
-                            <input type="date" name="date_from" value="<?= e($filter_date_from) ?>">
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label>Дата по</label>
-                            <input type="date" name="date_to" value="<?= e($filter_date_to) ?>">
-                        </div>
-                        
-                        <div class="filter-group" style="display: flex; align-items: flex-end;">
-                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                                <input type="checkbox" name="show_hidden" value="1" <?= $show_hidden ? 'checked' : '' ?> style="width: auto;">
-                                Показать скрытые
-                            </label>
-                        </div>
-                        
-                        <div class="filter-group" style="display: flex; align-items: flex-end; gap: 10px;">
-                            <button type="submit" class="filter-btn">
-                                <i class="fas fa-search"></i> Применить
-                            </button>
-                            <a href="index.php" class="reset-btn">
-                                <i class="fas fa-undo"></i> Сбросить
-                            </a>
-                        </div>
-                    </div>
-                </form>
+            <!-- Фильтры -->
+<div class="filters-card">
+    <h2><i class="fas fa-filter"></i> Фильтры</h2>
+    <form method="GET" action="index.php">
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label>Район</label>
+                <select name="district">
+                    <option value="">Все районы</option>
+                    <?php foreach ($districts as $district): ?>
+                        <option value="<?= e($district) ?>" <?= $filter_district === $district ? 'selected' : '' ?>>
+                            <?= e($district) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
+            
+            <div class="filter-group">
+                <label>Режим</label>
+                <select name="mode">
+                    <option value="">Все режимы</option>
+                    <option value="online" <?= $filter_mode === 'online' ? 'selected' : '' ?>>Онлайн</option>
+                    <option value="offline" <?= $filter_mode === 'offline' ? 'selected' : '' ?>>Офлайн</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Дата с</label>
+                <input type="date" name="date_from" value="<?= e($filter_date_from) ?>">
+            </div>
+            
+            <div class="filter-group">
+                <label>Дата по</label>
+                <input type="date" name="date_to" value="<?= e($filter_date_to) ?>">
+            </div>
+            
+            <div class="filter-group" style="display: flex; align-items: flex-end;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="show_hidden" value="1" <?= $show_hidden ? 'checked' : '' ?> style="width: auto;">
+                    Показать скрытые
+                </label>
+            </div>
+            
+            <div class="filter-group" style="display: flex; align-items: flex-end; gap: 10px;">
+                <button type="submit" class="filter-btn">
+                    <i class="fas fa-search"></i> Применить
+                </button>
+                <a href="index.php" class="reset-btn">
+                    <i class="fas fa-undo"></i> Сбросить
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
             
             <!-- Список сессий -->
             <div class="sessions-list">
@@ -351,9 +352,9 @@ $theme_names = [
         </a>
     <?php endif; ?>
     
-    <a href="view-session-results.php?id=<?= $session['id'] ?>" class="action-btn" style="background: rgba(75, 205, 235, 0.2); color: #4bcde7; border: 1px solid #4bcde7;" onclick="window.open(this.href, '_blank'); return false;">
-        <i class="fas fa-chart-bar"></i> Результаты
-    </a>
+   <a href="../speaker/view-results.php?id=<?= $session['id'] ?>" target="_blank" class="action-btn" style="background: rgba(75, 205, 235, 0.2); color: #4bcde7; border: 1px solid #4bcde7;">
+    <i class="fas fa-chart-bar"></i> Результаты
+</a>
     
     <a href="delete-session.php?id=<?= $session['id'] ?>&action=delete" class="action-btn delete" onclick="return confirm('⚠️ УДАЛИТЬ БЕЗВОЗВРАТНО? Это действие нельзя отменить!')">
         <i class="fas fa-trash"></i> Удалить полностью

@@ -445,7 +445,7 @@ $themeNames = [
     </div>
 <?php endif; ?>
 
-<a href="../admin/view-session-results.php?id=<?= $session['id'] ?>" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; padding: 10px 15px; background: rgba(75, 205, 235, 0.1); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 6px; color: #4bcde7; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">
+<a href="view-results.php?id=<?= $session['id'] ?>" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; padding: 10px 15px; background: rgba(75, 205, 235, 0.1); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 6px; color: #4bcde7; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">
     <i class="fas fa-eye"></i> Подробнее
 </a>
                         </div>

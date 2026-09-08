@@ -279,7 +279,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+        .url-link {
+    display: block;
+    font-family: 'Courier New', monospace;
+    background: rgba(75, 205, 235, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    color: #4bcde7;
+    font-size: 14px;
+    text-decoration: none;
+    word-break: break-all;
+    transition: all 0.3s ease;
+    border: 1px dashed rgba(75, 205, 235, 0.3);
+}
+
+.url-link:hover {
+    background: rgba(75, 205, 235, 0.2);
+    border-color: #4bcde7;
+    color: #fff;
+}
+
+.url-link i {
+    margin-right: 8px;
+}
         .back-button:hover {
             background: rgba(75, 205, 235, 0.2);
             transform: translateY(-2px);
@@ -313,18 +335,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Созданы начальный и конечный тесты для мероприятия</p>
                     </div>
 
-                    <div class="link-container">
-                        <h3><i class="fas fa-qrcode"></i> Начальный тест (показать в начале):</h3>
-                        <div class="url">https://cyberquestor.ru/participant/initial.php</div>
-                        <p class="hint">Сгенерируйте QR-код из этой ссылки и выведите на экран</p>
-                    </div>
+                   <div class="link-container">
+    <h3><i class="fas fa-qrcode"></i> Начальный тест (показать в начале):</h3>
+    <a href="../participant/initial.php" class="url-link" target="_blank">
+        <i class="fas fa-external-link-alt"></i> 
+        https://cyberquestor.ru/participant/initial.php
+    </a>
+    <p class="hint">Сгенерируйте QR-код из этой ссылки и выведите на экран</p>
+    
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="../participant/initial.php" class="cyber-button" style="display: inline-block; width: auto; padding: 12px 30px; text-decoration: none; font-size: 14px;">
+            <i class="fas fa-rocket"></i> Открыть тест
+        </a>
+    </div>
+</div>
 
                     <div class="link-container">
-                        <h3><i class="fas fa-qrcode"></i> Конечный тест (показать в конце):</h3>
-                        <div class="url">https://cyberquestor.ru/participant/final.php</div>
-                        <p class="hint">Этот QR-код покажете после мероприятия</p>
-                    </div>
-
+    <h3><i class="fas fa-qrcode"></i> Конечный тест (показать в конце):</h3>
+    <a href="../participant/final.php" class="url-link" target="_blank">
+        <i class="fas fa-external-link-alt"></i> 
+        https://cyberquestor.ru/participant/final.php
+    </a>
+    <p class="hint">Этот QR-код покажете после мероприятия</p>
+    
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="../participant/final.php" class="cyber-button" style="display: inline-block; width: auto; padding: 12px 30px; text-decoration: none; font-size: 14px;">
+            <i class="fas fa-rocket"></i> Открыть тест
+        </a>
+    </div>
+</div>
                     <div style="text-align: center;">
                         <a href="index.php" class="back-button">
                             <i class="fas fa-arrow-left"></i> Вернуться в панель
