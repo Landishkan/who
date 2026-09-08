@@ -3,24 +3,24 @@ name: Deploy to Hosting
 on:
   push:
     branches:
-      - main  # Деплой при пуше в main
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
           server-dir: ${{ secrets.FTP_DIR }}
-          dangerous-clean-slate: false  # НЕ удалять файлы на сервере
+          dangerous-clean-slate: false
           exclude: |
             **/.env
             **/.git*
