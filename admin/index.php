@@ -304,9 +304,11 @@ $theme_names = [
                         <p>Нет сессий по выбранным фильтрам</p>
                     </div>
                 <?php else: ?>
-                    <?php foreach ($sessions as $session): ?>
-                         <div style="background: lime; padding: 5px; margin: 5px 0; font-size: 11px; font-family: monospace;">
-        DEBUG: Session #<?= $session['id'] ?> | is_hidden = <?= $session['is_hidden'] ?> | institution = <?= e($session['institution']) ?>
+                   <?php $debug_counter = 0; ?>
+<?php foreach ($sessions as $session): ?>
+    <?php $debug_counter++; ?>
+    <div style="background: lime; padding: 5px; margin: 5px 0; font-size: 11px; font-family: monospace;">
+        DEBUG #<?= $debug_counter ?>: Session #<?= $session['id'] ?> | is_hidden = <?= $session['is_hidden'] ?> | institution = <?= e($session['institution']) ?>
     </div>
     
     <div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
@@ -378,7 +380,10 @@ $theme_names = [
     </a>
 </div>
                         </div>
-                    <?php endforeach; ?>
+                   <?php endforeach; ?>
+<div style="background: yellow; padding: 10px; margin: 10px; font-family: monospace;">
+    DEBUG: Цикл выполнен <?= $debug_counter ?> раз из <?= count($sessions) ?>
+</div>
                 <?php endif; ?>
             </div>
         </main>
