@@ -1,0 +1,27 @@
+name: Deploy to Hosting
+
+on:
+  push:
+    branches:
+      - main  # Деплой при пуше в main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ${{ secrets.FTP_DIR }}
+          dangerous-clean-slate: false  # НЕ удалять файлы на сервере
+          exclude: |
+            **/.env
+            **/.git*
+            **/.github*
