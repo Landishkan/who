@@ -16,6 +16,14 @@ $filter_date_from = $_GET['date_from'] ?? '';
 $filter_date_to = $_GET['date_to'] ?? '';
 $show_hidden = isset($_GET['show_hidden']) && $_GET['show_hidden'] === '1';
 
+// ВРЕМЕННАЯ ОТЛАДКА - удали после проверки
+if (isset($_GET['show_hidden'])) {
+    echo "<div style='background: yellow; padding: 10px; margin: 10px; font-family: monospace;'>";
+    echo "DEBUG: show_hidden GET = " . var_export($_GET['show_hidden'], true) . "<br>";
+    echo "DEBUG: show_hidden parsed = " . var_export($show_hidden, true) . "<br>";
+    echo "DEBUG: All GET params: " . var_export($_GET, true) . "<br>";
+    echo "</div>";
+}
 try {
     $pdo = getDB();
     
