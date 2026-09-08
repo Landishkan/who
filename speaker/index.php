@@ -336,6 +336,9 @@ $themeNames = [
     <a href="check-auth.php?logout=1" class="nav-button" style="background: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545;">
         <i class="fas fa-sign-out-alt"></i> Выйти
     </a>
+     <a href="instruction.html" class="cyber-button secondary" target="_blank">
+        <i class="fas fa-book"></i> Инструкция
+    </a>
 </nav>
         </header>
         

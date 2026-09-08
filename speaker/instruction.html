@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция для спикеров | КиберКвестор</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        .instruction-container { max-width: 1000px; margin: 30px auto; }
+        .instruction-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 12px; padding: 40px; margin-bottom: 30px; }
+        .instruction-card h1 { font-family: 'Orbitron', monospace; color: #4bcde7; text-align: center; margin-bottom: 30px; font-size: 32px; }
+        .instruction-card h2 { font-family: 'Orbitron', monospace; color: #4bcde7; font-size: 24px; margin-top: 30px; margin-bottom: 20px; border-bottom: 2px solid rgba(75, 205, 235, 0.3); padding-bottom: 10px; }
+        .instruction-card h3 { font-family: 'Rajdhani', sans-serif; color: #4bcde7; font-size: 20px; margin-top: 25px; margin-bottom: 15px; }
+        .instruction-card p { font-family: 'Roboto', sans-serif; color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin-bottom: 15px; }
+        .instruction-card ul, .instruction-card ol { font-family: 'Roboto', sans-serif; color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin-left: 25px; margin-bottom: 20px; }
+        .instruction-card li { margin-bottom: 10px; }
+        
+        .step-box { background: rgba(0, 0, 0, 0.3); border-left: 4px solid #4bcde7; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .step-box .step-number { font-family: 'Orbitron', monospace; color: #4bcde7; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .step-box p { margin: 0; }
+        
+        .tip-box { background: rgba(75, 205, 235, 0.1); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .tip-box h4 { font-family: 'Rajdhani', sans-serif; color: #4bcde7; margin-bottom: 10px; font-size: 18px; }
+        .tip-box p { margin: 0; }
+        
+        .warning-box { background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .warning-box h4 { font-family: 'Rajdhani', sans-serif; color: #ffc107; margin-bottom: 10px; font-size: 18px; }
+        .warning-box p { margin: 0; }
+        
+        .important-box { background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.3); border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .important-box h4 { font-family: 'Rajdhani', sans-serif; color: #ff6b6b; margin-bottom: 10px; font-size: 18px; }
+        .important-box p { margin: 0; }
+        
+        .code-block { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 6px; padding: 15px; font-family: 'Courier New', monospace; color: #4bcde7; margin: 15px 0; overflow-x: auto; }
+        
+        .toc { background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 25px; margin-bottom: 30px; }
+        .toc h2 { margin-top: 0; }
+        .toc ul { list-style: none; margin-left: 0; }
+        .toc li { margin-bottom: 12px; }
+        .toc a { color: #4bcde7; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 600; transition: all 0.3s ease; }
+        .toc a:hover { color: #fff; padding-left: 10px; }
+        
+        .back-btn { display: inline-block; margin-top: 30px; padding: 15px 30px; background: rgba(75, 205, 235, 0.2); border: 2px solid #4bcde7; border-radius: 8px; color: #4bcde7; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 16px; transition: all 0.3s ease; }
+        .back-btn:hover { background: rgba(75, 205, 235, 0.3); transform: translateY(-2px); }
+        
+        .mode-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .mode-card { background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 20px; border: 1px solid rgba(75, 205, 235, 0.3); }
+        .mode-card h4 { font-family: 'Orbitron', monospace; color: #4bcde7; margin-bottom: 15px; text-align: center; }
+        .mode-card.online { border-color: #28a745; }
+        .mode-card.online h4 { color: #28a745; }
+        .mode-card.offline { border-color: #ffc107; }
+        .mode-card.offline h4 { color: #ffc107; }
+        
+        @media (max-width: 768px) {
+            .mode-comparison { grid-template-columns: 1fr; }
+            .instruction-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="logo-pulse">
+                <h1>КиберКвестор</h1>
+                <p class="tagline">Инструкция для спикеров</p>
+            </div>
+            <nav class="header-nav">
+                <a href="index.php" class="nav-button">
+                    <i class="fas fa-arrow-left"></i> В панель
+                </a>
+            </nav>
+        </header>
+        
+        <main class="main-content instruction-container animate__animated animate__fadeIn">
+            <div class="instruction-card">
+                <h1><i class="fas fa-book"></i> Руководство спикера</h1>
+                
+                <p style="text-align: center; font-size: 18px; color: rgba(255, 255, 255, 0.7);">
+                    Полная инструкция по работе с системой диагностики аудитории
+                </p>
+                
+                <!-- Оглавление -->
+                <div class="toc">
+                    <h2><i class="fas fa-list"></i> Содержание</h2>
+                    <ul>
+                        <li><a href="#intro">1. О системе</a></li>
+                        <li><a href="#auth">2. Авторизация</a></li>
+                        <li><a href="#modes">3. Режимы работы</a></li>
+                        <li><a href="#online">4. Онлайн-режим (пошагово)</a></li>
+                        <li><a href="#offline">5. Офлайн-режим (пошагово)</a></li>
+                        <li><a href="#results">6. Просмотр результатов</a></li>
+                        <li><a href="#faq">7. Частые вопросы</a></li>
+                    
+                    </ul>
+                </div>
+                
+                <!-- Раздел 1: О системе -->
+                <h2 id="intro"><i class="fas fa-info-circle"></i> 1. О системе</h2>
+                <p>
+                    Система диагностики аудитории «КиберКвестор» помогает спикерам измерять уровень знаний участников 
+                    по темам цифровой безопасности и отслеживать прогресс после проведения мероприятий.
+                </p>
+                
+                <div class="tip-box">
+                    <h4><i class="fas fa-lightbulb"></i> Что вы получите:</h4>
+                    <p>
+                        ✓ Автоматическое определение проблемных тем в аудитории<br>
+                        ✓ Измерение прироста знаний после мероприятия<br>
+                        ✓ Статистику по районам, учреждениям и возрастным группам<br>
+                        ✓ Возможность корректировать контент на основе данных
+                    </p>
+                </div>
+                
+                <!-- Раздел 2: Авторизация -->
+                <h2 id="auth"><i class="fas fa-lock"></i> 2. Авторизация</h2>
+                <p>
+                    Для доступа к панели спикера необходимо ввести логин и пароль, которые вам предоставил администратор системы.
+                </p>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 1</div>
+                    <p>Откройте страницу <code>https://cyberquestor.ru/speaker/</code></p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 2</div>
+                    <p>Введите логин и пароль в форму входа</p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 3</div>
+                    <p>Нажмите кнопку «Войти» — вы попадёте в панель управления</p>
+                </div>
+                
+                <div class="important-box">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Важно!</h4>
+                    <p>
+                        Не передавайте свои учётные данные третьим лицам. 
+                        Если вы забыли пароль — обратитесь к администратору системы.
+                    </p>
+                </div>
+                
+                <!-- Раздел 3: Режимы работы -->
+                <h2 id="modes"><i class="fas fa-exchange-alt"></i> 3. Режимы работы</h2>
+                <p>
+                    Система поддерживает два режима проведения диагностики:
+                </p>
+                
+                <div class="mode-comparison">
+                    <div class="mode-card online">
+                        <h4><i class="fas fa-wifi"></i> Онлайн-режим</h4>
+                        <p><strong>Когда использовать:</strong></p>
+                        <ul>
+                            <li>У участников есть смартфоны/планшеты</li>
+                            <li>Есть стабильный интернет</li>
+                            <li>Нужна точная статистика</li>
+                        </ul>
+                        <p><strong>Как работает:</strong></p>
+                        <ul>
+                            <li>Участники сканируют QR-код</li>
+                            <li>Проходят тест на своих устройствах</li>
+                            <li>Система автоматически считает результаты</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mode-card offline">
+                        <h4><i class="fas fa-calculator"></i> Офлайн-режим</h4>
+                        <p><strong>Когда использовать:</strong></p>
+                        <ul>
+                            <li>Нет интернета или устройств</li>
+                            <li>Младшая аудитория (без смартфонов)</li>
+                            <li>Быстрая оценка без подготовки</li>
+                        </ul>
+                        <p><strong>Как работает:</strong></p>
+                        <ul>
+                            <li>Спикер зачитывает вопросы залу</li>
+                            <li>Визуально оценивает реакцию</li>
+                            <li>Выбирает вариант в калькуляторе</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Раздел 4: Онлайн-режим -->
+                <h2 id="online"><i class="fas fa-wifi"></i> 4. Онлайн-режим (пошагово)</h2>
+                
+                <h3>4.1. Создание теста</h3>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 1</div>
+                    <p>
+                        В панели спикера нажмите кнопку <strong>«Создать онлайн-тест»</strong>
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 2</div>
+                    <p>
+                        Заполните форму:
+                    </p>
+                    <ul>
+                        <li><strong>Район</strong> — выберите из выпадающего списка (обязательно)</li>
+                        <li><strong>Название учреждения</strong> — например, «Школа №5» или «ДК Юность» (обязательно)</li>
+                        <li><strong>Возраст / Класс</strong> — например, «9А» или «12-14 лет» (необязательно, но рекомендуется)</li>
+                        <li><strong>Имя спикера</strong> — как к вам обращаться в статистике (необязательно)</li>
+                        <li><strong>Формат мероприятия</strong> — Лекция / Квиз / Игра / Другое</li>
+                    </ul>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 3</div>
+                    <p>
+                        Нажмите <strong>«Создать тест»</strong> — система создаст два теста: начальный и конечный
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 4</div>
+                    <p>
+                        Вы увидите две ссылки:
+                    </p>
+                    <ul>
+                        <li><strong>Начальный тест</strong></li>
+                        <li><strong>Конечный тест</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="tip-box">
+                    <h4><i class="fas fa-lightbulb"></i> Совет</h4>
+                    <p>
+                        Сгенерируйте QR-коды заранее (например, через сайт qr-code-generator.com) 
+                        и добавьте в презентацию. Так вы не будете тратить время на мероприятии.
+                    </p>
+                </div>
+                
+                <h3>4.2. Проведение мероприятия</h3>
+                
+                <div class="step-box">
+                    <div class="step-number">Начало мероприятия</div>
+                    <p>
+                        Выведите на экран <strong>первый QR-код</strong> (начальный тест). 
+                        Попросите участников сканировать его и пройти тест.
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Во время мероприятия</div>
+                    <p>
+                        В панели спикера вы видите счётчик: <strong>«Ответили всего: N»</strong>. 
+                        Дождитесь, пока большинство участников пройдут тест.
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Конец мероприятия</div>
+                    <p>
+                        Выведите <strong>второй QR-код</strong> (конечный тест). 
+                        Попросите участников пройти его.
+                    </p>
+                </div>
+                
+                <h3>4.3. Подсчёт результатов</h3>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 1</div>
+                    <p>
+                        В панели спикера найдите активный тест и нажмите <strong>«Подсчитать результат»</strong>
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 2</div>
+                    <p>
+                        Для <strong>начального теста</strong> вы увидите:
+                    </p>
+                    <ul>
+                        <li> <strong>Проблемную тему</strong> — с неё стоит начать мероприятие</li>
+                        <li> Детализацию по всем темам (процент правильных ответов)</li>
+                    </ul>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 3</div>
+                    <p>
+                        Для <strong>конечного теста</strong> вы увидите:
+                    </p>
+                    <ul>
+                        <li><strong>Прирост знаний</strong> — насколько улучшились результаты</li>
+                        <li> Прирост по каждой теме отдельно</li>
+                    </ul>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 4</div>
+                    <p>
+                        Нажмите <strong>«Завершить и вернуться в панель»</strong> — тест будет закрыт
+                    </p>
+                </div>
+                
+                <div class="important-box">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Важно!</h4>
+                    <p>
+                        После нажатия «Подсчитать результат» тест закрывается автоматически. 
+                        Участники больше не смогут пройти его. Убедитесь, что все успели!
+                    </p>
+                </div>
+                
+                <!-- Раздел 5: Офлайн-режим -->
+                <h2 id="offline"><i class="fas fa-calculator"></i> 5. Офлайн-режим (пошагово)</h2>
+                
+                <h3>5.1. Создание сессии</h3>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 1</div>
+                    <p>
+                        В панели спикера нажмите <strong>«Создать офлайн-тест»</strong>
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 2</div>
+                    <p>
+                        Заполните форму (те же поля, что и для онлайн-теста)
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 3</div>
+                    <p>
+                        Нажмите <strong>«Создать и открыть калькулятор»</strong>
+                    </p>
+                </div>
+                
+                <h3>5.2. Проведение опроса</h3>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 1</div>
+                    <p>
+                        Откройте калькулятор на своём устройстве (ноутбук, планшет, телефон)
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 2</div>
+                    <p>
+                        Зачитывайте вопросы вслух аудитории по одному
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 3</div>
+                    <p>
+                        После каждого вопроса попросите поднять руку тех, кто <strong>согласен</strong> с утверждением
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 4</div>
+                    <p>
+                        Визуально оцените реакцию зала и выберите один из трёх вариантов:
+                    </p>
+                    <ul>
+                        <li><i class="fas fa-users"></i> <strong>Большинство согласны</strong> — примерно 75% - 80% подняли руку</li>
+                        <li><i class="fas fa-balance-scale"></i> <strong>50/50</strong> — примерно половина зала</li>
+                        <li><i class="fas fa-users-slash"></i> <strong>Большинство не согласны</strong> — менее 40% подняли руку</li>
+                    </ul>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 5</div>
+                    <p>
+                        После всех 8 вопросов нажмите <strong>«Подсчитать результат»</strong>
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Шаг 6</div>
+                    <p>
+                        Вы увидите <strong>проблемную тему</strong> и детализацию по всем темам
+                    </p>
+                </div>
+                
+            
+                <!-- Раздел 6: Просмотр результатов -->
+                <h2 id="results"><i class="fas fa-chart-bar"></i> 6. Просмотр результатов</h2>
+                
+                <p>
+                    Все завершённые тесты сохраняются в системе. Вы можете вернуться к ним в любой момент.
+                </p>
+                
+                <div class="step-box">
+                    <div class="step-number">Как посмотреть результаты</div>
+                    <p>
+                        В панели спикера перейдите на вкладку <strong>«Завершённые»</strong>. 
+                        Там вы увидите список всех ваших сессий с основной информацией.
+                    </p>
+                </div>
+                
+                <div class="step-box">
+                    <div class="step-number">Детальный просмотр</div>
+                    <p>
+                        Нажмите кнопку <strong>«Подробнее»</strong> на любой сессии — откроется страница 
+                        с полной статистикой: проблемная тема, прирост знаний, детализация по темам.
+                    </p>
+                </div>
+                
+                <div class="tip-box">
+                    <h4><i class="fas fa-lightbulb"></i> Совет</h4>
+                    <p>
+                        Используйте эти данные для отчётов и анализа эффективности ваших мероприятий. 
+                        Например: «В школах района X наибольшие пробелы в теме мошенничества — 
+                        стоит сделать акцент на этой теме в следующих лекциях».
+                    </p>
+                </div>
+                
+                <!-- Раздел 7: Частые вопросы -->
+                <h2 id="faq"><i class="fas fa-question-circle"></i> 7. Частые вопросы</h2>
+                
+                <h3>Что делать, если участник не успел пройти тест?</h3>
+                <p>
+                    Если вы ещё не нажали «Подсчитать результат», участник может пройти тест в любой момент. 
+                    После подсчёта тест закрывается автоматически.
+                </p>
+                
+                <h3>Можно ли пройти тест дважды?</h3>
+                <p>
+                    Нет. Система запоминает устройство (через хэш браузера) и не позволяет пройти один тест дважды. 
+                    Это защита от накрутки результатов.
+                </p>
+                
+                <h3>Что если интернет пропал во время мероприятия?</h3>
+                <p>
+                    Если интернет пропал до того, как участники прошли тест — переключитесь на офлайн-режим. 
+                    Если интернет пропал после — результаты уже сохранены в базе данных.
+                </p>
+                
+                <h3>Как изменить данные сессии (район, учреждение)?</h3>
+                <p>
+                    К сожалению, редактирование сессий пока не реализовано. 
+                    Если вы ошиблись при создании — создайте новую  сессию.
+                </p>
+                
+                <h3>Можно ли экспортировать результаты в Excel?</h3>
+                <p>
+                    Скоро будет реализовано.
+                </p>
+                
+                <h3>Что означает «проблемная тема»?</h3>
+                <p>
+                    Это тема, по которой аудитория показала наименьший процент правильных ответов. 
+                    Система учитывает приоритеты: Буллинг > Мошенничество > Сетевой этикет = Фейки. 
+                    Если проценты равны, выбирается тема с более высоким приоритетом.
+                </p>
+                
+                <h3>Как считается прирост знаний?</h3>
+                <p>
+                    Прирост = (процент правильных в конечном тесте) − (процент правильных в начальном тесте). 
+                    Считается по каждой теме отдельно, затем усредняется.
+                </p>
+                
+              
+                
+            </div>
+        </main>
+        
+        <footer class="cyber-footer">
+            <div class="footer-logo">КиберКвестор — Инструкция для спикеров</div>
+            <div class="footer-links">
+                <a href="index.php" class="footer-link">Панель спикера</a>
+                <a href="../index.html" class="footer-link">Главная</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
