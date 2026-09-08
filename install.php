@@ -1,14 +1,11 @@
 <?php
-// Подключаем конфиг
 require_once __DIR__ . '/config.php';
 
-// Проверка безопасности - можно удалить после использования
-$allow_install = true; // Временно true, потом измени на false или удали файл
+$allow_install = true;
 
 if (!$allow_install) {
     die("Установка запрещена. Удалите этот файл.");
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -17,180 +14,168 @@ if (!$allow_install) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Установка базы данных - КиберКвестор</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         h1 { color: #333; }
-        .success { 
-            color: #28a745; 
-            background: #d4edda; 
-            padding: 15px; 
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        .error { 
-            color: #dc3545; 
-            background: #f8d7da; 
-            padding: 15px; 
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        .info {
-            color: #0c5460;
-            background: #d1ecf1;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        pre {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        .warning {
-            color: #856404;
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
-            border-left: 4px solid #ffc107;
-        }
+        .success { color: #28a745; background: #d4edda; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .error { color: #dc3545; background: #f8d7da; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .info { color: #0c5460; background: #d1ecf1; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .warning { color: #856404; background: #fff3cd; padding: 15px; border-radius: 4px; margin: 20px 0; border-left: 4px solid #ffc107; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔧 Установка базы данных</h1>
+        <h1>🔧 Установка базы данных (MySQL)</h1>
         
         <?php
         try {
             $pdo = getDB();
             echo "<div class='success'>✅ Подключение к базе данных успешно!</div>";
             
-            // SQL для создания таблиц
-            $sql = "
-            -- Таблица вопросов
-            CREATE TABLE IF NOT EXISTS questions (
-                id SERIAL PRIMARY KEY,
-                text TEXT NOT NULL,
-                theme VARCHAR(20) NOT NULL CHECK (theme IN ('bullying', 'fraud', 'etiquette', 'fakes')),
-                correct_answer VARCHAR(10) NOT NULL CHECK (correct_answer IN ('agree', 'disagree')),
-                test_type VARCHAR(10) NOT NULL CHECK (test_type IN ('initial', 'final')),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
+            // Отключаем проверку внешних ключей на время создания
+            $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
             
-            -- Таблица сессий
-            CREATE TABLE IF NOT EXISTS sessions (
-                id SERIAL PRIMARY KEY,
-                district VARCHAR(100) NOT NULL,
-                institution VARCHAR(200) NOT NULL,
-                age_group VARCHAR(50),
-                speaker_name VARCHAR(100),
-                format VARCHAR(50) DEFAULT 'Лекция',
-                mode VARCHAR(10) NOT NULL CHECK (mode IN ('online', 'offline')),
-                initial_test_id INTEGER,
-                final_test_id INTEGER,
-                initial_status VARCHAR(20) DEFAULT 'pending' CHECK (initial_status IN ('pending', 'completed')),
-                final_status VARCHAR(20) DEFAULT 'pending' CHECK (final_status IN ('pending', 'completed', 'skipped')),
-                problem_theme VARCHAR(20),
-                growth_percentage INTEGER,
-                is_hidden BOOLEAN DEFAULT FALSE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
+            // Таблица вопросов
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS questions (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    text TEXT NOT NULL,
+                    theme VARCHAR(20) NOT NULL,
+                    correct_answer VARCHAR(10) NOT NULL,
+                    test_type VARCHAR(10) NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            ");
+            echo "<div class='success'>✅ Таблица <code>questions</code> создана</div>";
             
-            -- Таблица тестов
-            CREATE TABLE IF NOT EXISTS tests (
-                id SERIAL PRIMARY KEY,
-                session_id INTEGER REFERENCES sessions(id) ON DELETE CASCADE,
-                type VARCHAR(10) NOT NULL CHECK (type IN ('initial', 'final')),
-                is_active BOOLEAN DEFAULT TRUE,
-                participants_count INTEGER DEFAULT 0,
-                closed_at TIMESTAMP
-            );
+            // Таблица сессий
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS sessions (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    district VARCHAR(100) NOT NULL,
+                    institution VARCHAR(200) NOT NULL,
+                    age_group VARCHAR(50) DEFAULT NULL,
+                    speaker_name VARCHAR(100) DEFAULT NULL,
+                    format VARCHAR(50) DEFAULT 'Лекция',
+                    mode VARCHAR(10) NOT NULL,
+                    initial_test_id INT DEFAULT NULL,
+                    final_test_id INT DEFAULT NULL,
+                    initial_status VARCHAR(20) DEFAULT 'pending',
+                    final_status VARCHAR(20) DEFAULT 'pending',
+                    problem_theme VARCHAR(20) DEFAULT NULL,
+                    growth_percentage INT DEFAULT NULL,
+                    is_hidden TINYINT(1) DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            ");
+            echo "<div class='success'>✅ Таблица <code>sessions</code> создана</div>";
             
-            -- Таблица ответов
-            CREATE TABLE IF NOT EXISTS answers (
-                id SERIAL PRIMARY KEY,
-                test_id INTEGER REFERENCES tests(id) ON DELETE CASCADE,
-                question_id INTEGER REFERENCES questions(id),
-                answer VARCHAR(10) NOT NULL CHECK (answer IN ('agree', 'disagree')),
-                device_hash VARCHAR(64) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(test_id, device_hash)
-            );
+            // Таблица тестов
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS tests (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    session_id INT NOT NULL,
+                    type VARCHAR(10) NOT NULL,
+                    is_active TINYINT(1) DEFAULT 1,
+                    participants_count INT DEFAULT 0,
+                    closed_at TIMESTAMP NULL DEFAULT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            ");
+            echo "<div class='success'>✅ Таблица <code>tests</code> создана</div>";
             
-            -- Таблица офлайн-результатов
-            CREATE TABLE IF NOT EXISTS offline_results (
-                id SERIAL PRIMARY KEY,
-                session_id INTEGER REFERENCES sessions(id) ON DELETE CASCADE,
-                question_id INTEGER REFERENCES questions(id),
-                verdict VARCHAR(20) NOT NULL CHECK (verdict IN ('majority_agree', 'fifty_fifty', 'majority_disagree')),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            ";
+            // Таблица ответов
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS answers (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    test_id INT NOT NULL,
+                    question_id INT NOT NULL,
+                    answer VARCHAR(10) NOT NULL,
+                    device_hash VARCHAR(64) NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY unique_device_test (test_id, device_hash)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            ");
+            echo "<div class='success'>✅ Таблица <code>answers</code> создана</div>";
             
-            // Выполняем SQL
-            $pdo->exec($sql);
-            echo "<div class='success'>✅ Таблицы успешно созданы!</div>";
+            // Таблица офлайн-результатов
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS offline_results (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    session_id INT NOT NULL,
+                    question_id INT NOT NULL,
+                    verdict VARCHAR(20) NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            ");
+            echo "<div class='success'>✅ Таблица <code>offline_results</code> создана</div>";
             
-            // Создаём индексы
-            $indexes = "
-            CREATE INDEX IF NOT EXISTS idx_tests_session ON tests(session_id);
-            CREATE INDEX IF NOT EXISTS idx_tests_active ON tests(is_active);
-            CREATE INDEX IF NOT EXISTS idx_answers_test ON answers(test_id);
-            CREATE INDEX IF NOT EXISTS idx_answers_device ON answers(test_id, device_hash);
-            CREATE INDEX IF NOT EXISTS idx_sessions_hidden ON sessions(is_hidden);
-            CREATE INDEX IF NOT EXISTS idx_sessions_created ON sessions(created_at);
-            ";
+            // Включаем проверку внешних ключей
+            $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
             
-            $pdo->exec($indexes);
-            echo "<div class='success'>✅ Индексы успешно созданы!</div>";
+            // Внешние ключи
+            $pdo->exec("
+                ALTER TABLE tests 
+                ADD CONSTRAINT fk_tests_session 
+                FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
+            ");
+            echo "<div class='success'>✅ Внешний ключ <code>tests → sessions</code> создан</div>";
             
-            // Добавляем внешние ключи (если их ещё нет)
-            try {
-                $pdo->exec("
-                    ALTER TABLE sessions 
-                    ADD CONSTRAINT IF NOT EXISTS fk_initial_test 
-                    FOREIGN KEY (initial_test_id) REFERENCES tests(id) ON DELETE SET NULL
-                ");
-                $pdo->exec("
-                    ALTER TABLE sessions 
-                    ADD CONSTRAINT IF NOT EXISTS fk_final_test 
-                    FOREIGN KEY (final_test_id) REFERENCES tests(id) ON DELETE SET NULL
-                ");
-                echo "<div class='success'>✅ Внешние ключи успешно созданы!</div>";
-            } catch (PDOException $e) {
-                echo "<div class='info'>ℹ️ Внешние ключи уже существуют или не требуются</div>";
-            }
+            $pdo->exec("
+                ALTER TABLE answers 
+                ADD CONSTRAINT fk_answers_test 
+                FOREIGN KEY (test_id) REFERENCES tests(id) ON DELETE CASCADE
+            ");
+            $pdo->exec("
+                ALTER TABLE answers 
+                ADD CONSTRAINT fk_answers_question 
+                FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
+            ");
+            echo "<div class='success'>✅ Внешние ключи <code>answers</code> созданы</div>";
+            
+            $pdo->exec("
+                ALTER TABLE offline_results 
+                ADD CONSTRAINT fk_offline_session 
+                FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
+            ");
+            $pdo->exec("
+                ALTER TABLE offline_results 
+                ADD CONSTRAINT fk_offline_question 
+                FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
+            ");
+            echo "<div class='success'>✅ Внешние ключи <code>offline_results</code> созданы</div>";
+            
+            $pdo->exec("
+                ALTER TABLE sessions 
+                ADD CONSTRAINT fk_initial_test 
+                FOREIGN KEY (initial_test_id) REFERENCES tests(id) ON DELETE SET NULL
+            ");
+            $pdo->exec("
+                ALTER TABLE sessions 
+                ADD CONSTRAINT fk_final_test 
+                FOREIGN KEY (final_test_id) REFERENCES tests(id) ON DELETE SET NULL
+            ");
+            echo "<div class='success'>✅ Внешние ключи <code>sessions → tests</code> созданы</div>";
+            
+            // Индексы
+            $pdo->exec("CREATE INDEX idx_tests_session ON tests(session_id)");
+            $pdo->exec("CREATE INDEX idx_tests_active ON tests(is_active)");
+            $pdo->exec("CREATE INDEX idx_answers_test ON answers(test_id)");
+            $pdo->exec("CREATE INDEX idx_sessions_hidden ON sessions(is_hidden)");
+            $pdo->exec("CREATE INDEX idx_sessions_created ON sessions(created_at)");
+            echo "<div class='success'>✅ Индексы созданы</div>";
             
             echo "<div class='success'><strong>🎉 Установка завершена успешно!</strong></div>";
             
             echo "<div class='warning'>
                 <strong>⚠️ ВАЖНО:</strong><br>
-                1. Удалите файл <code>install.php</code> с сервера для безопасности<br>
-                2. Или измените переменную <code>\$allow_install = false;</code> в начале файла
+                1. Удалите файл <code>install.php</code> с сервера<br>
+                2. Или измените <code>\$allow_install = false;</code> в начале файла
             </div>";
             
-            // Проверяем, какие таблицы есть в БД
-            echo "<h3>📋 Созданные таблицы:</h3>";
-            $tables = $pdo->query("
-                SELECT table_name 
-                FROM information_schema.tables 
-                WHERE table_schema = 'public' 
-                ORDER BY table_name
-            ")->fetchAll(PDO::FETCH_COLUMN);
-            
-            echo "<ul>";
+            // Показываем созданные таблицы
+            echo "<h3>📋 Созданные таблицы:</h3><ul>";
+            $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
             foreach ($tables as $table) {
                 echo "<li><strong>{$table}</strong></li>";
             }
@@ -203,14 +188,6 @@ if (!$allow_install) {
             echo "</div>";
         }
         ?>
-        
-        <div class="info">
-            <strong>📌 Следующие шаги:</strong>
-            <ol>
-                <li>Удалите файл <code>install.php</code></li>
-                <li>Перейдите к панели спикера: <a href="/speaker/index.php">speaker/index.php</a></li>
-            </ol>
-        </div>
     </div>
 </body>
 </html>
