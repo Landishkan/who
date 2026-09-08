@@ -3,7 +3,6 @@ require_once __DIR__ . '/../config.php';
 
 $test_id = intval($_GET['test_id'] ?? 0);
 $calculated = false;
-$show_results = false;
 $test = null;
 $session = null;
 $theme_results = [];
@@ -11,7 +10,7 @@ $problem_theme = null;
 $growth_data = null;
 $error = '';
 
-// Приоритеты тем (чем меньше число, тем выше приоритет)
+// Приоритеты тем
 $theme_priority = [
     'bullying' => 1,
     'fraud' => 2,
@@ -89,22 +88,24 @@ try {
                 ];
             }
             
-            // Определяем проблемную тему (с наименьшим процентом правильных, с учетом приоритетов)
-            $min_percentage = 101;
-            $min_priority = 999;
-            
-            foreach ($theme_results as $theme => $data) {
-                $percentage = $data['percentage'];
-                $priority = $theme_priority[$theme] ?? 999;
+            // Для НАЧАЛЬНОГО теста — определяем проблемную тему
+            if ($test['type'] === 'initial') {
+                $min_percentage = 101;
+                $min_priority = 999;
                 
-                if ($percentage < $min_percentage || ($percentage === $min_percentage && $priority < $min_priority)) {
-                    $min_percentage = $percentage;
-                    $min_priority = $priority;
-                    $problem_theme = $theme;
+                foreach ($theme_results as $theme => $data) {
+                    $percentage = $data['percentage'];
+                    $priority = $theme_priority[$theme] ?? 999;
+                    
+                    if ($percentage < $min_percentage || ($percentage === $min_percentage && $priority < $min_priority)) {
+                        $min_percentage = $percentage;
+                        $min_priority = $priority;
+                        $problem_theme = $theme;
+                    }
                 }
             }
             
-            // Если это конечный тест — считаем прирост
+            // Для КОНЕЧНОГО теста — считаем прирост
             if ($test['type'] === 'final') {
                 // Получаем результаты начального теста
                 $stmt = $pdo->prepare("
@@ -179,7 +180,6 @@ try {
             
             $pdo->commit();
             $calculated = true;
-            $show_results = true;
             
         } catch (Exception $e) {
             $pdo->rollBack();
@@ -217,12 +217,21 @@ try {
         .participants-count .label { font-family: 'Rajdhani', sans-serif; color: rgba(255, 255, 255, 0.7); font-size: 18px; text-transform: uppercase; letter-spacing: 2px; }
         .calculate-btn { display: block; width: 100%; max-width: 400px; margin: 30px auto; padding: 18px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; border-radius: 8px; color: #fff; font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; }
         .calculate-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(40, 167, 69, 0.5); }
-        .calculate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .results-section { margin-top: 40px; }
+        
+        /* Проблемная тема (для начального теста) */
         .problem-theme-box { background: rgba(220, 53, 69, 0.15); border: 2px solid #dc3545; border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 30px; }
         .problem-theme-box h2 { font-family: 'Orbitron', monospace; color: #ff6b6b; font-size: 24px; margin-bottom: 15px; }
         .problem-theme-box .theme-name { font-family: 'Orbitron', monospace; color: #fff; font-size: 32px; margin: 15px 0; text-shadow: 0 0 20px rgba(255, 107, 107, 0.5); }
         .problem-theme-box .recommendation { font-family: 'Rajdhani', sans-serif; color: rgba(255, 255, 255, 0.9); font-size: 18px; margin-top: 15px; }
+        
+        /* Прирост знаний (для конечного теста) */
+        .growth-hero { background: rgba(40, 167, 69, 0.15); border: 2px solid #28a745; border-radius: 12px; padding: 30px; text-align: center; margin-bottom: 30px; }
+        .growth-hero h2 { font-family: 'Orbitron', monospace; color: #28a745; font-size: 24px; margin-bottom: 20px; }
+        .growth-hero .growth-number { font-family: 'Orbitron', monospace; font-size: 64px; color: #28a745; text-shadow: 0 0 30px rgba(40, 167, 69, 0.6); margin: 20px 0; }
+        .growth-hero .growth-label { font-family: 'Rajdhani', sans-serif; color: rgba(255, 255, 255, 0.8); font-size: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        .growth-hero .growth-message { font-family: 'Rajdhani', sans-serif; color: #fff; font-size: 18px; margin-top: 15px; }
+        
         .theme-results { display: grid; gap: 15px; margin-bottom: 30px; }
         .theme-card { background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 20px; border-left: 4px solid #4bcde7; }
         .theme-card.problem { border-left-color: #dc3545; background: rgba(220, 53, 69, 0.1); }
@@ -235,20 +244,20 @@ try {
         .progress-fill { height: 100%; background: linear-gradient(90deg, #4bcde7 0%, #254883 100%); transition: width 1s ease; }
         .theme-card.problem .progress-fill { background: linear-gradient(90deg, #dc3545 0%, #ff6b6b 100%); }
         .theme-stats { font-family: 'Roboto', sans-serif; color: rgba(255, 255, 255, 0.6); font-size: 14px; }
-        .growth-section { background: rgba(40, 167, 69, 0.15); border: 2px solid #28a745; border-radius: 12px; padding: 25px; margin-top: 30px; }
-        .growth-section h3 { font-family: 'Orbitron', monospace; color: #28a745; font-size: 22px; margin-bottom: 20px; text-align: center; }
-        .growth-total { text-align: center; margin-bottom: 25px; }
-        .growth-total .number { font-family: 'Orbitron', monospace; font-size: 48px; color: #28a745; text-shadow: 0 0 20px rgba(40, 167, 69, 0.5); }
-        .growth-total .label { font-family: 'Rajdhani', sans-serif; color: rgba(255, 255, 255, 0.7); font-size: 16px; text-transform: uppercase; }
+        
+        .growth-details { background: rgba(40, 167, 69, 0.1); border: 1px solid rgba(40, 167, 69, 0.3); border-radius: 12px; padding: 25px; margin-top: 30px; }
+        .growth-details h3 { font-family: 'Orbitron', monospace; color: #28a745; font-size: 20px; margin-bottom: 20px; text-align: center; }
         .growth-by-theme { display: grid; gap: 10px; }
         .growth-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 6px; }
         .growth-item .theme { font-family: 'Rajdhani', sans-serif; color: #fff; font-size: 16px; }
         .growth-item .values { font-family: 'Roboto', sans-serif; color: rgba(255, 255, 255, 0.7); font-size: 14px; }
         .growth-item .growth-value { font-family: 'Orbitron', monospace; font-size: 18px; color: #28a745; }
         .growth-item .growth-value.negative { color: #dc3545; }
+        
         .close-btn { display: block; width: 100%; max-width: 400px; margin: 30px auto; padding: 18px; background: rgba(255, 255, 255, 0.1); border: 2px solid #4bcde7; border-radius: 8px; color: #4bcde7; font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-decoration: none; text-align: center; }
         .close-btn:hover { background: rgba(75, 205, 235, 0.2); transform: translateY(-2px); }
         .error-box { background: rgba(220, 53, 69, 0.15); border: 1px solid #dc3545; border-radius: 8px; padding: 20px; color: #ff6b6b; font-family: 'Rajdhani', sans-serif; font-size: 16px; text-align: center; margin-bottom: 20px; }
+        .warning-box { background: rgba(255, 193, 7, 0.15); border: 1px solid #ffc107; border-radius: 8px; padding: 20px; color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 16px; text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -317,21 +326,50 @@ try {
                     
                 <?php else: ?>
                     <div class="results-section">
-                        <!-- Проблемная тема -->
-                        <div class="problem-theme-box">
-                            <h2><i class="fas fa-exclamation-triangle"></i> Проблемная тема</h2>
-                            <div class="theme-name"><?= $theme_names[$problem_theme] ?? $problem_theme ?></div>
-                            <div class="recommendation">
-                                Начните мероприятие с этой темы. Здесь у аудитории наибольшие пробелы в знаниях.
-                            </div>
-                        </div>
                         
-                        <!-- Результаты по темам -->
+                        <?php if ($test['type'] === 'initial'): ?>
+                            <!-- НАЧАЛЬНЫЙ ТЕСТ: показываем проблемную тему -->
+                            <div class="problem-theme-box">
+                                <h2><i class="fas fa-exclamation-triangle"></i> Проблемная тема</h2>
+                                <div class="theme-name"><?= $theme_names[$problem_theme] ?? $problem_theme ?></div>
+                                <div class="recommendation">
+                                    Начните мероприятие с этой темы. Здесь у аудитории наибольшие пробелы в знаниях.
+                                </div>
+                            </div>
+                            
+                        <?php else: ?>
+                            <!-- КОНЕЧНЫЙ ТЕСТ: показываем прирост знаний -->
+                            <?php if ($growth_data && isset($growth_data['average_growth'])): ?>
+                                <div class="growth-hero">
+                                    <h2><i class="fas fa-chart-line"></i> Прирост знаний</h2>
+                                    <div class="growth-number">+<?= $growth_data['average_growth'] ?>%</div>
+                                    <div class="growth-label">средний прирост по всем темам</div>
+                                    <div class="growth-message">
+                                        <?php if ($growth_data['average_growth'] > 30): ?>
+                                            🎉 Отличный результат! Аудитория значительно улучшила знания.
+                                        <?php elseif ($growth_data['average_growth'] > 10): ?>
+                                            👍 Хороший результат! Заметный прогресс в знаниях.
+                                        <?php elseif ($growth_data['average_growth'] > 0): ?>
+                                            📈 Небольшой, но положительный прирост.
+                                        <?php else: ?>
+                                            📊 Прирост минимальный. Возможно, стоит повторить материал.
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="warning-box">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Данные начального теста не найдены. Невозможно рассчитать прирост.
+                                </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        
+                        <!-- Детализация по темам (для обоих типов) -->
                         <h3 style="font-family: 'Orbitron', monospace; color: #4bcde7; margin-bottom: 20px; text-align: center;">Детализация по темам</h3>
                         
                         <div class="theme-results">
                             <?php foreach ($theme_results as $theme => $data): ?>
-                                <div class="theme-card <?= $theme === $problem_theme ? 'problem' : '' ?>">
+                                <div class="theme-card <?= ($test['type'] === 'initial' && $theme === $problem_theme) ? 'problem' : '' ?>">
                                     <div class="theme-header">
                                         <div class="theme-name-small"><?= $theme_names[$theme] ?></div>
                                         <div class="theme-percentage"><?= $data['percentage'] ?>%</div>
@@ -347,15 +385,10 @@ try {
                             <?php endforeach; ?>
                         </div>
                         
-                        <!-- Прирост знаний (для конечного теста) -->
-                        <?php if ($test['type'] === 'final' && $growth_data): ?>
-                            <div class="growth-section">
-                                <h3><i class="fas fa-chart-line"></i> Прирост знаний</h3>
-                                
-                                <div class="growth-total">
-                                    <div class="number">+<?= $growth_data['average_growth'] ?>%</div>
-                                    <div class="label">средний прирост</div>
-                                </div>
+                        <!-- Детальный прирост по темам (только для конечного теста) -->
+                        <?php if ($test['type'] === 'final' && $growth_data && !empty($growth_data['by_theme'])): ?>
+                            <div class="growth-details">
+                                <h3><i class="fas fa-chart-bar"></i> Прирост по каждой теме</h3>
                                 
                                 <div class="growth-by-theme">
                                     <?php foreach ($growth_data['by_theme'] as $theme => $data): ?>
