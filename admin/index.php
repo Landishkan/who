@@ -86,7 +86,12 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+    // ОТЛАДКА SQL
+echo "<div style='background: cyan; padding: 10px; margin: 10px; font-family: monospace; font-size: 12px;'>";
+echo "DEBUG: SQL returned <strong>" . count($sessions) . " sessions</strong><br>";
+echo "DEBUG: SQL query: <pre>" . htmlspecialchars($sql) . "</pre><br>";
+echo "DEBUG: Params: <pre>" . htmlspecialchars(var_export($params, true)) . "</pre><br>";
+echo "</div>";
 } catch (Exception $e) {
     die("Ошибка: " . $e->getMessage());
 }
