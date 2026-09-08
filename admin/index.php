@@ -240,7 +240,6 @@ $theme_names = [
             <?php endif; ?>
             
             <!-- Фильтры -->
-            <!-- Фильтры -->
 <div class="filters-card">
     <h2><i class="fas fa-filter"></i> Фильтры</h2>
     <form method="GET" action="index.php">
@@ -306,6 +305,11 @@ $theme_names = [
                     </div>
                 <?php else: ?>
                     <?php foreach ($sessions as $session): ?>
+                         <div style="background: lime; padding: 5px; margin: 5px 0; font-size: 11px; font-family: monospace;">
+        DEBUG: Session #<?= $session['id'] ?> | is_hidden = <?= $session['is_hidden'] ?> | institution = <?= e($session['institution']) ?>
+    </div>
+    
+    <div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
                         <div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
                             <div class="session-header">
                                 <div class="session-title">
