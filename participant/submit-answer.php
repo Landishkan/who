@@ -14,7 +14,7 @@ if (!$test_id || empty($answers)) {
     die("Ошибка: некорректные данные теста.");
 }
 
-// Генерируем хэш устройства (как и на странице теста)
+// Генерируем хэш устройства
 function getDeviceHash() {
     $fingerprint = $_SERVER['REMOTE_ADDR'] . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? '');
     return hash('sha256', $fingerprint);
@@ -25,36 +25,40 @@ $device_hash = getDeviceHash();
 try {
     $pdo = getDB();
 
-    // 1. Проверяем, существует ли тест и активен ли он
-    $stmt = $pdo->prepare("SELECT id, type, is_active FROM tests WHERE id = ?");
-    $stmt->execute([$test_id]);
-    $test = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$test) {
-        die("Тест не найден.");
-    }
-
-    if (!$test['is_active']) {
-        die("Этот тест уже завершен спикером.");
-    }
-
-    // 2. Проверяем, не проходил ли уже этот пользователь данный тест
-    $stmt = $pdo->prepare("SELECT id FROM answers WHERE test_id = ? AND device_hash = ?");
-    $stmt->execute([$test_id, $device_hash]);
-    
-    if ($stmt->fetch()) {
-        die("Вы уже прошли этот тест. Повторное прохождение невозможно.");
-    }
-
-    // 3. Сохраняем ответы и обновляем счетчик
+    // Начинаем транзакцию с блокировкой
     $pdo->beginTransaction();
-    
+
     try {
+        // Блокируем запись в таблице tests для этого теста
+        $stmt = $pdo->prepare("SELECT id, type, is_active FROM tests WHERE id = ? FOR UPDATE");
+        $stmt->execute([$test_id]);
+        $test = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$test) {
+            $pdo->rollBack();
+            die("Тест не найден.");
+        }
+
+        if (!$test['is_active']) {
+            $pdo->rollBack();
+            die("Этот тест уже завершен спикером.");
+        }
+
+        // Проверяем внутри транзакции, не проходил ли уже этот пользователь данный тест
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM answers WHERE test_id = ? AND device_hash = ?");
+        $stmt->execute([$test_id, $device_hash]);
+        $existing_answers = $stmt->fetchColumn();
+        
+        if ($existing_answers > 0) {
+            $pdo->rollBack();
+            die("Вы уже прошли этот тест. Повторное прохождение невозможно.");
+        }
+
+        // Вставляем ответы
         $stmt = $pdo->prepare("INSERT INTO answers (test_id, question_id, answer, device_hash) VALUES (?, ?, ?, ?)");
         
         $saved_count = 0;
         foreach ($answers as $question_id => $answer) {
-            // Базовая валидация ответа
             if (!in_array($answer, ['agree', 'disagree'])) {
                 continue;
             }
@@ -70,7 +74,7 @@ try {
 
         $pdo->commit();
         
-        $test_type = $test['type']; // 'initial' или 'final'
+        $test_type = $test['type'];
 
     } catch (Exception $e) {
         $pdo->rollBack();
