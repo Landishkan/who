@@ -29,12 +29,23 @@ try {
     $pdo = getDB();
     
     // Получаем информацию о тесте
-    $stmt = $pdo->prepare("
-        SELECT t.*, s.id as session_id, s.district, s.institution, s.age_group, s.speaker_name, s.format, s.mode
-        FROM tests t
-        JOIN sessions s ON t.session_id = s.id
-        WHERE t.id = ?
-    ");
+ $stmt = $pdo->prepare("
+    SELECT t.*, 
+           s.id as session_id, 
+           s.district, 
+           s.institution, 
+           s.age_group, 
+           s.speaker_name, 
+           s.format, 
+           s.mode,
+           s.initial_test_id,
+           s.final_test_id,
+           s.initial_status,
+           s.final_status
+    FROM tests t
+    JOIN sessions s ON t.session_id = s.id
+    WHERE t.id = ?
+");
     $stmt->execute([$test_id]);
     $test = $stmt->fetch(PDO::FETCH_ASSOC);
     
