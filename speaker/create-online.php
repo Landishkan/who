@@ -163,7 +163,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             margin-top: 20px;
         }
-        
+        .cyber-form select,
+.cyber-form input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.6) !important;
+    border: 2px solid rgba(75, 205, 235, 0.5);
+    border-radius: 8px;
+    color: #fff !important;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.cyber-form select option {
+    background: #1a1a2e !important;
+    color: #fff !important;
+    padding: 10px;
+}
+
+.cyber-form select:focus,
+.cyber-form input:focus {
+    outline: none;
+    border-color: #4bcde7;
+    box-shadow: 0 0 15px rgba(75, 205, 235, 0.5);
+    background: rgba(0, 0, 0, 0.8) !important;
+}
         .cyber-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(75, 205, 235, 0.5);
