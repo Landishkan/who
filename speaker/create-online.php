@@ -4,8 +4,6 @@ require_once __DIR__ . '/districts.php';
 
 $success = false;
 $session_id = null;
-$initial_link = '';
-$final_link = '';
 $error = '';
 
 // Обработка формы
@@ -16,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $speaker_name = trim($_POST['speaker_name'] ?? '');
     $format = trim($_POST['format'] ?? 'Лекция');
 
-    // Базовая валидация
     if (empty($district) || empty($institution)) {
         $error = "Район и название учреждения обязательны для заполнения.";
     } else {
@@ -24,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo = getDB();
             $pdo->beginTransaction();
 
-            // 1. Создаем сессию (пока без ID тестов)
             $stmt = $pdo->prepare("
                 INSERT INTO sessions (district, institution, age_group, speaker_name, format, mode, initial_status, final_status)
                 VALUES (:district, :institution, :age_group, :speaker_name, :format, 'online', 'pending', 'pending')
@@ -38,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             $session_id = $pdo->lastInsertId();
 
-            // 2. Создаем начальный тест
             $stmt = $pdo->prepare("
                 INSERT INTO tests (session_id, type, is_active, participants_count)
                 VALUES (:session_id, 'initial', 1, 0)
@@ -46,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([':session_id' => $session_id]);
             $initial_test_id = $pdo->lastInsertId();
 
-            // 3. Создаем конечный тест
             $stmt = $pdo->prepare("
                 INSERT INTO tests (session_id, type, is_active, participants_count)
                 VALUES (:session_id, 'final', 1, 0)
@@ -54,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([':session_id' => $session_id]);
             $final_test_id = $pdo->lastInsertId();
 
-            // 4. Обновляем сессию, привязывая ID тестов
             $stmt = $pdo->prepare("
                 UPDATE sessions 
                 SET initial_test_id = :initial_id, final_test_id = :final_id 
@@ -67,13 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $pdo->commit();
-
-            // Формируем ссылки для участников
-            // В реальном домене это будет https://cyberquestor.ru/participant/initial.php
-            $base_url = "https://" . $_SERVER['HTTP_HOST'] . "/participant";
-            $initial_link = $base_url . "/initial.php";
-            $final_link = $base_url . "/final.php";
-            
             $success = true;
 
         } catch (Exception $e) {
@@ -88,115 +74,311 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Создать онлайн-тест - КиберКвестор</title>
+    <title>Создать тест - КиберКвестор</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
-        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
-        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; margin-bottom: 20px; font-size: 24px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; transition: border 0.3s; }
-        input:focus, select:focus { outline: none; border-color: #3498db; }
-        .btn { padding: 12px 24px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.3s; }
-        .btn-primary { background: #3498db; color: white; width: 100%; }
-        .btn-primary:hover { background: #2980b9; }
-        .btn-secondary { background: #95a5a6; color: white; }
-        .btn-secondary:hover { background: #7f8c8d; }
-        .error { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #dc3545; }
-        .success-box { background: #d4edda; color: #155724; padding: 20px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #28a745; }
-        .link-box { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 15px; word-break: break-all; font-family: monospace; }
-        .qr-hint { font-size: 14px; color: #666; margin-top: 10px; }
-        .back-link { display: block; margin-top: 20px; text-align: center; color: #3498db; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
+        .speaker-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 205, 235, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 0 0 30px rgba(75, 205, 235, 0.2);
+        }
+        
+        .speaker-panel h1 {
+            font-family: 'Orbitron', monospace;
+            color: #4bcde7;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .cyber-form .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .cyber-form label {
+            display: block;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            color: #4bcde7;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cyber-form input,
+        .cyber-form select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(75, 205, 235, 0.5);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-form input:focus,
+        .cyber-form select:focus {
+            outline: none;
+            border-color: #4bcde7;
+            box-shadow: 0 0 15px rgba(75, 205, 235, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .cyber-form input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .cyber-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #4bcde7 0%, #254883 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .cyber-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(75, 205, 235, 0.5);
+        }
+        
+        .cyber-button:active {
+            transform: translateY(-1px);
+        }
+        
+        .error-message {
+            background: rgba(220, 53, 69, 0.2);
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #ff6b6b;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+        }
+        
+        .success-box {
+            background: rgba(40, 167, 69, 0.2);
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .success-box h2 {
+            font-family: 'Orbitron', monospace;
+            color: #28a745;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .success-box p {
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            margin: 10px 0;
+        }
+        
+        .link-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(75, 205, 235, 0.5);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .link-container h3 {
+            font-family: 'Rajdhani', sans-serif;
+            color: #4bcde7;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .link-container .url {
+            font-family: 'Courier New', monospace;
+            background: rgba(75, 205, 235, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            color: #4bcde7;
+            font-size: 14px;
+        }
+        
+        .link-container .hint {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #4bcde7;
+            border-radius: 8px;
+            color: #4bcde7;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: rgba(75, 205, 235, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .required {
+            color: #ff6b6b;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="card">
-            <?php if ($success): ?>
-                <h1>✅ Тест успешно создан!</h1>
-                <div class="success-box">
-                    <p><strong>Сессия №<?= $session_id ?></strong> активирована.</p>
-                    <p style="margin-top: 10px;">Созданы начальный и конечный тесты для мероприятия.</p>
-                </div>
+        <header class="main-header">
+            <div class="logo-pulse">
+                <h1>КиберКвестор</h1>
+                <p class="tagline">Панель спикера</p>
+            </div>
+            <nav class="header-nav">
+                <a href="index.php" class="nav-button">
+                    <i class="fas fa-home"></i> В панель
+                </a>
+            </nav>
+        </header>
+        
+        <main class="main-content">
+            <div class="speaker-panel animate__animated animate__fadeIn">
+                <?php if ($success): ?>
+                    <div class="success-box">
+                        <h2><i class="fas fa-check-circle"></i> Тест успешно создан!</h2>
+                        <p><strong>Сессия №<?= $session_id ?></strong> активирована</p>
+                        <p>Созданы начальный и конечный тесты для мероприятия</p>
+                    </div>
 
-                <h3> Ссылки для участников:</h3>
-                
-                <div class="link-box">
-                    <strong>1. Начальный тест (показать в начале):</strong><br>
-                    <?= e($initial_link) ?>
-                </div>
-                <p class="qr-hint">Сгенерируйте QR-код из этой ссылки и выведите на экран.</p>
+                    <div class="link-container">
+                        <h3><i class="fas fa-qrcode"></i> Начальный тест (показать в начале):</h3>
+                        <div class="url">https://cyberquestor.ru/participant/initial.php</div>
+                        <p class="hint">Сгенерируйте QR-код из этой ссылки и выведите на экран</p>
+                    </div>
 
-                <div class="link-box">
-                    <strong>2. Конечный тест (показать в конце):</strong><br>
-                    <?= e($final_link) ?>
-                </div>
-                <p class="qr-hint">Этот QR-код покажете после мероприятия.</p>
+                    <div class="link-container">
+                        <h3><i class="fas fa-qrcode"></i> Конечный тест (показать в конце):</h3>
+                        <div class="url">https://cyberquestor.ru/participant/final.php</div>
+                        <p class="hint">Этот QR-код покажете после мероприятия</p>
+                    </div>
 
-                <div style="margin-top: 30px; text-align: center;">
-                    <a href="index.php" class="btn btn-secondary">Вернуться в панель</a>
-                </div>
+                    <div style="text-align: center;">
+                        <a href="index.php" class="back-button">
+                            <i class="fas fa-arrow-left"></i> Вернуться в панель
+                        </a>
+                    </div>
 
-            <?php else: ?>
-                <h1>➕ Создание онлайн-теста</h1>
-                
-                <?php if ($error): ?>
-                    <div class="error"><?= e($error) ?></div>
+                <?php else: ?>
+                    <h1><i class="fas fa-plus-circle"></i> Создание онлайн-теста</h1>
+                    
+                    <?php if ($error): ?>
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i> <?= e($error) ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="POST" action="" class="cyber-form">
+                        <div class="form-group">
+                            <label for="district">Район <span class="required">*</span></label>
+                            <select name="district" id="district" required>
+                                <option value="">-- Выберите район --</option>
+                                <?php foreach ($districts as $district): ?>
+                                    <option value="<?= e($district) ?>" <?= (isset($_POST['district']) && $_POST['district'] === $district) ? 'selected' : '' ?>>
+                                        <?= e($district) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="institution">Название учреждения <span class="required">*</span></label>
+                            <input type="text" name="institution" id="institution" required 
+                                   placeholder="Например: Школа №5 или ДК Юность"
+                                   value="<?= e($_POST['institution'] ?? '') ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age_group">Возраст / Класс</label>
+                            <input type="text" name="age_group" id="age_group" 
+                                   placeholder="Например: 9А или 12-14 лет"
+                                   value="<?= e($_POST['age_group'] ?? '') ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="speaker_name">Имя спикера</label>
+                            <input type="text" name="speaker_name" id="speaker_name" 
+                                   placeholder="Как к вам обращаться в статистике"
+                                   value="<?= e($_POST['speaker_name'] ?? '') ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="format">Формат мероприятия</label>
+                            <select name="format" id="format">
+                                <option value="Лекция" <?= (isset($_POST['format']) && $_POST['format'] === 'Лекция') ? 'selected' : '' ?>>Лекция</option>
+                                <option value="Квиз" <?= (isset($_POST['format']) && $_POST['format'] === 'Квиз') ? 'selected' : '' ?>>Квиз</option>
+                                <option value="Игра" <?= (isset($_POST['format']) && $_POST['format'] === 'Игра') ? 'selected' : '' ?>>Игра</option>
+                                <option value="Другое" <?= (isset($_POST['format']) && $_POST['format'] === 'Другое') ? 'selected' : '' ?>>Другое</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="cyber-button">
+                            <i class="fas fa-magic"></i> Создать тест
+                        </button>
+                    </form>
+
+                    <div style="text-align: center;">
+                        <a href="index.php" class="back-button">
+                            <i class="fas fa-arrow-left"></i> Вернуться в панель
+                        </a>
+                    </div>
                 <?php endif; ?>
-
-                <form method="POST" action="">
-                    <div class="form-group">
-                        <label for="district">Район *</label>
-                        <select name="district" id="district" required>
-                            <option value="">-- Выберите район --</option>
-                            <?php foreach ($districts as $district): ?>
-                                <option value="<?= e($district) ?>" <?= (isset($_POST['district']) && $_POST['district'] === $district) ? 'selected' : '' ?>>
-                                    <?= e($district) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="institution">Название учреждения *</label>
-                        <input type="text" name="institution" id="institution" required 
-                               placeholder="Например: Школа №5 или ДК Юность"
-                               value="<?= e($_POST['institution'] ?? '') ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="age_group">Возраст / Класс (необязательно)</label>
-                        <input type="text" name="age_group" id="age_group" 
-                               placeholder="Например: 9А или 12-14 лет"
-                               value="<?= e($_POST['age_group'] ?? '') ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="speaker_name">Имя спикера (необязательно)</label>
-                        <input type="text" name="speaker_name" id="speaker_name" 
-                               placeholder="Как к вам обращаться в статистике"
-                               value="<?= e($_POST['speaker_name'] ?? '') ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="format">Формат мероприятия</label>
-                        <select name="format" id="format">
-                            <option value="Лекция" <?= (isset($_POST['format']) && $_POST['format'] === 'Лекция') ? 'selected' : '' ?>>Лекция</option>
-                            <option value="Квиз" <?= (isset($_POST['format']) && $_POST['format'] === 'Квиз') ? 'selected' : '' ?>>Квиз</option>
-                            <option value="Игра" <?= (isset($_POST['format']) && $_POST['format'] === 'Игра') ? 'selected' : '' ?>>Игра</option>
-                            <option value="Другое" <?= (isset($_POST['format']) && $_POST['format'] === 'Другое') ? 'selected' : '' ?>>Другое</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Создать тест и получить ссылки</button>
-                </form>
-
-                <a href="index.php" class="back-link">← Вернуться в панель</a>
-            <?php endif; ?>
-        </div>
+            </div>
+        </main>
+        
+        <footer class="cyber-footer">
+            <div class="footer-logo">КиберКвестор — Панель спикера</div>
+            <div class="footer-links">
+                <a href="index.php" class="footer-link">Панель спикера</a>
+                <a href="../index.html" class="footer-link">Главная</a>
+            </div>
+        </footer>
     </div>
+    
+    <script src="../js/script.js"></script>
 </body>
 </html>
