@@ -80,6 +80,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .required { color: #ff6b6b; }
         .info-box { background: rgba(75, 205, 235, 0.1); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 8px; padding: 20px; margin-bottom: 25px; color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 16px; }
         .info-box i { color: #4bcde7; margin-right: 10px; }
+        .url-link {
+    display: block;
+    font-family: 'Courier New', monospace;
+    background: rgba(75, 205, 235, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    color: #4bcde7;
+    font-size: 14px;
+    text-decoration: none;
+    word-break: break-all;
+    transition: all 0.3s ease;
+    border: 1px dashed rgba(75, 205, 235, 0.3);
+}
+
+.url-link:hover {
+    background: rgba(75, 205, 235, 0.2);
+    border-color: #4bcde7;
+    color: #fff;
+}
+
+.url-link i {
+    margin-right: 8px;
+}
     </style>
 </head>
 <body>
@@ -105,11 +128,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Калькулятор готов к использованию</p>
                     </div>
 
-                    <div class="link-container">
-                        <h3><i class="fas fa-calculator"></i> Офлайн-калькулятор:</h3>
-                        <div class="url">https://cyberquestor.ru/speaker/offline-calculator.php?session_id=<?= $session_id ?></div>
-                        <p class="hint">Откройте эту ссылку на своём устройстве для проведения опроса</p>
-                    </div>
+               <div class="link-container">
+    <h3><i class="fas fa-calculator"></i> Офлайн-калькулятор:</h3>
+    <a href="offline-calculator.php?session_id=<?= $session_id ?>" class="url-link" target="_blank">
+        <i class="fas fa-external-link-alt"></i> 
+        https://cyberquestor.ru/speaker/offline-calculator.php?session_id=<?= $session_id ?>
+    </a>
+    <p class="hint">Нажмите на ссылку или кнопку ниже, чтобы открыть калькулятор</p>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="offline-calculator.php?session_id=<?= $session_id ?>" class="cyber-button" style="display: inline-block; width: auto; padding: 15px 40px; text-decoration: none;">
+            <i class="fas fa-rocket"></i> Открыть калькулятор
+        </a>
+    </div>
+</div>
 
                     <div style="text-align: center;">
                         <a href="index.php" class="back-button">
