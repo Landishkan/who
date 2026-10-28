@@ -80,7 +80,8 @@ try {
             }
         }
     }
-    
+   
+
     // Результаты конечного теста (если онлайн)
     $final_results = [];
     if ($session['mode'] === 'online' && $session['final_test_id']) {

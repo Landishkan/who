@@ -19,14 +19,19 @@ if (!$session_id) {
 try {
     $pdo = getDB();
     
-    if ($action === 'hide') {
+       if ($action === 'hide') {
         // Мягкое удаление (скрыть из списков)
         $stmt = $pdo->prepare("UPDATE sessions SET is_hidden = 1 WHERE id = ?");
         $stmt->execute([$session_id]);
+        
+    } elseif ($action === 'unhide') {
+        // Возврат сессии в обычные списки
+        $stmt = $pdo->prepare("UPDATE sessions SET is_hidden = 0 WHERE id = ?");
+        $stmt->execute([$session_id]);
+        
     } elseif ($action === 'delete') {
         // Физическое удаление сессии и всех связанных данных
         $pdo->beginTransaction();
-        
         try {
             // Получаем ID тестов для удаления ответов
             $stmt = $pdo->prepare("SELECT initial_test_id, final_test_id FROM sessions WHERE id = ?");
@@ -48,14 +53,13 @@ try {
             // Удаляем офлайн-результаты
             $pdo->prepare("DELETE FROM offline_results WHERE session_id = ?")->execute([$session_id]);
             
-            // Удаляем тесты (каскадно удалятся ответы, если остались)
+            // Удаляем тесты
             $pdo->prepare("DELETE FROM tests WHERE session_id = ?")->execute([$session_id]);
             
             // Удаляем сессию
             $pdo->prepare("DELETE FROM sessions WHERE id = ?")->execute([$session_id]);
             
             $pdo->commit();
-            
         } catch (Exception $e) {
             $pdo->rollBack();
             throw $e;

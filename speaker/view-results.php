@@ -198,9 +198,10 @@ try {
     die("Ошибка: " . $e->getMessage());
 }
 
-// Определяем, откуда пришли (для кнопки "Назад")
-$referer = $_SERVER['HTTP_REFERER'] ?? '';
-$back_url = strpos($referer, '/admin/') !== false ? '../admin/index.php' : 'index.php';
+
+// Определяем, откуда пришли, через явный GET-параметр
+$from = $_GET['from'] ?? 'speaker';
+$back_url = ($from === 'admin') ? '../admin/index.php' : 'index.php';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
