@@ -294,7 +294,7 @@ $theme_names = [
     </form>
 </div>
             
-            <!-- Список сессий -->
+                       <!-- Список сессий -->
             <div class="sessions-list">
                 <h2><i class="fas fa-list"></i> Сессии (<?= count($sessions) ?>)</h2>
                 
@@ -304,85 +304,80 @@ $theme_names = [
                         <p>Нет сессий по выбранным фильтрам</p>
                     </div>
                 <?php else: ?>
-                  <?php $debug_counter = 0; ?>
-<?php foreach ($sessions as $session): ?>
-    <?php $debug_counter++; ?>
-    
-    <!-- Убрали лишний дублирующийся div -->
-    <div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
-        <div class="session-header">
-            <div class="session-title">
-                <?= e($session['institution']) ?>
-                <?php if ($session['age_group']): ?>
-                    • <?= e($session['age_group']) ?>
-                <?php endif; ?>
+                   <?php $debug_counter = 0; ?>
+                   <?php foreach ($sessions as $session): ?>
+                        <div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
+                            
+                            <div class="session-header">
+                                <div class="session-title">
+                                    <?= e($session['institution']) ?>
+                                    <?php if ($session['age_group']): ?>
+                                        • <?= e($session['age_group']) ?>
+                                    <?php endif; ?>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <span class="badge badge-<?= $session['mode'] ?>">
+                                        <?= $session['mode'] === 'online' ? 'Онлайн' : 'Офлайн' ?>
+                                    </span>
+                                    <?php if ($session['is_hidden']): ?>
+                                        <span class="badge badge-hidden">Скрыта</span>
+                                    <?php endif; ?>
+                                    <span class="badge badge-<?= $session['initial_status'] === 'completed' ? 'completed' : 'pending' ?>">
+                                        <?= $session['initial_status'] === 'completed' ? 'Завершена' : 'В процессе' ?>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="session-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> <?= e($session['district']) ?></span>
+                                <span><i class="fas fa-calendar"></i> <?= date('d.m.Y H:i', strtotime($session['created_at'])) ?></span>
+                                <span><i class="fas fa-users"></i> <?= e($session['format']) ?></span>
+                                <?php if (!empty($session['speaker_name'])): ?>
+                                    <span><i class="fas fa-microphone"></i> <?= e($session['speaker_name']) ?></span>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <?php if ($session['problem_theme'] || $session['growth_percentage'] !== null): ?>
+                                <div class="session-results">
+                                    <?php if ($session['problem_theme']): ?>
+                                        <div class="result-item problem">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            Проблема: <?= $theme_names[$session['problem_theme']] ?? $session['problem_theme'] ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if ($session['growth_percentage'] !== null): ?>
+                                        <div class="result-item growth">
+                                            <i class="fas fa-chart-line"></i>
+                                            Прирост: +<?= $session['growth_percentage'] ?>%
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="session-actions">
+                                <?php if ($session['is_hidden']): ?>
+                                    <a href="delete-session.php?id=<?= $session['id'] ?>&action=unhide" class="action-btn unhide" onclick="return confirm('Показать эту сессию в списках?')">
+                                        <i class="fas fa-eye"></i> Показать
+                                    </a>
+                                <?php else: ?>
+                                    <a href="delete-session.php?id=<?= $session['id'] ?>&action=hide" class="action-btn hide" onclick="return confirm('Скрыть эту сессию из списков?')">
+                                        <i class="fas fa-eye-slash"></i> Скрыть
+                                    </a>
+                                <?php endif; ?>
+                                
+                                <a href="../speaker/view-results.php?id=<?= $session['id'] ?>&from=admin" target="_blank" class="action-btn" style="background: rgba(75, 205, 235, 0.2); color: #4bcde7; border: 1px solid #4bcde7;">
+                                    <i class="fas fa-chart-bar"></i> Результаты
+                                </a>
+                                
+                                <a href="delete-session.php?id=<?= $session['id'] ?>&action=delete" class="action-btn delete" onclick="return confirm('⚠️ УДАЛИТЬ БЕЗВОЗВРАТНО? Это действие нельзя отменить!')">
+                                    <i class="fas fa-trash"></i> Удалить полностью
+                                </a>
+                            </div>
+                            
+                        </div> <!-- Карточка сессии закрыта корректно -->
+                   <?php endforeach; ?>
+                <?php endif; ?> <!-- ВОТ ЭТОГО ТЕГА НЕ ХВАТАЛО -->
             </div>
-            <div style="display: flex; gap: 10px;">
-                <span class="badge badge-<?= $session['mode'] ?>">
-                    <?= $session['mode'] === 'online' ? 'Онлайн' : 'Офлайн' ?>
-                </span>
-                <?php if ($session['is_hidden']): ?>
-                    <span class="badge badge-hidden">Скрыта</span>
-                <?php endif; ?>
-                <span class="badge badge-<?= $session['initial_status'] === 'completed' ? 'completed' : 'pending' ?>">
-                    <?= $session['initial_status'] === 'completed' ? 'Завершена' : 'В процессе' ?>
-                </span>
-            </div>
-        </div>
-        
-        <div class="session-meta">
-            <span><i class="fas fa-map-marker-alt"></i> <?= e($session['district']) ?></span>
-            <span><i class="fas fa-calendar"></i> <?= date('d.m.Y H:i', strtotime($session['created_at'])) ?></span>
-            <span><i class="fas fa-users"></i> <?= e($session['format']) ?></span>
-            <?php if (!empty($session['speaker_name'])): ?>
-                <span><i class="fas fa-microphone"></i> <?= e($session['speaker_name']) ?></span>
-            <?php endif; ?>
-        </div>
-        
-        <?php if ($session['problem_theme'] || $session['growth_percentage'] !== null): ?>
-            <div class="session-results">
-                <?php if ($session['problem_theme']): ?>
-                    <div class="result-item problem">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Проблема: <?= $theme_names[$session['problem_theme']] ?? $session['problem_theme'] ?>
-                    </div>
-                <?php endif; ?>
-                <?php if ($session['growth_percentage'] !== null): ?>
-                    <div class="result-item growth">
-                        <i class="fas fa-chart-line"></i>
-                        Прирост: +<?= $session['growth_percentage'] ?>%
-                    </div>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
-        
-        <div class="session-actions">
-            <?php if ($session['is_hidden']): ?>
-                <!-- Ссылка теперь ведет на unhide, и мы добавили from=admin для кнопки Назад -->
-                <a href="delete-session.php?id=<?= $session['id'] ?>&action=unhide" class="action-btn unhide" onclick="return confirm('Показать эту сессию в списках?')">
-                    <i class="fas fa-eye"></i> Показать
-                </a>
-            <?php else: ?>
-                <a href="delete-session.php?id=<?= $session['id'] ?>&action=hide" class="action-btn hide" onclick="return confirm('Скрыть эту сессию из списков?')">
-                    <i class="fas fa-eye-slash"></i> Скрыть
-                </a>
-            <?php endif; ?>
-            
-            <!-- ДОБАВЛЕНО: ?from=admin для надежной кнопки "Назад" -->
-            <a href="../speaker/view-results.php?id=<?= $session['id'] ?>&from=admin" target="_blank" class="action-btn" style="background: rgba(75, 205, 235, 0.2); color: #4bcde7; border: 1px solid #4bcde7;">
-                <i class="fas fa-chart-bar"></i> Результаты
-            </a>
-            
-            <a href="delete-session.php?id=<?= $session['id'] ?>&action=delete" class="action-btn delete" onclick="return confirm('⚠️ УДАЛИТЬ БЕЗВОЗВРАТНО? Это действие нельзя отменить!')">
-                <i class="fas fa-trash"></i> Удалить полностью
-            </a>
-        </div>
-    </div> <!-- Этот закрывающий div теперь корректно закрывает одну карточку -->
-<?php endforeach; ?>
-<div style="background: yellow; padding: 10px; margin: 10px; font-family: monospace;">
-    DEBUG: Цикл выполнен <?= $debug_counter ?> раз из <?= count($sessions) ?>
-</div>
-                <?php endif; ?>
             </div>
         </main>
         
@@ -390,5 +385,6 @@ $theme_names = [
             <div class="footer-logo">КиберКвестор — Админ-панель</div>
         </footer>
     </div>
+    
 </body>
 </html>
