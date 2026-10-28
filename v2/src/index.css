@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+  @apply bg-background-dark text-text font-sans antialiased overflow-x-hidden;
+  font-family: 'Inter', 'Rajdhani', sans-serif;
+}
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+a:visited {
+  @apply text-inherit;
+}
+
+/* Тонкий разделитель секций как в референсе */
+.section-divider {
+  @apply w-full h-px bg-white/5;
+}
+/* Мягкое неоновое свечение для акцентного текста */
+.neon-glow {
+  text-shadow: 
+    0 0 10px rgba(91, 156, 240, 0.5),
+    0 0 20px rgba(91, 156, 240, 0.3),
+    0 0 30px rgba(91, 156, 240, 0.2);
+  animation: softPulse 3s ease-in-out infinite;
+}
+
+@keyframes softPulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(91, 156, 240, 0.5),
+      0 0 20px rgba(91, 156, 240, 0.3),
+      0 0 30px rgba(91, 156, 240, 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 15px rgba(91, 156, 240, 0.7),
+      0 0 30px rgba(91, 156, 240, 0.5),
+      0 0 45px rgba(91, 156, 240, 0.3);
+  }
+}
