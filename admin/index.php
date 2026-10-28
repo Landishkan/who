@@ -305,8 +305,17 @@ $theme_names = [
                     </div>
                 <?php else: ?>
                    <?php $debug_counter = 0; ?>
-                   <?php foreach ($sessions as $session): ?>
-                        <div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
+               <?php foreach ($sessions as $session): ?>
+<?php $debug_counter++; ?>
+
+<!-- ВРЕМЕННАЯ ОТЛАДКА -->
+<?php if ($session['is_hidden']): ?>
+<div style="background: red; color: white; padding: 5px; margin: 5px; font-family: monospace;">
+    🔴 СКРЫТАЯ СЕССИЯ: ID=<?= $session['id'] ?>, is_hidden=<?= $session['is_hidden'] ?>
+</div>
+<?php endif; ?>
+
+<div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
                             
                             <div class="session-header">
                                 <div class="session-title">
