@@ -16,14 +16,6 @@ $filter_date_from = $_GET['date_from'] ?? '';
 $filter_date_to = $_GET['date_to'] ?? '';
 $show_hidden = isset($_GET['show_hidden']) && $_GET['show_hidden'] === '1';
 
-// ВРЕМЕННАЯ ОТЛАДКА - удали после проверки
-if (isset($_GET['show_hidden'])) {
-    echo "<div style='background: yellow; padding: 10px; margin: 10px; font-family: monospace;'>";
-    echo "DEBUG: show_hidden GET = " . var_export($_GET['show_hidden'], true) . "<br>";
-    echo "DEBUG: show_hidden parsed = " . var_export($show_hidden, true) . "<br>";
-    echo "DEBUG: All GET params: " . var_export($_GET, true) . "<br>";
-    echo "</div>";
-}
 try {
     $pdo = getDB();
     
@@ -86,12 +78,7 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // ОТЛАДКА SQL
-echo "<div style='background: cyan; padding: 10px; margin: 10px; font-family: monospace; font-size: 12px;'>";
-echo "DEBUG: SQL returned <strong>" . count($sessions) . " sessions</strong><br>";
-echo "DEBUG: SQL query: <pre>" . htmlspecialchars($sql) . "</pre><br>";
-echo "DEBUG: Params: <pre>" . htmlspecialchars(var_export($params, true)) . "</pre><br>";
-echo "</div>";
+
 } catch (Exception $e) {
     die("Ошибка: " . $e->getMessage());
 }
@@ -142,10 +129,11 @@ $theme_names = [
         .session-item { background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 20px; margin-bottom: 15px; border-left: 4px solid #4bcde7; transition: all 0.3s ease; }
         .session-item:hover { border-left-color: #28a745; }
         .session-item.hidden { 
-    opacity: 0.5 !important; 
-    border-left-color: #666 !important;
-    display: block !important;  /* ← главное! */
-}
+            opacity: 0.5 !important; 
+            border-left-color: #666 !important;
+            display: block !important;
+        }
+        
         .session-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .session-title { font-family: 'Orbitron', monospace; color: #fff; font-size: 18px; }
         .session-meta { display: flex; gap: 15px; flex-wrap: wrap; font-family: 'Roboto', sans-serif; color: rgba(255, 255, 255, 0.7); font-size: 14px; margin-bottom: 15px; }
@@ -244,61 +232,61 @@ $theme_names = [
             <?php endif; ?>
             
             <!-- Фильтры -->
-<div class="filters-card">
-    <h2><i class="fas fa-filter"></i> Фильтры</h2>
-    <form method="GET" action="index.php">
-        <div class="filters-grid">
-            <div class="filter-group">
-                <label>Район</label>
-                <select name="district">
-                    <option value="">Все районы</option>
-                    <?php foreach ($districts as $district): ?>
-                        <option value="<?= e($district) ?>" <?= $filter_district === $district ? 'selected' : '' ?>>
-                            <?= e($district) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+            <div class="filters-card">
+                <h2><i class="fas fa-filter"></i> Фильтры</h2>
+                <form method="GET" action="index.php">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Район</label>
+                            <select name="district">
+                                <option value="">Все районы</option>
+                                <?php foreach ($districts as $district): ?>
+                                    <option value="<?= e($district) ?>" <?= $filter_district === $district ? 'selected' : '' ?>>
+                                        <?= e($district) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Режим</label>
+                            <select name="mode">
+                                <option value="">Все режимы</option>
+                                <option value="online" <?= $filter_mode === 'online' ? 'selected' : '' ?>>Онлайн</option>
+                                <option value="offline" <?= $filter_mode === 'offline' ? 'selected' : '' ?>>Офлайн</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Дата с</label>
+                            <input type="date" name="date_from" value="<?= e($filter_date_from) ?>">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Дата по</label>
+                            <input type="date" name="date_to" value="<?= e($filter_date_to) ?>">
+                        </div>
+                        
+                        <div class="filter-group" style="display: flex; align-items: flex-end;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" name="show_hidden" value="1" <?= $show_hidden ? 'checked' : '' ?> style="width: auto;">
+                                Показать скрытые
+                            </label>
+                        </div>
+                        
+                        <div class="filter-group" style="display: flex; align-items: flex-end; gap: 10px;">
+                            <button type="submit" class="filter-btn">
+                                <i class="fas fa-search"></i> Применить
+                            </button>
+                            <a href="index.php" class="reset-btn">
+                                <i class="fas fa-undo"></i> Сбросить
+                            </a>
+                        </div>
+                    </div>
+                </form>
             </div>
             
-            <div class="filter-group">
-                <label>Режим</label>
-                <select name="mode">
-                    <option value="">Все режимы</option>
-                    <option value="online" <?= $filter_mode === 'online' ? 'selected' : '' ?>>Онлайн</option>
-                    <option value="offline" <?= $filter_mode === 'offline' ? 'selected' : '' ?>>Офлайн</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label>Дата с</label>
-                <input type="date" name="date_from" value="<?= e($filter_date_from) ?>">
-            </div>
-            
-            <div class="filter-group">
-                <label>Дата по</label>
-                <input type="date" name="date_to" value="<?= e($filter_date_to) ?>">
-            </div>
-            
-            <div class="filter-group" style="display: flex; align-items: flex-end;">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" name="show_hidden" value="1" <?= $show_hidden ? 'checked' : '' ?> style="width: auto;">
-                    Показать скрытые
-                </label>
-            </div>
-            
-            <div class="filter-group" style="display: flex; align-items: flex-end; gap: 10px;">
-                <button type="submit" class="filter-btn">
-                    <i class="fas fa-search"></i> Применить
-                </button>
-                <a href="index.php" class="reset-btn">
-                    <i class="fas fa-undo"></i> Сбросить
-                </a>
-            </div>
-        </div>
-    </form>
-</div>
-            
-                       <!-- Список сессий -->
+            <!-- Список сессий -->
             <div class="sessions-list">
                 <h2><i class="fas fa-list"></i> Сессии (<?= count($sessions) ?>)</h2>
                 
@@ -308,19 +296,8 @@ $theme_names = [
                         <p>Нет сессий по выбранным фильтрам</p>
                     </div>
                 <?php else: ?>
-                   <?php $debug_counter = 0; ?>
-               <?php foreach ($sessions as $session): ?>
-<?php $debug_counter++; ?>
-
-<!-- ВРЕМЕННАЯ ОТЛАДКА -->
-<?php if ($session['is_hidden']): ?>
-<div style="background: red; color: white; padding: 5px; margin: 5px; font-family: monospace;">
-    🔴 СКРЫТАЯ СЕССИЯ: ID=<?= $session['id'] ?>, is_hidden=<?= $session['is_hidden'] ?>
-</div>
-<?php endif; ?>
-
-<div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
-                            
+                    <?php foreach ($sessions as $session): ?>
+                        <div class="session-item <?= $session['is_hidden'] ? 'hidden' : '' ?>">
                             <div class="session-header">
                                 <div class="session-title">
                                     <?= e($session['institution']) ?>
@@ -386,11 +363,9 @@ $theme_names = [
                                     <i class="fas fa-trash"></i> Удалить полностью
                                 </a>
                             </div>
-                            
-                        </div> <!-- Карточка сессии закрыта корректно -->
-                   <?php endforeach; ?>
-                <?php endif; ?> <!-- ВОТ ЭТОГО ТЕГА НЕ ХВАТАЛО -->
-            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </main>
         
@@ -398,6 +373,5 @@ $theme_names = [
             <div class="footer-logo">КиберКвестор — Админ-панель</div>
         </footer>
     </div>
-    
 </body>
 </html>
