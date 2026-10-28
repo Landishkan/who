@@ -141,7 +141,11 @@ $theme_names = [
         
         .session-item { background: rgba(0, 0, 0, 0.3); border-radius: 8px; padding: 20px; margin-bottom: 15px; border-left: 4px solid #4bcde7; transition: all 0.3s ease; }
         .session-item:hover { border-left-color: #28a745; }
-        .session-item.hidden { opacity: 0.5; border-left-color: #666; }
+        .session-item.hidden { 
+    opacity: 0.5 !important; 
+    border-left-color: #666 !important;
+    display: block !important;  /* ← главное! */
+}
         .session-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .session-title { font-family: 'Orbitron', monospace; color: #fff; font-size: 18px; }
         .session-meta { display: flex; gap: 15px; flex-wrap: wrap; font-family: 'Roboto', sans-serif; color: rgba(255, 255, 255, 0.7); font-size: 14px; margin-bottom: 15px; }
