@@ -59,3 +59,15 @@ $speakers_list = json_decode($speakers_json, true);
 if (!is_array($speakers_list)) {
     $speakers_list = [];
 }
+// --- КОНФИГУРАЦИЯ СПИКЕРОВ (массив логинов из .env) ---
+$speakers_json = getenv('SPEAKERS_JSON');
+if (!$speakers_json && isset($_ENV['SPEAKERS_JSON'])) {
+    $speakers_json = $_ENV['SPEAKERS_JSON'];
+}
+if (!$speakers_json) {
+    $speakers_json = '{}';
+}
+$speakers_list = json_decode($speakers_json, true);
+if (!is_array($speakers_list)) {
+    $speakers_list = [];
+}
