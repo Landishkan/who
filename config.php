@@ -50,3 +50,12 @@ function getDB() {
 function e($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
+// --- КОНФИГУРАЦИЯ СПИКЕРОВ ---
+// Читаем JSON из .env и декодируем его в ассоциативный массив PHP
+$speakers_json = getenv('SPEAKERS_JSON') ?: '{}';
+$speakers_list = json_decode($speakers_json, true);
+
+// Если декодирование не удалось (например, ошибка синтаксиса в .env), создаем пустой массив
+if (!is_array($speakers_list)) {
+    $speakers_list = [];
+}
