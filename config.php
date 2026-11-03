@@ -1,6 +1,7 @@
 <?php
-// Функция загрузки переменных из .env
 
+
+// Функция загрузки переменных из .env
 function loadEnv($path) {
     if (!file_exists($path)) {
         throw new Exception("Файл .env не найден по пути: " . $path);
@@ -13,14 +14,14 @@ function loadEnv($path) {
             $key = trim($key);
             $value = trim($value);
             
-            // 🔥 Убираем кавычки вокруг значения (одинарные и двойные)
-            $value = trim($value, " \t\n\r\0\x0B\"'");
+            // Убираем только кавычки по краям (если есть)
+            if ((substr($value, 0, 1) === '"' && substr($value, -1) === '"') ||
+                (substr($value, 0, 1) === "'" && substr($value, -1) === "'")) {
+                $value = substr($value, 1, -1);
+            }
             
-            // Загружаем в $_ENV
             $_ENV[$key] = $value;
-            
-            // 🔥 Загружаем через putenv(), чтобы getenv() тоже работал
-            putenv("$key=$value");
+            putenv("$key=$value"); // Добавляем для getenv()
         }
     }
 }
