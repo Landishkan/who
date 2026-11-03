@@ -1,5 +1,12 @@
 <?php
 require_once __DIR__ . '/../config.php';
+// ВРЕМЕННАЯ ОТЛАДКА — удали после проверки!
+echo "<pre style='background:#222;color:#0f0;padding:10px;'>";
+echo "SPEAKERS_JSON из getenv: " . var_export(getenv('SPEAKERS_JSON'), true) . "\n";
+echo "Распарсенный массив: ";
+print_r($speakers_list);
+echo "</pre>";
+exit;
 session_start();
 
 // Если уже авторизован — редирект на главную
