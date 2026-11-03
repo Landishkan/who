@@ -1,15 +1,26 @@
 <?php
 // Функция загрузки переменных из .env
+
 function loadEnv($path) {
     if (!file_exists($path)) {
         throw new Exception("Файл .env не найден по пути: " . $path);
     }
-    
+
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         if (strpos($line, '=') !== false && strpos(trim($line), '#') !== 0) {
             list($key, $value) = explode('=', $line, 2);
-            $_ENV[trim($key)] = trim($value);
+            $key = trim($key);
+            $value = trim($value);
+            
+            // 🔥 Убираем кавычки вокруг значения (одинарные и двойные)
+            $value = trim($value, " \t\n\r\0\x0B\"'");
+            
+            // Загружаем в $_ENV
+            $_ENV[$key] = $value;
+            
+            // 🔥 Загружаем через putenv(), чтобы getenv() тоже работал
+            putenv("$key=$value");
         }
     }
 }
@@ -50,6 +61,14 @@ function getDB() {
 function e($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
+
+// --- КОНФИГУРАЦИЯ СПИКЕРОВ (массив логинов из .env) ---
+$speakers_json = $_ENV['SPEAKERS_JSON'] ?? getenv('SPEAKERS_JSON') ?: '{}';
+$speakers_list = json_decode($speakers_json, true);
+if (!is_array($speakers_list)) {
+    $speakers_list = [];
+}
+
 // --- КОНФИГУРАЦИЯ СПИКЕРОВ ---
 // Читаем JSON из .env и декодируем его в ассоциативный массив PHP
 $speakers_json = getenv('SPEAKERS_JSON') ?: '{}';
