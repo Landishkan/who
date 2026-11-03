@@ -17,7 +17,7 @@ if (!isset($_SESSION['speaker_logged_in']) || $_SESSION['speaker_logged_in'] !==
     exit;
 }
 
-// 🔥 Дополнительная проверка: если в сессии нет логина (старая сессия до обновления),
+// Дополнительная проверка: если в сессии нет логина (старая сессия до обновления),
 // принудительно выходим, чтобы пользователь перезашел
 if (!isset($_SESSION['speaker_login']) || empty($_SESSION['speaker_login'])) {
     session_destroy();

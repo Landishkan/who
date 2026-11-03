@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = trim($_POST['login'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // 🔥 Проверяем по массиву $speakers_list из config.php
+    // Проверяем по массиву $speakers_list из config.php
     if (!empty($login) && !empty($password) && isset($speakers_list[$login]) && $speakers_list[$login] === $password) {
         // Успешная авторизация
         $_SESSION['speaker_logged_in'] = true;

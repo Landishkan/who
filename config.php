@@ -1,6 +1,4 @@
 <?php
-
-
 // Функция загрузки переменных из .env
 function loadEnv($path) {
     if (!file_exists($path)) {
@@ -9,19 +7,32 @@ function loadEnv($path) {
 
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (strpos($line, '=') !== false && strpos(trim($line), '#') !== 0) {
+        $line = trim($line);
+        
+        // Пропускаем комментарии и пустые строки
+        if (empty($line) || strpos($line, '#') === 0) {
+            continue;
+        }
+        
+        // Разбираем KEY=VALUE (ограничиваем до 2 частей, чтобы = в пароле не ломал парсинг)
+        if (strpos($line, '=') !== false) {
             list($key, $value) = explode('=', $line, 2);
             $key = trim($key);
             $value = trim($value);
             
-            // Убираем только кавычки по краям (если есть)
-            if ((substr($value, 0, 1) === '"' && substr($value, -1) === '"') ||
-                (substr($value, 0, 1) === "'" && substr($value, -1) === "'")) {
-                $value = substr($value, 1, -1);
+            // Убираем кавычки только если они есть с обеих сторон
+            if (strlen($value) >= 2) {
+                $first = $value[0];
+                $last = $value[strlen($value) - 1];
+                if (($first === '"' && $last === '"') || ($first === "'" && $last === "'")) {
+                    $value = substr($value, 1, -1);
+                }
             }
             
+            // Загружаем во все массивы
             $_ENV[$key] = $value;
-            putenv("$key=$value"); // Добавляем для getenv()
+            $_SERVER[$key] = $value;
+            putenv("$key=$value");
         }
     }
 }
@@ -39,55 +50,31 @@ function getDB() {
             $port = $_ENV['DB_PORT'] ?? '3306';
             $dbname = $_ENV['DB_NAME'] ?? '';
             $user = $_ENV['DB_USER'] ?? '';
-            $password = $_ENV['DB_PASSWORD'] ?? '';
+            $password = $_ENV['DB_PASSWORD'] ?? ''; // 🔥 Используем DB_PASSWORD, как у тебя в .env
             
-            $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
-            
+            $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
             $pdo = new PDO($dsn, $user, $password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false
             ]);
-            
         } catch (PDOException $e) {
-            error_log("Ошибка подключения к БД: " . $e->getMessage());
-            die("Ошибка подключения к базе данных");
+            throw new Exception("Ошибка подключения к БД: " . $e->getMessage());
         }
     }
     
     return $pdo;
 }
 
-// Функция для безопасного вывода (защита от XSS)
+// Функция для защиты от XSS
 function e($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-// --- КОНФИГУРАЦИЯ СПИКЕРОВ (массив логинов из .env) ---
-$speakers_json = $_ENV['SPEAKERS_JSON'] ?? getenv('SPEAKERS_JSON') ?: '{}';
+// Конфигурация спикеров (массив логинов из .env)
+$speakers_json = $_ENV['SPEAKERS_JSON'] ?? '{}';
 $speakers_list = json_decode($speakers_json, true);
 if (!is_array($speakers_list)) {
     $speakers_list = [];
 }
-
-// --- КОНФИГУРАЦИЯ СПИКЕРОВ ---
-// Читаем JSON из .env и декодируем его в ассоциативный массив PHP
-$speakers_json = getenv('SPEAKERS_JSON') ?: '{}';
-$speakers_list = json_decode($speakers_json, true);
-
-// Если декодирование не удалось (например, ошибка синтаксиса в .env), создаем пустой массив
-if (!is_array($speakers_list)) {
-    $speakers_list = [];
-}
-// --- КОНФИГУРАЦИЯ СПИКЕРОВ (массив логинов из .env) ---
-$speakers_json = getenv('SPEAKERS_JSON');
-if (!$speakers_json && isset($_ENV['SPEAKERS_JSON'])) {
-    $speakers_json = $_ENV['SPEAKERS_JSON'];
-}
-if (!$speakers_json) {
-    $speakers_json = '{}';
-}
-$speakers_list = json_decode($speakers_json, true);
-if (!is_array($speakers_list)) {
-    $speakers_list = [];
-}
+?>
