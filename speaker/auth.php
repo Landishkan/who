@@ -15,11 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = trim($_POST['login'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // 🔥 Проверяем логин/пароль по массиву из .env (через config.php)
-    if (!empty($login) && isset($speakers_list[$login]) && $speakers_list[$login] === $password) {
+    // 🔥 Проверяем по массиву $speakers_list из config.php
+    if (!empty($login) && !empty($password) && isset($speakers_list[$login]) && $speakers_list[$login] === $password) {
         // Успешная авторизация
         $_SESSION['speaker_logged_in'] = true;
-        $_SESSION['speaker_login'] = $login; // 🔥 Запоминаем логин для привязки к сессиям!
+        $_SESSION['speaker_login'] = $login; // Запоминаем логин для статистики
         
         header('Location: index.php');
         exit;
