@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/districts.php';
+
 require_once __DIR__ . '/check-auth.php';
 
 $success = false;
