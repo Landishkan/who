@@ -1,93 +1,83 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-require_once __DIR__ . '/check-auth.php';
-
-$success = false;
-$session_id = null;
-$error = '';
-
-// Получаем логин текущего спикера из сессии
-$current_speaker_login = $_SESSION['speaker_login'] ?? 'speaker';
-
-// Обработка формы
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $district = trim($_POST['district'] ?? '');
-    $institution = trim($_POST['institution'] ?? '');
-    $age_group = trim($_POST['age_group'] ?? '');
-    $speaker_name = trim($_POST['speaker_name'] ?? '');
-    $format = trim($_POST['format'] ?? 'Лекция');
-    $test_type = trim($_POST['test_type'] ?? 'general');
-    $note = trim($_POST['note'] ?? '');
+try {
+    $pdo = getDB();
     
-    if (empty($district) || empty($institution)) {
-        $error = "Район и название учреждения обязательны для заполнения.";
-    } else {
-        try {
-            $pdo = getDB();
-            $pdo->beginTransaction();
-            
-            // Создаем сессию с новыми полями
-            $stmt = $pdo->prepare("
-                INSERT INTO sessions (district, institution, age_group, speaker_name, format, mode, test_type, note, speaker_login, initial_status, final_status)
-                VALUES (:district, :institution, :age_group, :speaker_name, :format, 'online', :test_type, :note, :speaker_login, 'pending', 'pending')
-            ");
-            $stmt->execute([
-                ':district' => $district,
-                ':institution' => $institution,
-                ':age_group' => $age_group,
-                ':speaker_name' => $speaker_name,
-                ':format' => $format,
-                ':test_type' => $test_type,
-                ':note' => $note,
-                ':speaker_login' => $current_speaker_login
-            ]);
-            $session_id = $pdo->lastInsertId();
-            
-            // 🔥 Определяем типы тестов в зависимости от выбранного типа
-            $initial_type = $test_type . '_initial';
-            $final_type = $test_type . '_final';
-            
-            // Создаем начальный тест
-            $stmt = $pdo->prepare("
-                INSERT INTO tests (session_id, type, is_active, participants_count)
-                VALUES (:session_id, :type, 1, 0)
-            ");
-            $stmt->execute([
-                ':session_id' => $session_id,
-                ':type' => $initial_type
-            ]);
-            $initial_test_id = $pdo->lastInsertId();
-            
-            // Создаем конечный тест
-            $stmt = $pdo->prepare("
-                INSERT INTO tests (session_id, type, is_active, participants_count)
-                VALUES (:session_id, :type, 1, 0)
-            ");
-            $stmt->execute([
-                ':session_id' => $session_id,
-                ':type' => $final_type
-            ]);
-            $final_test_id = $pdo->lastInsertId();
-            
-            // Обновляем сессию с ID тестов
-            $stmt = $pdo->prepare("
-                UPDATE sessions
-                SET initial_test_id = :initial_id, final_test_id = :final_id
-                WHERE id = :session_id
-            ");
-            $stmt->execute([
-                ':initial_id' => $initial_test_id,
-                ':final_id' => $final_test_id,
-                ':session_id' => $session_id
-            ]);
-            
-            $pdo->commit();
-            $success = true;
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $error = "Ошибка при создании теста: " . $e->getMessage();
+    // 1. Получаем все активные начальные тесты (и general, и fake_hunter)
+    $tests = $pdo->query("
+        SELECT
+            t.id as test_id,
+            t.type as test_type,
+            s.district,
+            s.institution,
+            s.age_group,
+            s.format,
+            s.test_type as session_test_type,
+            s.created_at
+        FROM tests t
+        JOIN sessions s ON t.session_id = s.id
+        WHERE t.type LIKE '%_initial'
+        AND t.is_active = 1
+        AND s.is_hidden = 0
+        ORDER BY s.created_at DESC
+    ")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    die("Ошибка загрузки тестов: " . $e->getMessage());
+}
+
+// Получение device hash для защиты от повторных прохождений
+function getDeviceHash() {
+    $fingerprint = $_SERVER['REMOTE_ADDR'] . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? '');
+    return hash('sha256', $fingerprint);
+}
+
+$test_id = $_GET['test_id'] ?? null;
+$device_hash = getDeviceHash();
+$already_passed = false;
+$questions = [];
+$current_test_type = '';
+
+if ($test_id) {
+    try {
+        // 2. Получаем тип конкретного теста, который открыл пользователь
+        $stmt = $pdo->prepare("SELECT type FROM tests WHERE id = ?");
+        $stmt->execute([$test_id]);
+        $test = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$test) {
+            die("Тест не найден.");
         }
+        
+        $current_test_type = $test['type']; // Например, 'general_initial' или 'fake_hunter_initial'
+        
+        // 3. Проверяем, не проходил ли уже этот тест
+        $stmt = $pdo->prepare("SELECT id FROM answers WHERE test_id = ? AND device_hash = ?");
+        $stmt->execute([$test_id, $device_hash]);
+        if ($stmt->fetch()) {
+            $already_passed = true;
+        } else {
+            // 4. Получаем вопросы ИМЕННО для этого типа теста
+            $stmt = $pdo->prepare("
+                SELECT id, text, theme
+                FROM questions
+                WHERE test_type = ?
+                ORDER BY theme, id
+            ");
+            $stmt->execute([$current_test_type]);
+            $all_questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Группируем вопросы по темам
+            $questions = [];
+            foreach ($all_questions as $q) {
+                if (!isset($questions[$q['theme']])) {
+                    $questions[$q['theme']] = [];
+                }
+                $questions[$q['theme']][] = $q;
+            }
+        }
+    } catch (Exception $e) {
+        die("Ошибка: " . $e->getMessage());
     }
 }
 ?>
