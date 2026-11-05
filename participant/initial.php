@@ -1,26 +1,25 @@
 <?php
 require_once __DIR__ . '/../config.php';
-
 try {
     $pdo = getDB();
-    
     // Получаем все активные начальные тесты
     $tests = $pdo->query("
-        SELECT 
+        SELECT
             t.id as test_id,
+            t.type as test_type,
             s.district,
             s.institution,
             s.age_group,
             s.format,
+            s.test_type as session_test_type,
             s.created_at
         FROM tests t
         JOIN sessions s ON t.session_id = s.id
-        WHERE t.type = 'initial' 
-        AND t.is_active = 1 
+        WHERE t.type LIKE '%_initial'
+        AND t.is_active = 1
         AND s.is_hidden = 0
         ORDER BY s.created_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
-    
 } catch (Exception $e) {
     die("Ошибка загрузки тестов");
 }
@@ -35,23 +34,35 @@ $test_id = $_GET['test_id'] ?? null;
 $device_hash = getDeviceHash();
 $already_passed = false;
 $questions = [];
+$current_test_type = '';
 
 if ($test_id) {
     try {
+        // Получаем тип теста
+        $stmt = $pdo->prepare("SELECT type FROM tests WHERE id = ?");
+        $stmt->execute([$test_id]);
+        $test = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$test) {
+            die("Тест не найден.");
+        }
+        
+        $current_test_type = $test['type'];
+        
         // Проверяем, не проходил ли уже этот тест
         $stmt = $pdo->prepare("SELECT id FROM answers WHERE test_id = ? AND device_hash = ?");
         $stmt->execute([$test_id, $device_hash]);
         if ($stmt->fetch()) {
             $already_passed = true;
         } else {
-            // Получаем вопросы для начального теста
+            // Получаем вопросы для этого типа теста
             $stmt = $pdo->prepare("
-                SELECT id, text, theme 
-                FROM questions 
-                WHERE test_type = 'initial' 
+                SELECT id, text, theme
+                FROM questions
+                WHERE test_type = ?
                 ORDER BY theme, id
             ");
-            $stmt->execute();
+            $stmt->execute([$current_test_type]);
             $all_questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Группируем вопросы по темам
@@ -64,7 +75,7 @@ if ($test_id) {
             }
         }
     } catch (Exception $e) {
-        // Игнорируем ошибку
+        die("Ошибка: " . $e->getMessage());
     }
 }
 ?>
@@ -80,188 +91,34 @@ if ($test_id) {
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
-        .test-container {
-            max-width: 900px;
-            margin: 30px auto;
-        }
-        
-        .test-list {
-            display: grid;
-            gap: 20px;
-        }
-        
-        .test-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(75, 205, 235, 0.3);
-            border-radius: 12px;
-            padding: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .test-card:hover {
-            border-color: rgba(75, 205, 235, 0.8);
-            box-shadow: 0 0 30px rgba(75, 205, 235, 0.3);
-            transform: translateY(-3px);
-        }
-        
-        .test-card h3 {
-            font-family: 'Orbitron', monospace;
-            color: #4bcde7;
-            margin-bottom: 10px;
-            font-size: 20px;
-        }
-        
-        .test-card .meta {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .test-form {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(75, 205, 235, 0.3);
-            border-radius: 12px;
-            padding: 30px;
-        }
-        
-        .theme-section {
-            margin-bottom: 30px;
-        }
-        
-        .theme-title {
-            font-family: 'Orbitron', monospace;
-            color: #4bcde7;
-            font-size: 18px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(75, 205, 235, 0.3);
-            text-transform: uppercase;
-        }
-        
-        .question-block {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            border-left: 4px solid #4bcde7;
-        }
-        
-        .question-text {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .answer-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .answer-btn {
-            flex: 1;
-            min-width: 150px;
-            padding: 15px 25px;
-            background: rgba(75, 205, 235, 0.1);
-            border: 2px solid rgba(75, 205, 235, 0.5);
-            border-radius: 8px;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .answer-btn:hover {
-            background: rgba(75, 205, 235, 0.3);
-            border-color: #4bcde7;
-        }
-        
-        .answer-btn.selected {
-            background: #4bcde7;
-            color: #000;
-            border-color: #4bcde7;
-        }
-        
-        .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #4bcde7 0%, #254883 100%);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-family: 'Orbitron', monospace;
-            font-size: 18px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 30px;
-        }
-        
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(75, 205, 235, 0.5);
-        }
-        
-        .already-passed {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        
-        .already-passed i {
-            font-size: 64px;
-            color: #4bcde7;
-            margin-bottom: 20px;
-        }
-        
-        .already-passed h2 {
-            font-family: 'Orbitron', monospace;
-            color: #4bcde7;
-            margin-bottom: 15px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: rgba(75, 205, 235, 0.3);
-        }
-        
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #4bcde7;
-            border-radius: 8px;
-            color: #4bcde7;
-            text-decoration: none;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .back-link:hover {
-            background: rgba(75, 205, 235, 0.2);
-        }
+        .test-container { max-width: 900px; margin: 30px auto; }
+        .test-list { display: grid; gap: 20px; }
+        .test-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.3s ease; }
+        .test-card:hover { border-color: rgba(75, 205, 235, 0.8); box-shadow: 0 0 30px rgba(75, 205, 235, 0.3); transform: translateY(-3px); }
+        .test-card h3 { font-family: 'Orbitron', monospace; color: #4bcde7; margin-bottom: 10px; font-size: 20px; }
+        .test-card .meta { color: rgba(255, 255, 255, 0.7); font-size: 14px; display: flex; gap: 15px; flex-wrap: wrap; }
+        .test-form { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 12px; padding: 30px; }
+        .theme-section { margin-bottom: 30px; }
+        .theme-title { font-family: 'Orbitron', monospace; color: #4bcde7; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(75, 205, 235, 0.3); text-transform: uppercase; }
+        .question-block { margin-bottom: 25px; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border-left: 4px solid #4bcde7; }
+        .question-text { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 15px; }
+        .answer-buttons { display: flex; gap: 15px; flex-wrap: wrap; }
+        .answer-btn { flex: 1; min-width: 150px; padding: 15px 25px; background: rgba(75, 205, 235, 0.1); border: 2px solid rgba(75, 205, 235, 0.5); border-radius: 8px; color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .answer-btn:hover { background: rgba(75, 205, 235, 0.3); border-color: #4bcde7; }
+        .answer-btn.selected { background: #4bcde7; color: #000; border-color: #4bcde7; }
+        .submit-btn { display: block; width: 100%; padding: 18px; background: linear-gradient(135deg, #4bcde7 0%, #254883 100%); border: none; border-radius: 8px; color: #fff; font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; margin-top: 30px; }
+        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(75, 205, 235, 0.5); }
+        .already-passed { text-align: center; padding: 60px 20px; }
+        .already-passed i { font-size: 64px; color: #4bcde7; margin-bottom: 20px; }
+        .already-passed h2 { font-family: 'Orbitron', monospace; color: #4bcde7; margin-bottom: 15px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: rgba(255, 255, 255, 0.6); }
+        .empty-state i { font-size: 48px; margin-bottom: 15px; color: rgba(75, 205, 235, 0.3); }
+        .back-link { display: inline-block; margin-top: 20px; padding: 12px 30px; background: rgba(255, 255, 255, 0.1); border: 2px solid #4bcde7; border-radius: 8px; color: #4bcde7; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; transition: all 0.3s ease; }
+        .back-link:hover { background: rgba(75, 205, 235, 0.2); }
+        .test-type-badge { display: inline-block; padding: 5px 15px; border-radius: 12px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; }
+        .test-type-badge.general { background: rgba(75, 205, 235, 0.2); color: #4bcde7; border: 1px solid #4bcde7; }
+        .test-type-badge.fake_hunter { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; border: 1px solid #ff6b6b; }
     </style>
 </head>
 <body>
@@ -277,7 +134,6 @@ if ($test_id) {
                 </a>
             </nav>
         </header>
-        
         <main class="main-content test-container animate__animated animate__fadeIn">
             <?php if ($already_passed): ?>
                 <div class="test-form">
@@ -292,37 +148,38 @@ if ($test_id) {
                         </a>
                     </div>
                 </div>
-                
             <?php elseif (!empty($questions)): ?>
                 <div class="test-form">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="test-type-badge <?= strpos($current_test_type, 'fake_hunter') !== false ? 'fake_hunter' : 'general' ?>">
+                            <?= strpos($current_test_type, 'fake_hunter') !== false ? '🔍 Охотник за фейками' : '🛡️ Общий тест' ?>
+                        </span>
+                    </div>
                     <form id="testForm" method="POST" action="submit-answer.php">
                         <input type="hidden" name="test_id" value="<?= e($test_id) ?>">
-                        
-                        <?php 
+                        <?php
                         $themeNames = [
                             'bullying' => '🛡️ Буллинг',
                             'fraud' => '💰 Мошенничество',
                             'etiquette' => '💬 Сетевой этикет',
                             'fakes' => '📰 Фейки'
                         ];
-                        
-                        foreach ($questions as $theme => $themeQuestions): 
+                        foreach ($questions as $theme => $themeQuestions):
                         ?>
                             <div class="theme-section">
                                 <div class="theme-title"><?= $themeNames[$theme] ?? $theme ?></div>
-                                
                                 <?php foreach ($themeQuestions as $question): ?>
                                     <div class="question-block">
                                         <div class="question-text"><?= e($question['text']) ?></div>
                                         <div class="answer-buttons">
-                                            <button type="button" class="answer-btn" 
-                                                    data-question="<?= $question['id'] ?>" 
-                                                    data-answer="agree">
+                                            <button type="button" class="answer-btn"
+                                                data-question="<?= $question['id'] ?>"
+                                                data-answer="agree">
                                                 <i class="fas fa-check"></i> Согласен
                                             </button>
-                                            <button type="button" class="answer-btn" 
-                                                    data-question="<?= $question['id'] ?>" 
-                                                    data-answer="disagree">
+                                            <button type="button" class="answer-btn"
+                                                data-question="<?= $question['id'] ?>"
+                                                data-answer="disagree">
                                                 <i class="fas fa-times"></i> Не согласен
                                             </button>
                                         </div>
@@ -331,13 +188,11 @@ if ($test_id) {
                                 <?php endforeach; ?>
                             </div>
                         <?php endforeach; ?>
-                        
                         <button type="submit" class="submit-btn">
                             <i class="fas fa-paper-plane"></i> Отправить ответы
                         </button>
                     </form>
                 </div>
-                
             <?php else: ?>
                 <?php if (empty($tests)): ?>
                     <div class="test-card" style="text-align: center;">
@@ -351,6 +206,9 @@ if ($test_id) {
                     <div class="test-list">
                         <?php foreach ($tests as $test): ?>
                             <div class="test-card" onclick="location.href='?test_id=<?= $test['test_id'] ?>'">
+                                <span class="test-type-badge <?= strpos($test['test_type'], 'fake_hunter') !== false ? 'fake_hunter' : 'general' ?>">
+                                    <?= strpos($test['test_type'], 'fake_hunter') !== false ? '🔍 Охотник за фейками' : '🛡️ Общий тест' ?>
+                                </span>
                                 <h3><?= e($test['institution']) ?></h3>
                                 <div class="meta">
                                     <span><i class="fas fa-map-marker-alt"></i> <?= e($test['district']) ?> район</span>
@@ -366,7 +224,6 @@ if ($test_id) {
                 <?php endif; ?>
             <?php endif; ?>
         </main>
-        
         <footer class="cyber-footer">
             <div class="footer-logo">КиберКвестор — Начальный тест</div>
             <div class="footer-links">
@@ -374,31 +231,25 @@ if ($test_id) {
             </div>
         </footer>
     </div>
-    
     <script>
         // Обработка выбора ответов
         document.querySelectorAll('.answer-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const questionId = this.dataset.question;
                 const answer = this.dataset.answer;
-                
                 // Убираем выделение со всех кнопок этого вопроса
                 const parent = this.closest('.question-block');
                 parent.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
-                
                 // Выделяем нажатую кнопку
                 this.classList.add('selected');
-                
                 // Сохраняем ответ в скрытое поле
                 parent.querySelector('.answer-input').value = answer;
             });
         });
-        
         // Валидация перед отправкой
         document.getElementById('testForm').addEventListener('submit', function(e) {
-            const allAnswered = document.querySelectorAll('.answer-input').length === 
-                               document.querySelectorAll('.answer-input[value!=""]').length;
-            
+            const allAnswered = document.querySelectorAll('.answer-input').length ===
+                document.querySelectorAll('.answer-input[value!=""]').length;
             if (!allAnswered) {
                 e.preventDefault();
                 alert('Пожалуйста, ответьте на все вопросы!');

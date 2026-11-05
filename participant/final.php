@@ -1,26 +1,25 @@
 <?php
 require_once __DIR__ . '/../config.php';
-
 try {
     $pdo = getDB();
-    
     // Получаем все активные конечные тесты
     $tests = $pdo->query("
-        SELECT 
+        SELECT
             t.id as test_id,
+            t.type as test_type,
             s.district,
             s.institution,
             s.age_group,
             s.format,
+            s.test_type as session_test_type,
             s.created_at
         FROM tests t
         JOIN sessions s ON t.session_id = s.id
-        WHERE t.type = 'final' 
-        AND t.is_active = 1 
+        WHERE t.type LIKE '%_final'
+        AND t.is_active = 1
         AND s.is_hidden = 0
         ORDER BY s.created_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
-    
 } catch (Exception $e) {
     die("Ошибка загрузки тестов");
 }
@@ -34,23 +33,34 @@ $test_id = $_GET['test_id'] ?? null;
 $device_hash = getDeviceHash();
 $already_passed = false;
 $questions = [];
+$current_test_type = '';
 
 if ($test_id) {
     try {
+        // Получаем тип теста
+        $stmt = $pdo->prepare("SELECT type FROM tests WHERE id = ?");
+        $stmt->execute([$test_id]);
+        $test = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$test) {
+            die("Тест не найден.");
+        }
+        
+        $current_test_type = $test['type'];
+        
         $stmt = $pdo->prepare("SELECT id FROM answers WHERE test_id = ? AND device_hash = ?");
         $stmt->execute([$test_id, $device_hash]);
         if ($stmt->fetch()) {
             $already_passed = true;
         } else {
             $stmt = $pdo->prepare("
-                SELECT id, text, theme 
-                FROM questions 
-                WHERE test_type = 'final' 
+                SELECT id, text, theme
+                FROM questions
+                WHERE test_type = ?
                 ORDER BY theme, id
             ");
-            $stmt->execute();
+            $stmt->execute([$current_test_type]);
             $all_questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
             $questions = [];
             foreach ($all_questions as $q) {
                 if (!isset($questions[$q['theme']])) {
@@ -60,7 +70,7 @@ if ($test_id) {
             }
         }
     } catch (Exception $e) {
-        // Игнорируем
+        die("Ошибка: " . $e->getMessage());
     }
 }
 ?>
@@ -76,9 +86,7 @@ if ($test_id) {
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
-        /* Те же стили что и в initial.php */
         .test-container { max-width: 900px; margin: 30px auto; }
         .test-list { display: grid; gap: 20px; }
         .test-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 12px; padding: 25px; cursor: pointer; transition: all 0.3s ease; }
@@ -103,6 +111,9 @@ if ($test_id) {
         .empty-state i { font-size: 48px; margin-bottom: 15px; color: rgba(75, 205, 235, 0.3); }
         .back-link { display: inline-block; margin-top: 20px; padding: 12px 30px; background: rgba(255, 255, 255, 0.1); border: 2px solid #4bcde7; border-radius: 8px; color: #4bcde7; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; transition: all 0.3s ease; }
         .back-link:hover { background: rgba(75, 205, 235, 0.2); }
+        .test-type-badge { display: inline-block; padding: 5px 15px; border-radius: 12px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; }
+        .test-type-badge.general { background: rgba(75, 205, 235, 0.2); color: #4bcde7; border: 1px solid #4bcde7; }
+        .test-type-badge.fake_hunter { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; border: 1px solid #ff6b6b; }
     </style>
 </head>
 <body>
@@ -118,7 +129,6 @@ if ($test_id) {
                 </a>
             </nav>
         </header>
-        
         <main class="main-content test-container animate__animated animate__fadeIn">
             <?php if ($already_passed): ?>
                 <div class="test-form">
@@ -133,37 +143,38 @@ if ($test_id) {
                         </a>
                     </div>
                 </div>
-                
             <?php elseif (!empty($questions)): ?>
                 <div class="test-form">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="test-type-badge <?= strpos($current_test_type, 'fake_hunter') !== false ? 'fake_hunter' : 'general' ?>">
+                            <?= strpos($current_test_type, 'fake_hunter') !== false ? '🔍 Охотник за фейками' : '🛡️ Общий тест' ?>
+                        </span>
+                    </div>
                     <form id="testForm" method="POST" action="submit-answer.php">
                         <input type="hidden" name="test_id" value="<?= e($test_id) ?>">
-                        
-                        <?php 
+                        <?php
                         $themeNames = [
-                            'bullying' => '️ Буллинг',
+                            'bullying' => '🛡️ Буллинг',
                             'fraud' => '💰 Мошенничество',
                             'etiquette' => '💬 Сетевой этикет',
                             'fakes' => '📰 Фейки'
                         ];
-                        
-                        foreach ($questions as $theme => $themeQuestions): 
+                        foreach ($questions as $theme => $themeQuestions):
                         ?>
                             <div class="theme-section">
                                 <div class="theme-title"><?= $themeNames[$theme] ?? $theme ?></div>
-                                
                                 <?php foreach ($themeQuestions as $question): ?>
                                     <div class="question-block">
                                         <div class="question-text"><?= e($question['text']) ?></div>
                                         <div class="answer-buttons">
-                                            <button type="button" class="answer-btn" 
-                                                    data-question="<?= $question['id'] ?>" 
-                                                    data-answer="agree">
+                                            <button type="button" class="answer-btn"
+                                                data-question="<?= $question['id'] ?>"
+                                                data-answer="agree">
                                                 <i class="fas fa-check"></i> Согласен
                                             </button>
-                                            <button type="button" class="answer-btn" 
-                                                    data-question="<?= $question['id'] ?>" 
-                                                    data-answer="disagree">
+                                            <button type="button" class="answer-btn"
+                                                data-question="<?= $question['id'] ?>"
+                                                data-answer="disagree">
                                                 <i class="fas fa-times"></i> Не согласен
                                             </button>
                                         </div>
@@ -172,13 +183,11 @@ if ($test_id) {
                                 <?php endforeach; ?>
                             </div>
                         <?php endforeach; ?>
-                        
                         <button type="submit" class="submit-btn">
                             <i class="fas fa-paper-plane"></i> Отправить ответы
                         </button>
                     </form>
                 </div>
-                
             <?php else: ?>
                 <?php if (empty($tests)): ?>
                     <div class="test-card" style="text-align: center;">
@@ -192,6 +201,9 @@ if ($test_id) {
                     <div class="test-list">
                         <?php foreach ($tests as $test): ?>
                             <div class="test-card" onclick="location.href='?test_id=<?= $test['test_id'] ?>'">
+                                <span class="test-type-badge <?= strpos($test['test_type'], 'fake_hunter') !== false ? 'fake_hunter' : 'general' ?>">
+                                    <?= strpos($test['test_type'], 'fake_hunter') !== false ? '🔍 Охотник за фейками' : '🛡️ Общий тест' ?>
+                                </span>
                                 <h3><?= e($test['institution']) ?></h3>
                                 <div class="meta">
                                     <span><i class="fas fa-map-marker-alt"></i> <?= e($test['district']) ?> район</span>
@@ -207,7 +219,6 @@ if ($test_id) {
                 <?php endif; ?>
             <?php endif; ?>
         </main>
-        
         <footer class="cyber-footer">
             <div class="footer-logo">КиберКвестор — Конечный тест</div>
             <div class="footer-links">
@@ -215,24 +226,20 @@ if ($test_id) {
             </div>
         </footer>
     </div>
-    
     <script>
         document.querySelectorAll('.answer-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const questionId = this.dataset.question;
                 const answer = this.dataset.answer;
-                
                 const parent = this.closest('.question-block');
                 parent.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
                 parent.querySelector('.answer-input').value = answer;
             });
         });
-        
         document.getElementById('testForm').addEventListener('submit', function(e) {
-            const allAnswered = document.querySelectorAll('.answer-input').length === 
-                               document.querySelectorAll('.answer-input[value!=""]').length;
-            
+            const allAnswered = document.querySelectorAll('.answer-input').length ===
+                document.querySelectorAll('.answer-input[value!=""]').length;
             if (!allAnswered) {
                 e.preventDefault();
                 alert('Пожалуйста, ответьте на все вопросы!');
