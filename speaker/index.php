@@ -381,9 +381,9 @@ $themeNames = [
                                         <i class="fas fa-<?= $test['mode'] === 'online' ? 'wifi' : 'calculator' ?>"></i>
                                         <?= $test['mode'] === 'online' ? 'Онлайн' : 'Офлайн' ?>
                                     </span>
-                                    <span class="badge badge-<?= $test['type'] ?>">
-                                        <?= $test['type'] === 'initial' ? 'Начальный' : 'Конечный' ?>
-                                    </span>
+                                   <span class="badge <?= strpos($test['type'], 'initial') !== false ? 'badge-initial' : 'badge-final' ?>">
+    <?= strpos($test['type'], 'initial') !== false ? 'Начальный' : 'Конечный' ?>
+</span>
                                 </div>
                             </div>
                             
