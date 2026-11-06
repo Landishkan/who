@@ -1,8 +1,9 @@
 <?php
 require_once __DIR__ . '/../config.php';
+
 try {
     $pdo = getDB();
-    // Получаем все активные конечные тесты
+    // Ищем и старые 'final', и новые '%_final'
     $tests = $pdo->query("
         SELECT
             t.id as test_id,
@@ -11,19 +12,19 @@ try {
             s.institution,
             s.age_group,
             s.format,
-            s.test_type as session_test_type,
             s.created_at
         FROM tests t
         JOIN sessions s ON t.session_id = s.id
-        WHERE t.type LIKE '%_final'
+        WHERE (t.type = 'final' OR t.type LIKE '%_final')
         AND t.is_active = 1
         AND s.is_hidden = 0
         ORDER BY s.created_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
-    die("Ошибка загрузки тестов");
+    die("Ошибка загрузки тестов: " . $e->getMessage());
 }
 
+// Получение device hash для защиты от повторных прохождений
 function getDeviceHash() {
     $fingerprint = $_SERVER['REMOTE_ADDR'] . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? '');
     return hash('sha256', $fingerprint);
@@ -37,7 +38,7 @@ $current_test_type = '';
 
 if ($test_id) {
     try {
-        // Получаем тип теста
+        // 1. Узнаем точный тип теста
         $stmt = $pdo->prepare("SELECT type FROM tests WHERE id = ?");
         $stmt->execute([$test_id]);
         $test = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -46,21 +47,37 @@ if ($test_id) {
             die("Тест не найден.");
         }
         
-        $current_test_type = $test['type'];
+        $current_test_type = $test['type']; // 'final', 'general_final' или 'fake_hunter_final'
         
+        // 2. Проверяем, не проходил ли уже этот тест
         $stmt = $pdo->prepare("SELECT id FROM answers WHERE test_id = ? AND device_hash = ?");
         $stmt->execute([$test_id, $device_hash]);
         if ($stmt->fetch()) {
             $already_passed = true;
         } else {
-            $stmt = $pdo->prepare("
-                SELECT id, text, theme
-                FROM questions
-                WHERE test_type = ?
-                ORDER BY theme, id
-            ");
-            $stmt->execute([$current_test_type]);
+            // 3. Ищем вопросы. Если тип старый 'final', ищем и 'final', и 'general_final'
+            if ($current_test_type === 'final') {
+                $stmt = $pdo->prepare("
+                    SELECT id, text, theme
+                    FROM questions
+                    WHERE test_type = 'final' OR test_type = 'general_final'
+                    ORDER BY theme, id
+                ");
+                $stmt->execute();
+            } else {
+                // Для новых типов ищем точное совпадение
+                $stmt = $pdo->prepare("
+                    SELECT id, text, theme
+                    FROM questions
+                    WHERE test_type = :test_type
+                    ORDER BY theme, id
+                ");
+                $stmt->execute([':test_type' => $current_test_type]);
+            }
+            
             $all_questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Группируем вопросы по темам
             $questions = [];
             foreach ($all_questions as $q) {
                 if (!isset($questions[$q['theme']])) {

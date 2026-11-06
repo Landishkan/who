@@ -3,8 +3,7 @@ require_once __DIR__ . '/../config.php';
 
 try {
     $pdo = getDB();
-    
-    // 1. Получаем все активные начальные тесты (и general, и fake_hunter)
+    // Ищем и старые 'initial', и новые '%_initial'
     $tests = $pdo->query("
         SELECT
             t.id as test_id,
@@ -13,11 +12,10 @@ try {
             s.institution,
             s.age_group,
             s.format,
-            s.test_type as session_test_type,
             s.created_at
         FROM tests t
         JOIN sessions s ON t.session_id = s.id
-        WHERE t.type LIKE '%_initial'
+        WHERE (t.type = 'initial' OR t.type LIKE '%_initial')
         AND t.is_active = 1
         AND s.is_hidden = 0
         ORDER BY s.created_at DESC
@@ -26,7 +24,6 @@ try {
     die("Ошибка загрузки тестов: " . $e->getMessage());
 }
 
-// Получение device hash для защиты от повторных прохождений
 function getDeviceHash() {
     $fingerprint = $_SERVER['REMOTE_ADDR'] . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? '');
     return hash('sha256', $fingerprint);
@@ -40,7 +37,7 @@ $current_test_type = '';
 
 if ($test_id) {
     try {
-        // 2. Получаем тип конкретного теста, который открыл пользователь
+        // 1. Узнаем точный тип теста
         $stmt = $pdo->prepare("SELECT type FROM tests WHERE id = ?");
         $stmt->execute([$test_id]);
         $test = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -49,22 +46,34 @@ if ($test_id) {
             die("Тест не найден.");
         }
         
-        $current_test_type = $test['type']; // Например, 'general_initial' или 'fake_hunter_initial'
+        $current_test_type = $test['type'];
         
-        // 3. Проверяем, не проходил ли уже этот тест
+        // 2. Проверяем, не проходил ли уже этот тест
         $stmt = $pdo->prepare("SELECT id FROM answers WHERE test_id = ? AND device_hash = ?");
         $stmt->execute([$test_id, $device_hash]);
         if ($stmt->fetch()) {
             $already_passed = true;
         } else {
-            // 4. Получаем вопросы ИМЕННО для этого типа теста
-            $stmt = $pdo->prepare("
-                SELECT id, text, theme
-                FROM questions
-                WHERE test_type = ?
-                ORDER BY theme, id
-            ");
-            $stmt->execute([$current_test_type]);
+            // 3. Ищем вопросы. Если тип старый 'initial', ищем и 'initial', и 'general_initial'
+            if ($current_test_type === 'initial') {
+                $stmt = $pdo->prepare("
+                    SELECT id, text, theme
+                    FROM questions
+                    WHERE test_type = 'initial' OR test_type = 'general_initial'
+                    ORDER BY theme, id
+                ");
+                $stmt->execute();
+            } else {
+                // Для новых типов ищем точное совпадение (например, 'general_initial' или 'fake_hunter_initial')
+                $stmt = $pdo->prepare("
+                    SELECT id, text, theme
+                    FROM questions
+                    WHERE test_type = :test_type
+                    ORDER BY theme, id
+                ");
+                $stmt->execute([':test_type' => $current_test_type]);
+            }
+            
             $all_questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Группируем вопросы по темам
