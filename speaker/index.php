@@ -5,9 +5,14 @@ require_once __DIR__ . '/check-auth.php';
 try {
     $pdo = getDB();
     
-    // Активные тесты
+// Получаем логин текущего спикера
+$current_speaker_login = $_SESSION['speaker_login'] ?? 'speaker';
+
+// Активные тесты
+if ($current_speaker_login === 'speaker') {
+    // Общая учетка видит все сессии
     $activeTests = $pdo->query("
-        SELECT 
+        SELECT
             t.id as test_id,
             t.type,
             t.participants_count,
@@ -23,10 +28,33 @@ try {
         WHERE t.is_active = 1 AND s.is_hidden = 0
         ORDER BY s.created_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Завершенные сессии
+} else {
+    // Именные спикеры видят только свои сессии
+    $stmt = $pdo->prepare("
+        SELECT
+            t.id as test_id,
+            t.type,
+            t.participants_count,
+            s.district,
+            s.institution,
+            s.age_group,
+            s.speaker_name,
+            s.format,
+            s.mode,
+            s.created_at
+        FROM tests t
+        JOIN sessions s ON t.session_id = s.id
+        WHERE t.is_active = 1 AND s.is_hidden = 0 AND s.speaker_login = :speaker_login
+        ORDER BY s.created_at DESC
+    ");
+    $stmt->execute([':speaker_login' => $current_speaker_login]);
+    $activeTests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+// Завершенные сессии
+if ($current_speaker_login === 'speaker') {
+    // Общая учетка видит все сессии
     $completedSessions = $pdo->query("
-        SELECT 
+        SELECT
             s.id,
             s.district,
             s.institution,
@@ -43,6 +71,29 @@ try {
         WHERE s.is_hidden = 0 AND (s.initial_status = 'completed' OR s.final_status = 'completed')
         ORDER BY s.created_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    // Именные спикеры видят только свои сессии
+    $stmt = $pdo->prepare("
+        SELECT
+            s.id,
+            s.district,
+            s.institution,
+            s.age_group,
+            s.speaker_name,
+            s.format,
+            s.mode,
+            s.initial_status,
+            s.final_status,
+            s.problem_theme,
+            s.growth_percentage,
+            s.created_at
+        FROM sessions s
+        WHERE s.is_hidden = 0 AND (s.initial_status = 'completed' OR s.final_status = 'completed') AND s.speaker_login = :speaker_login
+        ORDER BY s.created_at DESC
+    ");
+    $stmt->execute([':speaker_login' => $current_speaker_login]);
+    $completedSessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
     
 } catch (Exception $e) {
     die("Ошибка загрузки данных: " . $e->getMessage());
