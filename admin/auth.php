@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../config.php';
-
 session_start();
 
-// Проверяем пароль из .env
-$admin_password = $_ENV['ADMIN_PASSWORD'] ?? 'default_password';
+// Получаем данные из .env
+$admin_login = $_ENV['ADMIN_LOGIN'] ?? 'admin';
+$admin_pass = $_ENV['ADMIN_PASS'] ?? 'default_password';
 
 // Если нажали "Выйти"
 if (isset($_GET['logout'])) {
@@ -13,21 +13,26 @@ if (isset($_GET['logout'])) {
     exit;
 }
 
-// Обработка формы входа
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
-    if ($_POST['password'] === $admin_password) {
-        $_SESSION['admin_logged_in'] = true;
-        header('Location: index.php');
-        exit;
-    } else {
-        $error = "Неверный пароль";
-    }
-}
-
 // Если уже авторизован — редирект на главную
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
     header('Location: index.php');
     exit;
+}
+
+$error = '';
+
+// Обработка формы входа
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $login = trim($_POST['login'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+
+    if ($login === $admin_login && $password === $admin_pass) {
+        $_SESSION['admin_logged_in'] = true;
+        header('Location: index.php');
+        exit;
+    } else {
+        $error = "Неверный логин или пароль";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -42,7 +47,6 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
         .auth-container { max-width: 500px; margin: 100px auto; }
         .auth-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(75, 205, 235, 0.3); border-radius: 12px; padding: 40px; }
@@ -64,24 +68,24 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
                 <p class="tagline">Админ-панель</p>
             </div>
         </header>
-        
         <main class="main-content">
             <div class="auth-container animate__animated animate__fadeIn">
                 <div class="auth-card">
                     <h1><i class="fas fa-lock"></i> Вход для администратора</h1>
-                    
-                    <?php if (isset($error)): ?>
+                    <?php if ($error): ?>
                         <div class="error-message">
                             <i class="fas fa-exclamation-triangle"></i> <?= e($error) ?>
                         </div>
                     <?php endif; ?>
-                    
                     <form method="POST" action="" class="auth-form">
                         <div class="form-group">
-                            <label for="password">Пароль</label>
-                            <input type="password" name="password" id="password" required autofocus>
+                            <label for="login">Логин</label>
+                            <input type="text" name="login" id="login" required autofocus autocomplete="username">
                         </div>
-                        
+                        <div class="form-group">
+                            <label for="password">Пароль</label>
+                            <input type="password" name="password" id="password" required autocomplete="current-password">
+                        </div>
                         <button type="submit" class="auth-btn">
                             <i class="fas fa-sign-in-alt"></i> Войти
                         </button>
