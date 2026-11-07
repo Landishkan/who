@@ -67,7 +67,7 @@ foreach ($sessions as $session) {
         $session['mode'] === 'online' ? 'Онлайн' : 'Офлайн',
         $session['test_type'] === 'fake_hunter' ? 'Охотник за фейками' : 'Общий',
         $theme_names[$session['problem_theme']] ?? ($session['problem_theme'] ?? '—'),
-        $session['growth_percentage'] !== null ? $session['growth_percentage'] : '—'
+       $session['growth_percentage'] !== null ? "'" . '+' . $session['growth_percentage'] . '%' : '—'
     ], ';');
 }
 
