@@ -28,8 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Создаем сессию с новыми полями
             $stmt = $pdo->prepare("
                 INSERT INTO sessions (district, institution, age_group, speaker_name, format, mode, test_type, note, speaker_login, initial_status, final_status)
-                VALUES (:district, :institution, :age_group, :speaker_name, :format, 'offline', :test_type, :note, :speaker_login, 'pending', 'skipped')
-            ");
+VALUES (:district, :institution, :age_group, :speaker_name, :format, 'offline', 'pending', 'pending')            ");
             $stmt->execute([
                 ':district' => $district,
                 ':institution' => $institution,

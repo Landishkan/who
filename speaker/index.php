@@ -11,23 +11,23 @@ $current_speaker_login = $_SESSION['speaker_login'] ?? 'speaker';
 // Активные тесты
 if ($current_speaker_login === 'speaker') {
     // Общая учетка видит все сессии
-    $activeTests = $pdo->query("
-        SELECT
-            t.id as test_id,
-            t.type,
-            t.participants_count,
-            s.district,
-            s.institution,
-            s.age_group,
-            s.speaker_name,
-            s.format,
-            s.mode,
-            s.created_at
-        FROM tests t
-        JOIN sessions s ON t.session_id = s.id
-        WHERE t.is_active = 1 AND s.is_hidden = 0
-        ORDER BY s.created_at DESC
-    ")->fetchAll(PDO::FETCH_ASSOC);
+  $activeTests = $pdo->query("
+    SELECT
+        t.id as test_id,
+        t.type,
+        t.participants_count,
+        s.district,
+        s.institution,
+        s.age_group,
+        s.speaker_name,
+        s.format,
+        s.mode,
+        s.created_at
+    FROM tests t
+    JOIN sessions s ON t.session_id = s.id
+    WHERE t.is_active = 1 AND s.is_hidden = 0
+    ORDER BY s.created_at DESC
+")->fetchAll(PDO::FETCH_ASSOC);
 } else {
     // Именные спикеры видят только свои сессии
     $stmt = $pdo->prepare("
@@ -53,24 +53,24 @@ if ($current_speaker_login === 'speaker') {
 // Завершенные сессии
 if ($current_speaker_login === 'speaker') {
     // Общая учетка видит все сессии
-    $completedSessions = $pdo->query("
-        SELECT
-            s.id,
-            s.district,
-            s.institution,
-            s.age_group,
-            s.speaker_name,
-            s.format,
-            s.mode,
-            s.initial_status,
-            s.final_status,
-            s.problem_theme,
-            s.growth_percentage,
-            s.created_at
-        FROM sessions s
-        WHERE s.is_hidden = 0 AND (s.initial_status = 'completed' OR s.final_status = 'completed')
-        ORDER BY s.created_at DESC
-    ")->fetchAll(PDO::FETCH_ASSOC);
+  $completedSessions = $pdo->query("
+    SELECT
+        s.id,
+        s.district,
+        s.institution,
+        s.age_group,
+        s.speaker_name,
+        s.format,
+        s.mode,
+        s.initial_status,
+        s.final_status,
+        s.problem_theme,
+        s.growth_percentage,
+        s.created_at
+    FROM sessions s
+    WHERE s.is_hidden = 0 AND s.final_status = 'completed'
+    ORDER BY s.created_at DESC
+")->fetchAll(PDO::FETCH_ASSOC);
 } else {
     // Именные спикеры видят только свои сессии
     $stmt = $pdo->prepare("
@@ -98,7 +98,31 @@ if ($current_speaker_login === 'speaker') {
 } catch (Exception $e) {
     die("Ошибка загрузки данных: " . $e->getMessage());
 }
+// Активные офлайн-сессии (где initial_status = completed, но final_status != completed)
+$activeOffline = $pdo->query("
+    SELECT
+        s.id,
+        s.district,
+        s.institution,
+        s.age_group,
+        s.speaker_name,
+        s.format,
+        s.mode,
+        s.initial_status,
+        s.final_status,
+        s.created_at,
+        0 as participants_count,
+        'offline_pending_final' as type
+    FROM sessions s
+    WHERE s.is_hidden = 0 
+    AND s.mode = 'offline'
+    AND s.initial_status = 'completed'
+    AND s.final_status != 'completed'
+    ORDER BY s.created_at DESC
+")->fetchAll(PDO::FETCH_ASSOC);
 
+// Объединяем онлайн и офлайн активные
+$activeTests = array_merge($activeTests, $activeOffline);
 // Перевод тем
 $themeNames = [
     'bullying' => 'Буллинг',
@@ -423,42 +447,56 @@ $themeNames = [
                         </div>
                     </div>
                 <?php else: ?>
-                    <?php foreach ($activeTests as $test): ?>
-                        <div class="cyber-card">
-                            <div class="card-header">
-                                <h3 class="card-title"><?= e($test['institution']) ?></h3>
-                                <div style="display: flex; gap: 10px;">
-                                    <span class="badge badge-<?= $test['mode'] ?>">
-                                        <i class="fas fa-<?= $test['mode'] === 'online' ? 'wifi' : 'calculator' ?>"></i>
-                                        <?= $test['mode'] === 'online' ? 'Онлайн' : 'Офлайн' ?>
-                                    </span>
-                                   <span class="badge <?= strpos($test['type'], 'initial') !== false ? 'badge-initial' : 'badge-final' ?>">
-    <?= strpos($test['type'], 'initial') !== false ? 'Начальный' : 'Конечный' ?>
-</span>
-                                </div>
-                            </div>
-                            
-                            <div class="card-meta">
-                                <span><i class="fas fa-map-marker-alt"></i> <?= e($test['district']) ?> район</span>
-                                <span><i class="fas fa-calendar-alt"></i> <?= date('d.m.Y H:i', strtotime($test['created_at'])) ?></span>
-                                <span><i class="fas fa-users"></i> <?= e($test['format']) ?></span>
-                                <?php if ($test['age_group']): ?>
-                                    <span><i class="fas fa-user-graduate"></i> <?= e($test['age_group']) ?></span>
-                                <?php endif; ?>
-                                <?php if ($test['speaker_name']): ?>
-                                    <span><i class="fas fa-microphone"></i> <?= e($test['speaker_name']) ?></span>
-                                <?php endif; ?>
-                            </div>
-                            
-                            <div class="participant-counter">
-                                <?= $test['participants_count'] ?> <span>ответили</span>
-                            </div>
-                            
-                            <a href="calculate.php?test_id=<?= $test['test_id'] ?>" class="calculate-btn">
-                                <i class="fas fa-calculator"></i> Подсчитать результат
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
+             <?php foreach ($activeTests as $test): ?>
+<div class="cyber-card">
+    <div class="card-header">
+        <h3 class="card-title"><?= e($test['institution']) ?></h3>
+        <div style="display: flex; gap: 10px;">
+            <span class="badge badge-<?= $test['mode'] ?>">
+                <i class="fas fa-<?= $test['mode'] === 'online' ? 'wifi' : 'calculator' ?>"></i>
+                <?= $test['mode'] === 'online' ? 'Онлайн' : 'Офлайн' ?>
+            </span>
+            <?php if ($test['mode'] === 'online'): ?>
+                <span class="badge badge-<?= strpos($test['type'], 'initial') !== false ? 'initial' : 'final' ?>">
+                    <?= strpos($test['type'], 'initial') !== false ? 'Начальный' : 'Конечный' ?>
+                </span>
+            <?php else: ?>
+                <span class="badge badge-initial">
+                    Ожидает 2-й этап
+                </span>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="card-meta">
+        <span><i class="fas fa-map-marker-alt"></i> <?= e($test['district']) ?> район</span>
+        <span><i class="fas fa-calendar-alt"></i> <?= date('d.m.Y H:i', strtotime($test['created_at'])) ?></span>
+        <span><i class="fas fa-users"></i> <?= e($test['format']) ?></span>
+        <?php if (!empty($test['age_group'])): ?>
+            <span><i class="fas fa-user-graduate"></i> <?= e($test['age_group']) ?></span>
+        <?php endif; ?>
+        <?php if (!empty($test['speaker_name'])): ?>
+            <span><i class="fas fa-microphone"></i> <?= e($test['speaker_name']) ?></span>
+        <?php endif; ?>
+    </div>
+    <?php if ($test['mode'] === 'online'): ?>
+        <div class="participant-counter">
+            <?= $test['participants_count'] ?> <span>ответили</span>
+        </div>
+        <a href="calculate.php?test_id=<?= $test['test_id'] ?>" class="calculate-btn">
+            <i class="fas fa-calculator"></i> Подсчитать результат
+        </a>
+    <?php else: ?>
+        <!-- Офлайн-сессия, ожидает второй этап -->
+        <div class="status-box status-growth" style="background: rgba(255, 193, 7, 0.15); border-color: #ffc107; color: #ffc107;">
+            <i class="fas fa-clock"></i>
+            Первый этап пройден. Готов к финальному опросу.
+        </div>
+        <a href="offline-calculator.php?session_id=<?= $test['id'] ?>" class="calculate-btn" style="background: #ffc107; color: #000;">
+            <i class="fas fa-play"></i> Продолжить (2-й этап)
+        </a>
+    <?php endif; ?>
+</div>
+<?php endforeach; ?>
                 <?php endif; ?>
             </div>
 
