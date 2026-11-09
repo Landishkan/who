@@ -1,5 +1,5 @@
 // Данные тестов по кибербезопасности
-const isSpecialTestActive = true;
+const isSpecialTestActive = false;
 const testData = {
     
 'limited-event': {
