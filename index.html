@@ -25,11 +25,7 @@
             </div>
             
           <nav class="header-nav">
-                 <!-- <div id="auth-section">
-                    <a href="user/login.html" class="nav-button auth-button" id="auth-button">
-                        <i class="fas fa-user"></i> Вход/Регистрация
-                    </a>
-                </div> -->
+             
                 
                 <a href="about.html" class="nav-button">
                     <i class="fas fa-info-circle"></i> О нас
@@ -65,7 +61,16 @@
                     </span>
                     <span class="main-button-glitch"></span>
                 </a>
-
+<a href="scenarios-teachers.html" class="main-cyber-button">
+    <div class="main-button-content">
+        <div class="main-button-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="main-button-text">Педагогам</div>
+        <div class="main-button-subtext">Материалы для классных часов</div>
+    </div>
+    <div class="main-button-glitch"></div>
+</a>
                      <a href="tests.html" class="main-cyber-button">
                     <span class="main-button-content">
                         <span class="main-button-icon"><i class="fas fa-graduation-cap"></i></span>
@@ -98,17 +103,7 @@
                     <p>Для мобильных устройств доступна новая игра - "Инбокс: Сортировка"</p>
                 </article>
                 
-               <!--   <article class="news-card">
-                    <div class="news-header">
-                        <span class="news-badge badge-new">Новое</span>
-                        <span class="news-date">Недавно</span>
-                    </div>
-                    <div class="news-icon">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <h3>Система регистрации временно не работает</h3>
-                    <p>Система регистрации временно не работает из-за технических проблем. За обновлениями следите в сообществах проекта, указанные в разделе "О нас"</p>
-                </article> -->
+           
             </div>
         </section>
     </div>
@@ -119,60 +114,13 @@
                 <a href="games.html" class="footer-link">Мини-игры</a>
                 <a href="scenarios.html" class="footer-link">Сценарии</a>
                 <a href="learning.html" class="footer-link">Обучение</a>
+                <a href="tests.html" class="footer-link">Тесты</a>
+                <a href="scenarios-teachers.html" class="footer-link">Педагогам</a>
                 <a href="privacy.html" class="footer-link">Политика конфиденциальности</a>
             </div>
          
         </footer>
-    <!-- Добавляем Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <!-- для гитхаба-->
-     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script>
-        // Ваша конфигурация Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAjDJPWVXFmBlWYRUf-IACsQrut_lEEFfc",
-            authDomain: "cyber-questor.firebaseapp.com",
-            projectId: "cyber-questor",
-            storageBucket: "cyber-questor.firebasestorage.app",
-            messagingSenderId: "347078202285",
-            appId: "1:347078202285:web:7ac8581765d5fdc76a4724"
-        };
-        
-        // Инициализация Firebase
-        firebase.initializeApp(firebaseConfig);
-        
-        // Проверка состояния авторизации
-        firebase.auth().onAuthStateChanged(user => {
-            const authSection = document.getElementById('auth-section');
-            
-            if (user) {
-                // Пользователь авторизован - показываем профиль
-                authSection.innerHTML = `
-                    <a href="user/profile.html" class="nav-button auth-button">
-                        <i class="fas fa-user-circle"></i> Профиль
-                    </a>
-                    <a href="#" id="logout-btn" class="nav-button">
-                        <i class="fas fa-sign-out-alt"></i> Выйти
-                    </a>
-                `;
-                
-                // Обработчик выхода
-                document.getElementById('logout-btn').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    firebase.auth().signOut();
-                });
-            } else {
-                // Пользователь не авторизован - показываем кнопку входа
-                authSection.innerHTML = `
-                    <a href="user/login.html" class="nav-button auth-button">
-                        <i class="fas fa-user"></i> Вход/Регистрация
-                    </a>
-                `;
-            }
-        });
-    </script>
+    
     <div id="cookie-consent-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background-color: #254883; color: #ffffff; padding: 15px; z-index: 1000; font-family: sans-serif; justify-content: center; align-items: center;">
     <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; text-align: center; width: 100%; max-width: 1200px; margin: 0 auto;">
         <p style="margin: 0;">Мы используем файлы cookie для улучшения вашего опыта. Продолжая, вы соглашаетесь с нашей <a href="https://cyberquestor.ru/privacy.html" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: underline;">Политикой конфиденциальности</a>.<a href="https://hostinside.ru/cookie-banner-generator/"></a></p>

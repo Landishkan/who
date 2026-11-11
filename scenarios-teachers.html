@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сценарии для классных часов | КиберКвестор</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Локальные стили для страницы сценариев для учителей ===== */
+        .teachers-hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+        .teachers-hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        .teachers-hero .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .hero-stat {
+            text-align: center;
+        }
+        .hero-stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+        .hero-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        /* Фильтры */
+        .filters-section {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+        .filters-container {
+            background: rgba(18, 18, 53, 0.7);
+            border: 1px solid rgba(91, 156, 240, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .filters-title {
+            color: var(--secondary-color);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filters-group {
+            margin-bottom: 20px;
+        }
+        .filters-group:last-child {
+            margin-bottom: 0;
+        }
+        .filters-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .filter-chip {
+            padding: 8px 16px;
+            background: rgba(15, 76, 255, 0.1);
+            border: 1px solid rgba(91, 156, 240, 0.3);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+        }
+        .filter-chip:hover {
+            background: rgba(91, 156, 240, 0.15);
+            color: var(--text-color);
+            transform: translateY(-2px);
+        }
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+        }
+
+        /* Сетка сценариев */
+        .scenarios-teachers-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        .scenario-teacher-card {
+            background: linear-gradient(145deg, rgba(18, 18, 53, 0.9), rgba(10, 10, 32, 0.8));
+            border: 1px solid rgba(91, 156, 240, 0.2);
+            border-radius: 14px;
+            padding: 25px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .scenario-teacher-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        .scenario-teacher-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-color);
+            box-shadow: 0 15px 35px rgba(0, 114, 255, 0.25);
+        }
+        .scenario-teacher-card:hover::before {
+            transform: scaleX(1);
+        }
+        .scenario-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .scenario-grade-badge {
+            background: rgba(91, 156, 240, 0.15);
+            color: var(--accent-color);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(91, 156, 240, 0.3);
+        }
+        .scenario-duration {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .scenario-icon-big {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .scenario-teacher-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        .scenario-teacher-card .scenario-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .scenario-includes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(91, 156, 240, 0.15);
+        }
+        .include-tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            background: rgba(22, 165, 65, 0.1);
+            color: var(--accen-color);
+            border: 1px solid rgba(22, 165, 65, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .scenario-open-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .scenario-open-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.4);
+        }
+
+        /* Модалка сценария */
+        .scenario-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        .scenario-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        .scenario-modal-content {
+            background: var(--background-light);
+            border: 1px solid var(--accent-color);
+            border-radius: 15px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 114, 255, 0.3);
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 45, 117, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover {
+            background: var(--error-color);
+            color: white;
+            transform: rotate(90deg);
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(91, 156, 240, 0.2);
+        }
+        .modal-header-icon {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .modal-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-color);
+            font-size: 1.8rem;
+            margin: 0;
+            line-height: 1.3;
+        }
+        .modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .modal-meta-item {
+            background: rgba(91, 156, 240, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-meta-item i {
+            color: var(--accent-color);
+        }
+        .modal-section {
+            margin-bottom: 25px;
+        }
+        .modal-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+        .modal-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .modal-section ul li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(91, 156, 240, 0.1);
+        }
+        .modal-section ul li:last-child {
+            border-bottom: none;
+        }
+        .modal-section ul li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            top: 13px;
+        }
+        /* Особый стиль для этапов урока */
+        .stage-item {
+            background: rgba(15, 76, 255, 0.05);
+            border-left: 3px solid var(--accent-color);
+            padding: 12px 15px 12px 30px !important;
+            border-bottom: 1px solid rgba(91, 156, 240, 0.1) !important;
+            margin-bottom: 8px;
+            border-radius: 0 8px 8px 0;
+        }
+        .stage-item::before {
+            content: '▶' !important;
+            position: absolute;
+            left: 10px !important;
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            top: 15px !important;
+        }
+        .stage-item strong {
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .modal-btn {
+            flex: 1;
+            min-width: 180px;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+        }
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.4);
+        }
+        .modal-btn-secondary {
+            background: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+        .modal-btn-secondary:hover {
+            background: rgba(91, 156, 240, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Пустое состояние */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--accent-color);
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+        .empty-state h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        /* CTA блок */
+        .teachers-cta {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+        .cta-box {
+            background: linear-gradient(135deg, rgba(15, 76, 255, 0.15), rgba(91, 156, 240, 0.1));
+            border: 1px solid rgba(91, 156, 240, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(91, 156, 240, 0.1), transparent 50%);
+            pointer-events: none;
+        }
+        .cta-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-color);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .cta-box p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+        }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 114, 255, 0.4);
+        }
+
+        /* Анимация появления карточек */
+        .scenario-teacher-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cardAppear 0.6s ease forwards;
+        }
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Адаптив */
+        @media (max-width: 768px) {
+            .teachers-hero h1 {
+                font-size: 2rem;
+            }
+            .teachers-hero .hero-subtitle {
+                font-size: 1rem;
+            }
+            .hero-stats {
+                gap: 20px;
+            }
+            .hero-stat-number {
+                font-size: 1.6rem;
+            }
+            .modal-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .modal-header h2 {
+                font-size: 1.4rem;
+            }
+            .scenario-modal-content {
+                padding: 25px 20px;
+            }
+            .cta-box {
+                padding: 30px 20px;
+            }
+            .cta-box h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка с навигацией -->
+    <header style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+        <nav class="header-nav">
+            <a href="index.html" class="nav-button"><i class="fas fa-home"></i> Главная</a>
+            <a href="games.html" class="nav-button"><i class="fas fa-gamepad"></i> Мини-игры</a>
+            <a href="scenarios.html" class="nav-button"><i class="fas fa-theater-masks"></i> Сценарии</a>
+            <a href="scenarios-teachers.html" class="nav-button" style="background: rgba(91, 156, 240, 0.2); border-color: var(--accent-color);">
+                <i class="fas fa-chalkboard-teacher"></i> Для учителей
+            </a>
+            <a href="learning.html" class="nav-button"><i class="fas fa-graduation-cap"></i> Обучение</a>
+            <a href="tests.html" class="nav-button"><i class="fas fa-clipboard-check"></i> Тесты</a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="teachers-hero">
+        <h1><i class="fas fa-chalkboard-teacher"></i> Сценарии для классных часов</h1>
+        <p class="hero-subtitle">
+            Готовые методические разработки по цифровой безопасности для проведения занятий в школе. 
+            Каждый сценарий — это полноценный урок с презентацией, раздаточными материалами и интерактивными заданиями.
+        </p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-number">1</div>
+                <div class="hero-stat-label">готовый сценарий</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number">5–11</div>
+                <div class="hero-stat-label">классы</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number">45–60</div>
+                <div class="hero-stat-label">минут на урок</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number">100%</div>
+                <div class="hero-stat-label">бесплатно</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Фильтры -->
+    <section class="filters-section">
+        <div class="filters-container">
+            <div class="filters-title">
+                <i class="fas fa-filter"></i> Фильтры сценариев
+            </div>
+
+            <div class="filters-group">
+                <span class="filters-label">Возрастная группа</span>
+                <div class="filter-chips" data-filter="grade">
+                    <div class="filter-chip active" data-value="all">Все</div>
+                    <div class="filter-chip" data-value="primary">1–4 классы</div>
+                    <div class="filter-chip" data-value="middle">5–8 классы</div>
+                    <div class="filter-chip" data-value="senior">9–11 классы</div>
+                </div>
+            </div>
+
+            <div class="filters-group">
+                <span class="filters-label">Тема</span>
+                <div class="filter-chips" data-filter="topic">
+                    <div class="filter-chip active" data-value="all">Все темы</div>
+                    <div class="filter-chip" data-value="fakenews">Фейки и медиа</div>
+                    <div class="filter-chip" data-value="phishing">Фишинг</div>
+                    <div class="filter-chip" data-value="passwords">Пароли</div>
+                    <div class="filter-chip" data-value="bullying">Кибербуллинг</div>
+                    <div class="filter-chip" data-value="privacy">Личные данные</div>
+                    <div class="filter-chip" data-value="social">Соцсети</div>
+                    <div class="filter-chip" data-value="scam">Мошенники</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Сетка сценариев -->
+    <section class="scenarios-teachers-grid" id="scenariosGrid">
+        <!-- Карточки вставляются через JS -->
+    </section>
+
+    <!-- CTA -->
+    <section class="teachers-cta">
+        <div class="cta-box">
+            <h2><i class="fas fa-lightbulb"></i> Нужен сценарий под вашу тему?</h2>
+            <p>Если вы не нашли подходящий сценарий — напишите нам, и мы подготовим методичку под ваш запрос. Также принимаем предложения от преподавателей-практиков.</p>
+            <a href="mailto:teachers@cyberquestor.ru" class="cta-button">
+                <i class="fas fa-envelope"></i> Предложить тему
+            </a>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="cyber-footer">
+        <div class="footer-logo">КиберКвестор</div>
+        <div class="footer-links">
+            <a href="index.html" class="footer-link">Главная</a>
+            <a href="games.html" class="footer-link">Мини-игры</a>
+            <a href="scenarios.html" class="footer-link">Сценарии</a>
+            <a href="learning.html" class="footer-link">Обучение</a>
+            <a href="privacy.html" class="footer-link">Конфиденциальность</a>
+        </div>
+        <p style="color: var(--text-secondary); margin-top: 20px; font-size: 0.9rem;">
+            © 2026 КиберКвестор. Образовательный проект по цифровой безопасности.
+        </p>
+    </footer>
+
+    <!-- Модалка -->
+    <div class="scenario-modal" id="scenarioModal">
+        <div class="scenario-modal-content" id="modalContent">
+            <!-- Содержимое вставляется через JS -->
+        </div>
+    </div>
+
+    <script>
+        // ===== Данные сценариев =====
+        const scenarios = [
+            // ===== АКТИВНЫЙ СЦЕНАРИЙ =====
+            {
+                id: 1,
+                icon: 'fa-magnifying-glass',
+                title: 'Охотник за фейками',
+                grade: 'middle', // подходит и для middle, и для senior — в фильтре показываем при обоих
+                gradeLabel: '5–11 класс',
+                duration: '45–60',
+                topic: 'fakenews',
+                desc: 'Интерактивный классный час по медиаграмотности: учимся отличать правду от фейка, распознаём признаки ложных новостей и тренируем критическое мышление через работу с платформой «КиберКвестор».',
+                includes: ['Платформа', 'Групповая работа', 'Голосование', 'Чек-лист'],
+                goals: [
+                    'Познакомить с понятием фейковой новости и её признаками',
+                    'Научить применять алгоритм СТОП → ПРОВЕРЬ → ПОДУМАЙ → ДЕЛИСЬ',
+                    'Развивать критическое мышление через анализ реальных информационных постов',
+                    'Отработать навык проверки источника, логики, эксперта и эмоционального давления'
+                ],
+                plan: [
+                    {
+                        title: 'Этап 1. Вводная часть и погружение (5–7 минут)',
+                        text: 'Приветствие и актуализация темы. Учитель задаёт вопрос: «Кто из вас за последнюю неделю пересылал новость, в которой не был уверен на 100%?» Короткое обсуждение и переход к платформе. Объяснение структуры урока.'
+                    },
+                    {
+                        title: 'Этап 2. Вводное обучение «Ловушка доверия» (10–12 минут)',
+                        text: 'На экране 3 новости. Задание: «Найди правдивую новость». Класс голосует поднятием рук, учитель фиксирует результаты на доске. Проверка выбора — все три новости оказываются фейками. Разбор по 4 пунктам: Источник, Логика, Эксперт, Эмоция. Финал — чек-лист СТОП → ПРОВЕРЬ → ПОДУМАЙ → ДЕЛИСЬ, ученики фотографируют его на телефон.'
+                    },
+                    {
+                        title: 'Этап 3. Игра «Охота начинается» (25–30 минут)',
+                        text: 'Выбор одной из 4 категорий: Общие, Тренды, Образование, Игры. В каждой категории — 5 уровней сложности. Учитель зачитывает задание, ученики читают новости, голосуют за вариант А/Б/В или «Фейков нет». Разбор результата с акцентом на вопрос для обсуждения. Проходим 2–3 уровня в каждой категории.'
+                    },
+                    {
+                        title: 'Этап 4. Рефлексия и итоги (5–7 минут)',
+                        text: 'Просмотр общей статистики. Обсуждение: «В какой категории были увереннее? Где ошибались чаще? Почему?» Финальное задание — каждый ученик по цепочке называет один признак фейка, который запомнил. Подведение итогов и благодарность.'
+                    }
+                ],
+                materials: 'Компьютер/ноутбук учителя с доступом в интернет, проектор (или интерактивная доска/телевизор), стабильное интернет-соединение, распечатанный сценарий для учителя с таймингом, доска и маркеры для фиксации результатов голосования. Платформа «КиберКвестор» открывается по ссылке: cyberquestor.ru/scen/scenario-fact.html',
+                link: 'https://cyberquestor.ru/scen/scenario-fact.html',
+                 pdf: 'scenarios-teach/scen-fake.pdf'
+            },
+
+            // ===== ИДЕИ ДЛЯ БУДУЩИХ СЦЕНАРИЕВ (закомментированы) =====
+            /*
+            {
+                id: 2,
+                icon: 'fa-fish',
+                title: 'Фишинг: как не попасться на крючок',
+                grade: 'middle',
+                gradeLabel: '5–7 класс',
+                duration: 45,
+                topic: 'phishing',
+                desc: 'Учимся распознавать поддельные письма, сообщения и сайты. Разбираем реальные примеры и тренируем критическое мышление.',
+                includes: ['Презентация', 'Раздатка', 'Практикум', 'Тест'],
+                goals: [
+                    'Познакомить с понятием фишинга и его видами',
+                    'Научить распознавать признаки поддельных писем и сайтов',
+                    'Отработать алгоритм проверки подозрительных ссылок',
+                    'Сформировать привычку проверять отправителя перед кликом'
+                ],
+                plan: [
+                    { title: 'Орг. момент и мотивация', text: 'История про «выигрыш в конкурсе» (5 мин)' },
+                    { title: 'Мини-лекция', text: 'Что такое фишинг и зачем он нужен мошенникам (10 мин)' },
+                    { title: 'Интерактив', text: '«Найди 5 отличий» — сравнение настоящего и поддельного письма (10 мин)' },
+                    { title: 'Практика в мини-группах', text: 'Анализ 3 подозрительных сообщений (12 мин)' },
+                    { title: 'Рефлексия', text: 'Чек-лист «5 правил безопасного клика» (8 мин)' }
+                ],
+                materials: 'Презентация (15 слайдов), раздаточный материал «Красные флаги фишинга», карточки с примерами писем, чек-лист для ученика.'
+            },
+            {
+                id: 3,
+                icon: 'fa-key',
+                title: 'Пароли-крепости',
+                grade: 'primary',
+                gradeLabel: '3–5 класс',
+                duration: 40,
+                topic: 'passwords',
+                desc: 'В игровой форме объясняем, почему «123456» — плохой пароль, и учимся создавать надёжные комбинации.',
+                includes: ['Игра', 'Раздатка', 'Чек-лист'],
+                goals: [],
+                plan: [],
+                materials: ''
+            },
+            {
+                id: 4,
+                icon: 'fa-user-shield',
+                title: 'Кибербуллинг: стоп травле',
+                grade: 'middle',
+                gradeLabel: '6–9 класс',
+                duration: 45,
+                topic: 'bullying',
+                desc: 'Разбираем, что такое кибербуллинг и как действовать, если ты жертва, свидетель или обидчик.',
+                includes: ['Презентация', 'Дискуссия', 'Кейсы', 'Памятка'],
+                goals: [],
+                plan: [],
+                materials: ''
+            },
+            {
+                id: 5,
+                icon: 'fa-id-card',
+                title: 'Личные данные под защитой',
+                grade: 'senior',
+                gradeLabel: '7–11 класс',
+                duration: 45,
+                topic: 'privacy',
+                desc: 'Что такое персональные данные, почему их нельзя выкладывать подряд и как соцсети используют нашу информацию.',
+                includes: ['Презентация', 'Практикум', 'Аудит профиля'],
+                goals: [],
+                plan: [],
+                materials: ''
+            },
+            {
+                id: 6,
+                icon: 'fa-share-nodes',
+                title: 'Безопасные соцсети',
+                grade: 'middle',
+                gradeLabel: '5–8 класс',
+                duration: 40,
+                topic: 'social',
+                desc: 'Учимся вести соцсети так, чтобы потом не было стыдно и опасно.',
+                includes: ['Презентация', 'Квиз', 'Памятка'],
+                goals: [],
+                plan: [],
+                materials: ''
+            },
+            {
+                id: 7,
+                icon: 'fa-shoe-prints',
+                title: 'Цифровой след',
+                grade: 'senior',
+                gradeLabel: '8–11 класс',
+                duration: 45,
+                topic: 'privacy',
+                desc: 'Всё, что мы делаем в сети, остаётся навсегда. Разбираемся, как цифровой след влияет на учёбу и работу.',
+                includes: ['Презентация', 'Кейсы', 'Самоанализ'],
+                goals: [],
+                plan: [],
+                materials: ''
+            },
+            {
+                id: 8,
+                icon: 'fa-mask',
+                title: 'Осторожно: мошенники!',
+                grade: 'primary',
+                gradeLabel: '3–6 класс',
+                duration: 40,
+                topic: 'scam',
+                desc: 'Игровой урок про самые популярные уловки мошенников: фейковые розыгрыши, «друг в беде», «вы выиграли».',
+                includes: ['Игра', 'Мультфильм', 'Раздатка'],
+                goals: [],
+                plan: [],
+                materials: ''
+            },
+            {
+                id: 9,
+                icon: 'fa-gamepad',
+                title: 'Игры и баланс: когда пора на паузу',
+                grade: 'senior',
+                gradeLabel: '7–11 класс',
+                duration: 45,
+                topic: 'social',
+                desc: 'Честный разговор про игровую зависимость, лутбоксы и то, как игры монетизируют наше внимание.',
+                includes: ['Презентация', 'Дискуссия', 'Тест'],
+                goals: [],
+                plan: [],
+                materials: ''
+            }
+            */
+        ];
+
+        // ===== Рендер карточек =====
+        const grid = document.getElementById('scenariosGrid');
+
+        function renderCards(list) {
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Ничего не найдено</h3>
+                        <p>Попробуйте изменить фильтры или сбросить их</p>
+                    </div>
+                `;
+                return;
+            }
+            grid.innerHTML = list.map(s => `
+                <div class="scenario-teacher-card" data-id="${s.id}" data-grade="${s.grade}" data-topic="${s.topic}">
+                    <div class="scenario-card-top">
+                        <span class="scenario-grade-badge">${s.gradeLabel}</span>
+                        <span class="scenario-duration"><i class="far fa-clock"></i> ${s.duration} мин</span>
+                    </div>
+                    <div class="scenario-icon-big"><i class="fas ${s.icon}"></i></div>
+                    <h3>${s.title}</h3>
+                    <p class="scenario-desc">${s.desc}</p>
+                    <div class="scenario-includes">
+                        ${s.includes.map(inc => `<span class="include-tag"><i class="fas fa-check"></i> ${inc}</span>`).join('')}
+                    </div>
+                    <button class="scenario-open-btn" data-id="${s.id}">
+                        <i class="fas fa-book-open"></i> Открыть сценарий
+                    </button>
+                </div>
+            `).join('');
+
+            // Навешиваем обработчики на кнопки
+            document.querySelectorAll('.scenario-open-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openModal(parseInt(btn.dataset.id));
+                });
+            });
+            document.querySelectorAll('.scenario-teacher-card').forEach(card => {
+                card.addEventListener('click', () => openModal(parseInt(card.dataset.id)));
+            });
+        }
+
+        // ===== Модалка =====
+        const modal = document.getElementById('scenarioModal');
+        const modalContent = document.getElementById('modalContent');
+
+        function openModal(id) {
+            const s = scenarios.find(x => x.id === id);
+            if (!s) return;
+
+            // Рендерим план: если это массив объектов с title/text — особый стиль, иначе простой список
+            const planHtml = s.plan.map(p => {
+                if (typeof p === 'object' && p.title) {
+                    return `<li class="stage-item"><strong>${p.title}</strong>${p.text}</li>`;
+                }
+                return `<li>${p}</li>`;
+            }).join('');
+
+            // Кнопка перехода на сценарий (если есть ссылка)
+            const linkBtn = s.link
+                ? `<a href="${s.link}" target="_blank" class="modal-btn modal-btn-secondary">
+                       <i class="fas fa-external-link-alt"></i> Перейти к сценарию
+                   </a>`
+                : `<a href="#" class="modal-btn modal-btn-secondary" onclick="event.preventDefault(); alert('Презентация откроется в новой вкладке');">
+                       <i class="fas fa-file-powerpoint"></i> Презентация
+                   </a>`;
+
+            modalContent.innerHTML = `
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                <div class="modal-header">
+                    <div class="modal-header-icon"><i class="fas ${s.icon}"></i></div>
+                    <h2>${s.title}</h2>
+                </div>
+                <div class="modal-meta">
+                    <div class="modal-meta-item"><i class="fas fa-users"></i> ${s.gradeLabel}</div>
+                    <div class="modal-meta-item"><i class="far fa-clock"></i> ${s.duration} минут</div>
+                    <div class="modal-meta-item"><i class="fas fa-tag"></i> ${getTopicName(s.topic)}</div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-bullseye"></i> Цели занятия</h3>
+                    <ul>
+                        ${s.goals.map(g => `<li>${g}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-list-ol"></i> План урока</h3>
+                    <ul>
+                        ${planHtml}
+                    </ul>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-box-open"></i> Материалы и технические требования</h3>
+                    <p>${s.materials}</p>
+                </div>
+                <div class="modal-actions">
+                   ${s.pdf
+    ? `<a href="${s.pdf}" download class="modal-btn modal-btn-primary">
+           <i class="fas fa-download"></i> Скачать методичку (PDF)
+       </a>`
+    : `<a href="#" class="modal-btn modal-btn-primary" onclick="event.preventDefault(); alert('PDF пока не загружен');">
+           <i class="fas fa-download"></i> Скачать методичку
+       </a>`
+}
+                    ${linkBtn}
+                </div>
+            `;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function getTopicName(topic) {
+            const map = {
+                fakenews: 'Фейки и медиа',
+                phishing: 'Фишинг',
+                passwords: 'Пароли',
+                bullying: 'Кибербуллинг',
+                privacy: 'Личные данные',
+                social: 'Соцсети и баланс',
+                scam: 'Мошенники'
+            };
+            return map[topic] || topic;
+        }
+
+        // Закрытие модалки по клику вне контента и по Escape
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ===== Фильтры =====
+        let currentFilters = { grade: 'all', topic: 'all' };
+
+        document.querySelectorAll('.filter-chips').forEach(group => {
+            const filterType = group.dataset.filter;
+            group.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    group.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentFilters[filterType] = chip.dataset.value;
+                    applyFilters();
+                });
+            });
+        });
+
+        function applyFilters() {
+            const filtered = scenarios.filter(s => {
+                // Сценарий «Охотник за фейками» подходит и для middle, и для senior
+                let gradeMatch = currentFilters.grade === 'all' || s.grade === currentFilters.grade;
+                // Специальный случай: если сценарий универсальный (5-11 класс) — показываем для всех школьных групп
+                if (currentFilters.grade !== 'all' && s.gradeLabel === '5–11 класс') {
+                    gradeMatch = true;
+                }
+                const topicMatch = currentFilters.topic === 'all' || s.topic === currentFilters.topic;
+                return gradeMatch && topicMatch;
+            });
+            renderCards(filtered);
+        }
+
+        // Первый рендер
+        renderCards(scenarios);
+    </script>
+</body>
+</html>
