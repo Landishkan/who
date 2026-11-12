@@ -44,3 +44,21 @@ a:visited {
       0 0 45px rgba(91, 156, 240, 0.3);
   }
 }
+/* Кастомный скроллбар для карточек */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(91, 156, 240, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(91, 156, 240, 0.5);
+}
