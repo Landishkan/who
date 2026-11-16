@@ -4,7 +4,7 @@ import { Gamepad2, Shield, BookOpen, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Магия Framer Motion: создаем анимированную версию компонента Link
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link); //17.11
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },

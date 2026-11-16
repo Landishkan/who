@@ -3,6 +3,8 @@ import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import { Particles } from './components/Particles';
+import StrangerChat from './pages/simulators/StrangerChat';
+import FeedSimulator from './pages/simulators/FeedSimulator';
 
 // Импорт  страниц
 import HomePage from './pages/HomePage';
@@ -13,6 +15,7 @@ import TestsPage from './pages/TestsPage';
 import TeachersPage from './pages/TeachersPage';
 import SimulatorsPage from './pages/SimulatorsPage';
 import AboutPage from './pages/AboutPage';
+import FactHunter from './pages/scenarios/FactHunter';
 // Компонент для анимации переходов между страницами
 function AnimatedRoutes() {
   const location = useLocation();
@@ -34,6 +37,9 @@ function AnimatedRoutes() {
            <Route path="/teachers" element={<TeachersPage />} />
            <Route path="/simulators" element={<SimulatorsPage />} />
            <Route path="/about" element={<AboutPage />} />
+           <Route path="/simulators/stranger-online" element={<StrangerChat />} />
+           <Route path="/simulators/feed" element={<FeedSimulator />} />
+           <Route path="/scenarios/fake-hunter" element={<FactHunter />} />
         </Routes>
       </motion.div>
     </AnimatePresence>

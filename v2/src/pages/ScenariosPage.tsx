@@ -10,7 +10,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link); //17.11
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -60,15 +60,15 @@ const scenarios: Scenario[] = [
     difficulty: 'Начальный',
     difficultyColor: 'bg-success/10 text-success border-success/20'
   },
-  { 
-    id: 4, 
-    icon: Newspaper, 
-    title: 'Охотник за фейками', 
-    desc: 'Отличите фейк от правды. Научитесь критически оценивать информацию.', 
-    path: '/scenarios/fake-hunter',
-    difficulty: 'Продвинутый',
-    difficultyColor: 'bg-error/10 text-error border-error/20'
-  },
+{ 
+  id: 4, 
+  icon: Newspaper, 
+  title: 'Охотник за фейками', 
+  desc: 'Отличите фейк от правды. Научитесь критически оценивать информацию.', 
+  path: '/scenarios/fake-hunter',
+  difficulty: 'Продвинутый',
+  difficultyColor: 'bg-error/10 text-error border-error/20'
+},
 ];
 
 export default function ScenariosPage() {

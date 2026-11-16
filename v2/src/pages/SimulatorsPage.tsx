@@ -7,7 +7,8 @@ import {
   AlertTriangle,
   Clock,
   ArrowRight,
-  Shield
+  Shield,
+  Star
 } from 'lucide-react';
 
 const MotionLink = motion(Link);
@@ -35,17 +36,17 @@ interface Simulator {
 }
 
 const simulators: Simulator[] = [
-  { 
-    id: 1, 
-    icon: Phone, 
-    title: 'Голос на том конце провода', 
-    subtitle: 'Симуляция телефонного мошенничества',
-    desc: 'Вам звонят из "службы безопасности банка". Голос уверен, детали убедительны. Сможете ли вы распознать обман, не поддавшись панике?', 
-    path: '/simulators/phone-scam',
-    duration: '~10 мин',
-    intensity: 'Высокое напряжение',
-    intensityColor: 'bg-error/10 text-error border-error/20'
-  },
+{ 
+  id: 1, 
+  icon: Star, 
+  title: 'Лента', 
+  subtitle: 'Симулятор соцсети',
+  desc: 'Ты открываешь ленту рекомендаций. Посты кажутся обычными, но что-то меняется...', 
+  path: '/simulators/feed',
+  duration: '~5 мин',
+  intensity: 'Психологическое давление',
+  intensityColor: 'bg-accent/10 text-accent border-accent/20'
+},
   { 
     id: 2, 
     icon: UserX, 
